@@ -1,0 +1,22 @@
+## CONFIGURE BIOS/UEFI
+# Give USB devices boot priority
+# UEFI only mode with no CMS support
+
+## UPDATE BIOS/UEFI FIRMWARE
+# Download bootable update CD
+aurman -Sy --noconfirm --noedit geteltorito
+sudo usermod -a -G optical "$USER"
+geteltorito.pl -o bios.img gjuj28us.iso
+# Find name of USB device
+lsblk
+sudo sgdisk -Z /dev/sdX
+sudo dd if=bios.img of=/dev/sdX bs=1M
+sudo reboot
+
+## PREPARE USB DRIVE INSTALLER
+# Download Arch Linux installer CD
+# Find name of USB device
+lsblk
+sudo sgdisk -Z /dev/sdX
+sudo dd if=archlinux-2016.10.01-dual.iso of=/dev/sdX bs=1M
+sudo reboot

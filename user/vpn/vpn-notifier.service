@@ -1,0 +1,8 @@
+[Unit]
+Description=Notify if VPN is down
+
+[Service]
+ExecStart=/usr/bin/bash -c 'if ! pgrep openvpn; then notify-send "VPN Connection" "VPN connection is not active"; fi'
+
+[Install]
+WantedBy=default.target
