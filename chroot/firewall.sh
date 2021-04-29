@@ -23,3 +23,7 @@ iptables -A OUTPUT -j ACCEPT
 # Persist firewall changes
 iptables-save > /etc/iptables/iptables.rules
 systemctl enable iptables
+
+# Install graphical front end
+pacman -Sy firewalld
+systemctl enable firewalld
