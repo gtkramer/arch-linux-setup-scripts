@@ -29,6 +29,9 @@ if [ -z "$BLOCK_DEV" ]; then
 	exit 1
 fi
 
+# Update system clock
+timedatectl set-ntp true
+
 # Create partitions
 sgdisk -Z "$BLOCK_DEV"
 sgdisk -n 1:1M:+8G -t 1:8200 -c 1:swap "$BLOCK_DEV"
@@ -54,6 +57,10 @@ mkdir -p /mnt/boot
 mount "${BLOCK_DEV}2" /mnt/boot
 mkdir -p /mnt/home
 mount "${BLOCK_DEV}4" /mnt/home
+
+# Configure mirrors
+pacman -Sy --noconfirm reflector
+reflector --country "$COUNTRY_MIRROR" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 
 # Install system
 pacstrap /mnt base base-devel linux linux-firmware
