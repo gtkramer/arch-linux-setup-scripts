@@ -39,6 +39,3 @@ if ! grep -Pq '^HOOKS=.*resume' /etc/mkinitcpio.conf; then
 	sed -i 's/^HOOKS=.*$/HOOKS=(base systemd autodetect modconf block filesystems keyboard fsck)/' mkinitcpio.conf
 	mkinitcpio -p linux
 fi
-
-# Install utilities
-pacman -Sy --noconfirm wpa_supplicant dhcpcd
