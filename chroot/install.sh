@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-CONFIGS=(firewall kernel system desktop network bluetooth touchpad)
+CONFIGS=(system package-manager ramdisk boot firewall kernel terminal desktop network bluetooth touchpad)
 for CONFIG in "${CONFIGS[@]}"; do
 	CONFIG_PATH="$SCRIPT_DIR/$CONFIG.sh"
 	if [ ! -e "$CONFIG_PATH" ]; then
