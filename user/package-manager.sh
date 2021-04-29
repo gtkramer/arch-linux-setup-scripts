@@ -2,7 +2,7 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPT_DIR/../../parameters.sh"
 
-sudo pacman -Sy --noconfirm git
+pacman -Sy --noconfirm git
 TEMP_DIR="$(mktemp -d)"
 git clone https://aur.archlinux.org/aurman.git "$TEMP_DIR"
 pushd "$TEMP_DIR"
@@ -12,7 +12,7 @@ popd
 rm -rf "$TEMP_DIR"
 
 # Configure mirrors
-pacman -Sy --noconfirm reflector
+sudo pacman -Sy --noconfirm reflector
 reflector --country "$COUNTRY_MIRROR" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 
 sudo mkdir -p /etc/pacman.d/hooks
