@@ -30,7 +30,7 @@ sudo pacman -Sy --noconfirm gnome-tweaks
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code tresorit spotify yubi unifi)
+PACKAGES=(vim git visual-studio-code tresorit spotify)
 for PACKAGE in "${PACKAGES[@]}"; do
 	PACKAGE_PATH="$SCRIPT_DIR/$PACKAGE.sh"
 	if [ ! -e "$PACKAGE_PATH" ]; then
