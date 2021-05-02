@@ -17,7 +17,7 @@
 
 ## UPDATE BIOS/UEFI FIRMWARE
 # Download bootable update CD
-aurman -Sy --noconfirm --noedit geteltorito
+aurman -Syu --noconfirm --noedit geteltorito
 sudo usermod -a -G optical "$USER"
 geteltorito.pl -o bios.img gjuj28us.iso
 # Find name of USB device

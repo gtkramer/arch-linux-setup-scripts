@@ -4,7 +4,7 @@
 sudo pacman -Sy --noconfirm firefox chrome-gnome-shell
 
 # Development
-aurman -Sy --noconfirm --noedit dotnet-sdk hugo shellcheck
+aurman -Syu --noconfirm --noedit dotnet-sdk hugo shellcheck
 
 ## EDIT
 # Pictures
@@ -23,7 +23,7 @@ sudo pacman -Sy --noconfirm gstreamer gstreamer-vaapi libva-intel-driver gst-plu
 sudo pacman -Sy --noconfirm dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
-aurman -Sy --noconfirm --noedit hardinfo-git dconf-editor man-db
+aurman -Syu --noconfirm --noedit hardinfo-git dconf-editor man-db
 
 # Accessories
 sudo pacman -Sy --noconfirm gnome-tweaks
