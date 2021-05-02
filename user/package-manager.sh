@@ -1,8 +1,8 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPT_DIR/../../parameters.sh"
+source "$SCRIPT_DIR/../parameters.sh"
 
-pacman -Sy --noconfirm git
+sudo pacman -Sy --noconfirm git
 TEMP_DIR="$(mktemp -d)"
 git clone https://aur.archlinux.org/aurman.git "$TEMP_DIR"
 pushd "$TEMP_DIR"
