@@ -8,8 +8,8 @@ sed '/^\[Settings\]/d' "$SCRIPT_DIR/settings.ini" | sudo tee /etc/gtk-2.0/gtkrc
 # Configure themes and fonts for GNOME desktop
 gsettings set org.gnome.desktop.interface cursor-size 16
 
-gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Sans Bold 10'
-gsettings set org.gnome.desktop.interface font-name 'Sans 10'
+gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Sans Bold 10.5'
+gsettings set org.gnome.desktop.interface font-name 'Sans 10.5'
 gsettings set org.gnome.desktop.interface document-font-name 'Serif 11'
 gsettings set org.gnome.desktop.interface monospace-font-name 'Monospace 11'
 
