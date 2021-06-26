@@ -1,7 +1,7 @@
 #!/bin/bash
 ## PRODUCTIVITY
 # Internet
-sudo pacman -Sy --noconfirm firefox chrome-gnome-shell
+aurman -Syu --noconfirm --noedit firefox chrome-gnome-shell
 
 # Development
 aurman -Syu --noconfirm --noedit dotnet-sdk hugo shellcheck
