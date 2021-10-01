@@ -9,6 +9,9 @@ aurman -Syu --noconfirm --noedit dotnet-sdk hugo shellcheck
 # Messaging
 sudo pacman -Sy --noconfirm signal-desktop
 
+# Security
+aurman -Syu --noconfirm --noedit protonvpn-gui
+
 ## EDIT
 # Pictures
 sudo pacman -Sy --noconfirm gimp hugin gimp-nufraw
