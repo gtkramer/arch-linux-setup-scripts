@@ -5,6 +5,7 @@ source "$SCRIPT_DIR/../parameters.sh"
 # Set time
 timedatectl set-timezone "$TIMEZONE"
 timedatectl set-ntp true
+timedatectl set-local-rtc 0
 
 # Set language and keyboard
 sed -i "s/^#$LOCALE/$LOCALE/" /etc/locale.gen
