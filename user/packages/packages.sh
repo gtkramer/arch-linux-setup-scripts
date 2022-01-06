@@ -14,7 +14,7 @@ aurman -Syu --noconfirm --noedit protonvpn-gui
 
 ## EDIT
 # Pictures
-sudo pacman -Sy --noconfirm gimp hugin gimp-nufraw
+sudo pacman -Sy --noconfirm pinta hugin dcraw
 
 # Videos
 sudo pacman -Sy --noconfirm handbrake
