@@ -13,7 +13,7 @@ rm -rf "$TEMP_DIR"
 
 # Configure mirrors
 sudo pacman -Sy --noconfirm reflector
-reflector --country "$COUNTRY_MIRROR" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
+sudo reflector --country "$COUNTRY_MIRROR" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 
 sudo mkdir -p /etc/pacman.d/hooks
 sudo tee /etc/pacman.d/hooks/mirrorupgrade.hook > /dev/null <<- EOF
