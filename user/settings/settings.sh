@@ -3,7 +3,6 @@ SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
 # Configure themes and fonts for GTK+ applications independent from GNOME desktop
 sudo cp -f "$SCRIPT_DIR/settings.ini" /etc/gtk-3.0
-sed '/^\[Settings\]/d' "$SCRIPT_DIR/settings.ini" | sudo tee /etc/gtk-2.0/gtkrc
 
 # Configure themes and fonts for GNOME desktop
 gsettings set org.gnome.desktop.interface cursor-size 16
