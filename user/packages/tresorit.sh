@@ -2,6 +2,7 @@
 # Uninstall
 killall tresorit
 killall tresorit-daemon
+sudo pacman -Sy --noconfirm xcb-util-wm xcb-util-image xcb-util-keysyms xcb-util-renderutil
 rm -rf "$HOME"/.local/share/tresorit
 # Install
 TEMP_DIR="$(mktemp -d)"
