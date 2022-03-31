@@ -62,23 +62,33 @@ Reboot and follow the instructions for installation and post installation.
 
 ## Installation
 
-Boot into the live environment and then use the following commands.
+Boot into the live environment and then use the following commands to create a bootable system.
 
 ```
-mount /dev/sdX /root/files
-cd /root/files/boot
+cd ~
+mkdir files
+mount /dev/sdX files
+cd files/boot
 ./install.sh
 cd ~
-umount /root/files
+umount files
 arch-chroot /mnt
 mount /dev/sdX /mnt
 cd /mnt/boot
 ./bootstrap.sh
-cd ../chroot
-./install.sh
+reboot
 ```
 
-Exit out of the chroot environment and reboot the machine.  Upon logging into the desktop, execute the desired scripts from the user folder.
+Log in as root.  Use the following commands to minimally configure the system and add a GUI desktop.
+
+```
+mount /dev/sdX /mnt
+cd /mnt/chroot
+./install.sh
+reboot
+```
+
+Upon logging into the desktop, execute the desired scripts from the user folder.
 
 ## Post Installation
 

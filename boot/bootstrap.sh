@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+source "$SCRIPT_DIR/../parameters.sh"
 
 display_help() {
 	local script_name
@@ -43,3 +45,15 @@ if ! grep -Pq '^HOOKS=.*resume' /etc/mkinitcpio.conf; then
 	exit 1
 fi
 mkinitcpio -p linux
+
+# Create users and set passwords
+echo "Set password for root"
+passwd root
+
+mkdir -p /etc/sudoers.d
+echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
+useradd -m -G wheel -c "$DISPLAY_NAME" "$USERNAME"
+echo "Set password for $USERNAME"
+passwd "$USERNAME"
+pacman -Sy --noconfirm networkmanager
+systemctl enable NetworkManager
