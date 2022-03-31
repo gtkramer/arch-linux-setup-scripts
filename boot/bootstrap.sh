@@ -36,14 +36,10 @@ pacman -Sy --noconfirm efibootmgr
 efibootmgr | sed -nr 's/^Boot([[:digit:]]+).*Linux$/\1/p' | while read -r BOOT_NUM; do
 	efibootmgr -b "$BOOT_NUM" -B
 done
-efibootmgr -c -d "$BLOCK_DEV" -p 2 -L 'Arch Linux' -l /vmlinuz-linux -u 'root=/dev/disk/by-partlabel/root resume=/dev/disk/by-partlabel/swap rw initrd=/initramfs-linux.img quiet'
-if ! grep -Pq '^HOOKS=.*resume' /etc/mkinitcpio.conf; then
-	sed -r -i 's/fsck\)$/resume fsck\)/' /etc/mkinitcpio.conf
-fi
-if ! grep -Pq '^HOOKS=.*resume' /etc/mkinitcpio.conf; then
-	echo "Did not add resume hook to initramfs!" >&2
-	exit 1
-fi
+efibootmgr -c -d "$BLOCK_DEV" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=root:root root=/dev/mapper/root rw initrd=/initramfs-linux.img quiet'
+
+sed -r -i 's/autodetect /autodetect keyboard keymap /' /etc/mkinitcpio.conf
+sed -r -i 's/block /block encrypt /' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # Create users and set passwords
@@ -55,5 +51,7 @@ echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
 useradd -m -G wheel -c "$DISPLAY_NAME" "$USERNAME"
 echo "Set password for $USERNAME"
 passwd "$USERNAME"
+
+# Enable network to come up automatically
 pacman -Sy --noconfirm networkmanager
 systemctl enable NetworkManager

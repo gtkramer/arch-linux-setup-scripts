@@ -13,7 +13,6 @@ The file and folder structure of the repository is a template of sorts that othe
 ## Assumptions
 
 * A wired internet connection is available and used for the entire process
-* An OPAL self-encrypting drive is being used to support hardware-level encryption
 
 ## Preparation
 
