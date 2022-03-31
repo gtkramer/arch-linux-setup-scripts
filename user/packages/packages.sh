@@ -21,15 +21,14 @@ sudo pacman -Sy --noconfirm handbrake
 
 ## VIEW AND PLAY
 # Frameworks
-# Switch to intel-media-driver from libva-intel-driver after getting a current Intel CPU
-sudo pacman -Sy --noconfirm gstreamer gstreamer-vaapi libva-intel-driver gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+sudo pacman -Sy --noconfirm gstreamer gstreamer-vaapi intel-media-driver gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
 
 ## SYSTEM TOOLS
 # Disk Management
 sudo pacman -Sy --noconfirm dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
-aurman -Syu --noconfirm --noedit hardinfo-git dconf-editor man-db
+aurman -Syu --noconfirm --noedit hardinfo-git dconf-editor man-db dmidecode
 
 # Accessories
 sudo pacman -Sy --noconfirm gnome-tweaks
