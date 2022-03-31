@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
-sudo pacman -Sy --noconfirm $(sudo pacman -Ssq adobe-source-.*-fonts) otf-cascadia-code
+sudo pacman -Sy --noconfirm otf-cascadia-code
 aurman -Syu --noconfirm --noedit ttf-ms-fonts
 sudo find "$HOME/Documents/Fonts/TTF" -iname '*.ttf' -exec cp {} /usr/share/fonts/TTF/ \;
 
