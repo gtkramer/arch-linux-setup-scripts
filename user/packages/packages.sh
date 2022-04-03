@@ -17,11 +17,11 @@ aurman -Syu --noconfirm --noedit protonvpn-gui
 sudo pacman -Sy --noconfirm pinta hugin dcraw
 
 # Videos
-sudo pacman -Sy --noconfirm handbrake
+sudo pacman -Sy --noconfirm handbrake mediainfo-gui
 
 ## VIEW AND PLAY
 # Frameworks
-sudo pacman -Sy --noconfirm gstreamer gstreamer-vaapi intel-media-driver gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+sudo pacman -Sy --noconfirm gstreamer gstreamer-vaapi intel-media-driver gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav ffmpegthumbnailer
 
 ## SYSTEM TOOLS
 # Disk Management
