@@ -45,7 +45,7 @@ sgdisk -Z "$BLOCK_DEV"
 sgdisk -n 1:1M:+128M -t 1:ef00 -c 1:boot "$BLOCK_DEV"
 sgdisk -n 2:0:0 -t 2:8304 -c 2:root "$BLOCK_DEV"
 if ! sgdisk -v "$BLOCK_DEV"; then
-	echo "Drive partitions failed verification for ${BLOCK_DEV}!" >&2
+	echo "Drive partitions failed verification for ${BLOCK_DEV}" >&2
 	exit 1
 fi
 
