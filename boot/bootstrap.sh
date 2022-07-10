@@ -5,29 +5,35 @@ source "$SCRIPT_DIR/../parameters.sh"
 display_help() {
 	local script_name
 	script_name="$(basename "$0")"
-	echo "Usage: $script_name -b <block device>"
+	echo "Usage: $script_name -b|--block <block device>"
 }
 
-while getopts 'b:h' OPT; do
-	case "$OPT" in
-		b)
-			BLOCK_DEV="$OPTARG"
-			;;
-		h)
-			display_help
-			exit 0
-			;;
-		*)
-			echo 'Unrecognized option!' >&2
-			display_help
-			exit 1
-			;;
-	esac
+PARAMS="$(getopt -o b:h -l block:,help --name "$0" -- "$@")"
+eval set -- "$PARAMS"
+
+while true; do
+    case "$1" in
+        -b|--block)
+            BLOCK_DEV="$2"
+            shift 2
+            ;;
+        -h|--help)
+            display_help
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            display_help >&2
+            exit 1
+            ;;
+    esac
 done
 
 if [ -z "$BLOCK_DEV" ]; then
-	echo 'Parameter -b is required!' >&2
-	display_help
+	echo 'Parameter -b|--block is required' >&2
 	exit 1
 fi
 
