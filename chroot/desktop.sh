@@ -1,12 +1,9 @@
 #!/bin/bash
 # Video capabilities
-pacman -Sy --noconfirm xorg-server mesa
-
-# Input capabilities
-pacman -Sy --noconfirm xf86-input-libinput
+pacman -Sy --noconfirm nvidia nvidia-utils xdg-desktop-portal xdg-desktop-portal-gnome
 
 # Audio capabilities
-pacman -Sy --noconfirm pulseaudio pulseaudio-alsa
+pacman -Sy --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack
 
 # Desktop environment
 pacman -Sy --noconfirm gnome
