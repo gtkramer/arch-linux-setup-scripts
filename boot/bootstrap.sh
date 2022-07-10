@@ -36,7 +36,7 @@ pacman -Sy --noconfirm efibootmgr
 efibootmgr | sed -nr 's/^Boot([[:digit:]]+).*Linux$/\1/p' | while read -r BOOT_NUM; do
 	efibootmgr -b "$BOOT_NUM" -B
 done
-efibootmgr -c -d "$BLOCK_DEV" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=root:root root=/dev/mapper/root rw initrd=/initramfs-linux.img quiet'
+efibootmgr -c -d "$BLOCK_DEV" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=root:root root=/dev/mapper/root rw initrd=/initramfs-linux.img nvidia-drm.modeset=1 quiet'
 
 # Configure hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
