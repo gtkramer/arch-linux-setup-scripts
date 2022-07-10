@@ -1,4 +1,3 @@
-#!/bin/bash
 export USERNAME=george
 export DISPLAY_NAME='George Kramer'
 export GIT_NAME="${DISPLAY_NAME}"
