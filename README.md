@@ -6,7 +6,8 @@ Given the decision was made to not support a GUI installer for a long time, Arch
 * Developing in C#
 * Using general image, video, document, and messaging productivity tools
 * Using programs that support a security orientation
-* Using a discrete GPU to support graphically-intense workflows
+* Using a discrete NVIDIA GPU to support graphically-intense workflows
+* Using an ASUS motherboard
 
 The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying parameters.sh and then modify other files from there.
 
@@ -17,24 +18,25 @@ The file and folder structure of the repository is a template of sorts that othe
 ## Process Overview
 
 1. Back up files
-1. Prepare USB automation drive
+1. Prepare USB automation drive and UEFI firmware
 1. Prepare USB installer drive
 1. Reboot
-1. Update BIOS/UEFI firmware
+1. Update UEFI firmware
 1. Installation
 1. Post installation
 
 Two separate USB drives are needed to support the installation process.
 
-### Prepare USB Automation Drive
+### Prepare USB Automation Drive and UEFI firmware
 
 Run the following commands on one USB drive.
 
 ```
 sudo sgdisk -Z /dev/sdX
-sgdisk -n 1:0:0 -t 1:8302 -c 1:files /dev/sdX
-mkfs.ext4 -F /dev/sdX
-cp -r arch-linux-setup-scripts <mounted /dev/sdX>
+sudo sgdisk -n 1:1M:+4G -t 1:8302 -c 1:files /dev/sdX
+mkfs.fat -F32 /dev/sdXN
+cp -rf arch-linux-setup-scripts <mounted /dev/sdXN>
+cp -f *.cap <mounted /dev/sdXN>
 ```
 
 ### Prepare USB Installer Drive
@@ -42,9 +44,13 @@ cp -r arch-linux-setup-scripts <mounted /dev/sdX>
 Download the Arch Linux installer ISO image and then use the following commands on the other USB drive.
 
 ```
-sudo sgdisk -Z /dev/sdX
-sudo dd if=archlinux-2016.10.01-dual.iso of=/dev/sdX bs=1M
+sudo sgdisk -Z /dev/sdY
+sudo dd if=archlinux-2016.10.01-dual.iso of=/dev/sdY bs=1M
 ```
+
+### Update UEFI Firmware
+
+Within the ASUS UEFI menus, browse to the USB automation drive with the new firmware file to perform the update.  This may only be done from a FAT32 filesystem.
 
 ## Installation
 
