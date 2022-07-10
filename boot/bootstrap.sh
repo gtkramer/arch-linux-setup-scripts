@@ -38,8 +38,9 @@ efibootmgr | sed -nr 's/^Boot([[:digit:]]+).*Linux$/\1/p' | while read -r BOOT_N
 done
 efibootmgr -c -d "$BLOCK_DEV" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=root:root root=/dev/mapper/root rw initrd=/initramfs-linux.img quiet'
 
-sed -r -i 's/autodetect /autodetect keyboard keymap /' /etc/mkinitcpio.conf
-sed -r -i 's/block /block encrypt /' /etc/mkinitcpio.conf
+# Configure hooks
+sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
+echo 'HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # Create users and set passwords
