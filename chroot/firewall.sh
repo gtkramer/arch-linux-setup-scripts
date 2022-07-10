@@ -1,4 +1,7 @@
 #!/bin/bash
+SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+source "${SCRIPT_DIR}/../parameters.sh"
+
 ## APPLY FIREWALL RULES
 # Remove existing rules
 iptables -F

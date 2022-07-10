@@ -43,9 +43,9 @@ aurman -Syu archlinux-artwork
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 PACKAGES=(vim git visual-studio-code tresorit spotify)
 for PACKAGE in "${PACKAGES[@]}"; do
-	PACKAGE_PATH="$SCRIPT_DIR/$PACKAGE.sh"
-	if [ ! -e "$PACKAGE_PATH" ]; then
-		PACKAGE_PATH="$SCRIPT_DIR/$PACKAGE/$PACKAGE.sh"
+	PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
+	if [ ! -e "${PACKAGE_PATH}" ]; then
+		PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}/${PACKAGE}.sh"
 	fi
-	"$PACKAGE_PATH"
+	"${PACKAGE_PATH}"
 done
