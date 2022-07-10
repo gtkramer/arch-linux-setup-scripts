@@ -1,3 +1,3 @@
 #!/bin/bash
-gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 8FD3D9A8D3800305A9FFF259D1742AD60D811D58
+curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | gpg --import -
 aurman -Syu --noconfirm --noedit spotify
