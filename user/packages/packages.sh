@@ -4,16 +4,16 @@ source "${SCRIPT_DIR}/../../parameters.sh"
 
 ## PRODUCTIVITY
 # Internet
-aurman -Syu --noconfirm --noedit firefox chrome-gnome-shell
+${AURMAN_INSTALL} firefox chrome-gnome-shell
 
 # Development
-aurman -Syu --noconfirm --noedit dotnet-sdk hugo shellcheck
+${AURMAN_INSTALL} dotnet-sdk hugo shellcheck
 
 # Messaging
 sudo ${PACMAN_INSTALL} signal-desktop
 
 # Security
-aurman -Syu --noconfirm --noedit protonvpn-gui protonvpn-cli
+${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
 
 ## EDIT
 # Pictures
@@ -31,7 +31,7 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
-aurman -Syu --noconfirm --noedit hardinfo-git dconf-editor man-db dmidecode
+${AURMAN_INSTALL} hardinfo-git dconf-editor man-db dmidecode
 
 # Accessories
 sudo ${PACMAN_INSTALL} gnome-tweaks
