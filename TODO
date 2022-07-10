@@ -1,0 +1,12 @@
+https://wiki.archlinux.org/title/XDG_Base_Directory
+Add variable for pacman and aurman commands
+Parameterize setup configuration better (RAM/swap, calculate size on fly based on parameter)
+Power configuration strategy
+diagnose network speeds/downgrade ziply fiber to 200/200
+ps1 terminal colors not correct for george, but are for root
+swap file
+Hibernate with encryption
+Add keyboard hook earlier
+Restoration of settings
+Wayland configurations for applications
+Work through display scaling issues
