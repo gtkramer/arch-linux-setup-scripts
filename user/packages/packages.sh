@@ -10,18 +10,18 @@ aurman -Syu --noconfirm --noedit dotnet-sdk hugo shellcheck
 sudo pacman -Sy --noconfirm signal-desktop
 
 # Security
-aurman -Syu --noconfirm --noedit protonvpn-gui
+aurman -Syu --noconfirm --noedit protonvpn-gui protonvpn-cli
 
 ## EDIT
 # Pictures
-sudo pacman -Sy --noconfirm pinta hugin dcraw
+sudo pacman -Sy --noconfirm pinta hugin dcraw qcad
 
 # Videos
 sudo pacman -Sy --noconfirm handbrake mediainfo-gui
 
 ## VIEW AND PLAY
 # Frameworks
-sudo pacman -Sy --noconfirm gstreamer gstreamer-vaapi intel-media-driver gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav ffmpegthumbnailer
+sudo pacman -Sy --noconfirm gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
 ## SYSTEM TOOLS
 # Disk Management
@@ -32,6 +32,9 @@ aurman -Syu --noconfirm --noedit hardinfo-git dconf-editor man-db dmidecode
 
 # Accessories
 sudo pacman -Sy --noconfirm gnome-tweaks
+
+## OTHER
+aurman -Syu archlinux-artwork
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
