@@ -36,7 +36,7 @@ sudo sgdisk -Z /dev/sdX
 sudo sgdisk -n 1:1M:+4G -t 1:8302 -c 1:files /dev/sdX
 mkfs.fat -F32 /dev/sdXN
 cp -rf arch-linux-setup-scripts <mounted /dev/sdXN>
-cp -f *.cap <mounted /dev/sdXN>
+cp -f *.CAP <mounted /dev/sdXN>
 ```
 
 ### Prepare USB Installer Drive
