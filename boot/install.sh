@@ -67,7 +67,7 @@ mkdir -p /mnt/boot
 mount "${DEV_BOOT}" /mnt/boot
 
 # Configure mirrors
-pacman -Sy --noconfirm reflector
+${PACMAN_INSTALL} reflector
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 
 # Install system

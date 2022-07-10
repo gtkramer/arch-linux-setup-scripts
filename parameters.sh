@@ -9,5 +9,5 @@ export HOSTNAME=tufh670pro
 export LOCALE=en_US.UTF-8
 export KEYMAP=us
 export COUNTRY_MIRROR='United States'
-export PACMAN='pacman -Syu --noconfirm'
-export AURMAN='aurman -Syu --noconfirm --noedit'
+export PACMAN_INSTALL='pacman -Syu --noconfirm'
+export AURMAN_INSTALL='aurman -Syu --noconfirm --noedit'

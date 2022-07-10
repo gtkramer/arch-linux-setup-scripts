@@ -1,13 +1,16 @@
 #!/bin/bash
+SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+source "${SCRIPT_DIR}/../parameters.sh"
+
 # Video capabilities
-pacman -Sy --noconfirm nvidia nvidia-utils xdg-desktop-portal xdg-desktop-portal-gnome
+${PACMAN_INSTALL} nvidia nvidia-utils xdg-desktop-portal xdg-desktop-portal-gnome
 
 # Audio capabilities
-pacman -Sy --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack
+${PACMAN_INSTALL} pipewire pipewire-alsa pipewire-pulse pipewire-jack
 
 # Desktop environment
-pacman -Sy --noconfirm gnome
+${PACMAN_INSTALL} gnome
 
 # Display manager
-pacman -Sy --noconfirm gdm
+${PACMAN_INSTALL} gdm
 systemctl enable gdm

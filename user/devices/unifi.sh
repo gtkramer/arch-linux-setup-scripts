@@ -1,5 +1,8 @@
 #!/bin/bash
-sudo pacman -Sy --noconfirm docker
+SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+source "${SCRIPT_DIR}/../../parameters.sh"
+
+sudo ${PACMAN_INSTALL} docker
 sudo systemctl enable docker
 sudo mkdir -p /etc/unifi-controller
 sudo docker create \

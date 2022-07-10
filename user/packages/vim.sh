@@ -1,5 +1,8 @@
 #!/bin/bash
-sudo pacman -Sy --noconfirm vim
+SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+source "${SCRIPT_DIR}/../../parameters.sh"
+
+sudo ${PACMAN_INSTALL} vim
 if ! grep -Pq '^set spell$' /etc/vimrc; then
 	echo 'set spell' | sudo tee -a /etc/vimrc > /dev/null
 fi
