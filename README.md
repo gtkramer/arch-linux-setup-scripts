@@ -68,6 +68,7 @@ arch-chroot /mnt
 mount /dev/sdX /mnt
 cd /mnt/boot
 ./bootstrap.sh
+exit
 reboot
 ```
 
