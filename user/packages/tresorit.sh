@@ -5,8 +5,8 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 source "${SCRIPT_DIR}/../../parameters.sh"
 
 # Uninstall
-killall tresorit
-killall tresorit-daemon
+killall tresorit || true
+killall tresorit-daemon || true
 sudo ${PACMAN_INSTALL} xcb-util-wm xcb-util-image xcb-util-keysyms xcb-util-renderutil
 rm -rf "${HOME}"/.local/share/tresorit
 # Install
