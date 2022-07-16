@@ -7,8 +7,3 @@ source "${SCRIPT_DIR}/../../../parameters.sh"
 ${AURMAN_INSTALL} visual-studio-code-bin
 sudo cp -f "${SCRIPT_DIR}/98-visual-studio-code.conf" /usr/share/fontconfig/conf.avail
 sudo ln -sf /usr/share/fontconfig/conf.avail/98-visual-studio-code.conf /etc/fonts/conf.d
-
-cat > "${HOME}/.config/code-flags.conf" <<EOF
---enable-features=UseOzonePlatform
---ozone-platform=wayland
-EOF
