@@ -30,3 +30,5 @@ When = PostTransaction
 Depends = reflector
 Exec = /usr/bin/reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 EOF
+
+echo "MAKEFLAGS=\"-j$(nproc)\"" | sudo tee -a /etc/makepkg.conf > /dev/null
