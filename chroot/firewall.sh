@@ -8,8 +8,10 @@ source "${SCRIPT_DIR}/../parameters.sh"
 # Remove existing rules
 iptables -F
 iptables -X
+iptables -Z
 iptables -t nat -F
 iptables -t nat -X
+iptables -t nat -Z
 
 # Set default actions
 iptables -P INPUT DROP
