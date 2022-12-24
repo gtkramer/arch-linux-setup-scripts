@@ -6,4 +6,5 @@ source "${SCRIPT_DIR}/../parameters.sh"
 
 sudo cp "${HOME}/.config/monitors.xml" ~gdm/.config/monitors.xml
 sudo chown gdm:gdm ~gdm/.config/monitors.xml
-sudo -u gdm dbus-launch gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+
+sed 's/^[# ]*WaylandEnable.*$/WaylandEnable=false/' /etc/gdm/custom.conf
