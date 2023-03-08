@@ -9,7 +9,7 @@ source "${SCRIPT_DIR}/../../parameters.sh"
 ${AURMAN_INSTALL} firefox chrome-gnome-shell
 
 # Development
-${AURMAN_INSTALL} dotnet-sdk hugo shellcheck
+${AURMAN_INSTALL} dotnet-sdk hugo shellcheck clang cppcheck include-what-you-use
 
 # Messaging
 sudo ${PACMAN_INSTALL} signal-desktop
@@ -25,6 +25,9 @@ sudo ${PACMAN_INSTALL} pinta hugin dcraw qcad
 sudo ${PACMAN_INSTALL} handbrake mediainfo-gui
 
 ## VIEW AND PLAY
+# Players
+sudo ${PACMAN_INSTALL} celluloid
+
 # Frameworks
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
@@ -33,17 +36,17 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
-${AURMAN_INSTALL} hardinfo-git dconf-editor man-db dmidecode
+${AURMAN_INSTALL} hardinfo-git dconf-editor man-db dmidecode blackbox-terminal
 
 # Accessories
 sudo ${PACMAN_INSTALL} gnome-tweaks
 
 ## OTHER
-aurman -Syu archlinux-artwork
+aurman -Syu archlinux-artwork yt-dlp
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code tresorit spotify)
+PACKAGES=(vim git visual-studio-code tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
 	PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
 	if [ ! -e "${PACKAGE_PATH}" ]; then
@@ -51,3 +54,5 @@ for PACKAGE in "${PACKAGES[@]}"; do
 	fi
 	"${PACKAGE_PATH}"
 done
+
+sudo pacman -Rns gnome-console
