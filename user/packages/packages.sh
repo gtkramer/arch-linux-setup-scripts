@@ -39,7 +39,7 @@ sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 ${AURMAN_INSTALL} hardinfo-git dconf-editor man-db dmidecode blackbox-terminal
 
 # Accessories
-sudo ${PACMAN_INSTALL} gnome-tweaks
+sudo ${PACMAN_INSTALL} gnome-tweaks p7zip
 
 ## OTHER
 aurman -Syu archlinux-artwork yt-dlp
