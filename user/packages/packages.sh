@@ -6,10 +6,10 @@ source "${SCRIPT_DIR}/../../parameters.sh"
 
 ## PRODUCTIVITY
 # Internet
-${AURMAN_INSTALL} firefox chrome-gnome-shell
+${AURMAN_INSTALL} firefox thunderbird
 
 # Development
-${AURMAN_INSTALL} dotnet-sdk hugo shellcheck clang cppcheck include-what-you-use
+${AURMAN_INSTALL} dotnet-sdk hugo shellcheck
 
 # Messaging
 sudo ${PACMAN_INSTALL} signal-desktop
@@ -26,7 +26,7 @@ sudo ${PACMAN_INSTALL} handbrake mediainfo-gui
 
 ## VIEW AND PLAY
 # Players
-sudo ${PACMAN_INSTALL} celluloid
+${AURMAN_INSTALL} haruna
 
 # Frameworks
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
@@ -36,13 +36,13 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
-${AURMAN_INSTALL} hardinfo-git dconf-editor man-db dmidecode blackbox-terminal
+${AURMAN_INSTALL} man-db dmidecode
 
 # Accessories
-sudo ${PACMAN_INSTALL} gnome-tweaks p7zip
+sudo ${PACMAN_INSTALL} p7zip
 
 ## OTHER
-aurman -Syu archlinux-artwork yt-dlp
+${AURMAN_INSTALL} archlinux-artwork yt-dlp
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
@@ -54,5 +54,3 @@ for PACKAGE in "${PACKAGES[@]}"; do
 	fi
 	"${PACKAGE_PATH}"
 done
-
-sudo pacman -Rns gnome-console
