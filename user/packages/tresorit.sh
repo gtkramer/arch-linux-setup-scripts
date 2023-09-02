@@ -4,10 +4,12 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 source "${SCRIPT_DIR}/../../parameters.sh"
 
+
+
 # Uninstall
 killall tresorit || true
 killall tresorit-daemon || true
-sudo ${PACMAN_INSTALL} xcb-util-wm xcb-util-image xcb-util-keysyms xcb-util-renderutil
+sudo ${PACMAN_INSTALL} fuse2 xcb-util-wm xcb-util-image xcb-util-keysyms xcb-util-renderutil
 rm -rf "${HOME}"/.local/share/tresorit
 # Install
 TEMP_DIR="$(mktemp -d)"
