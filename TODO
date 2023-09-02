@@ -1,8 +1,0 @@
-Parameterize setup configuration better (RAM/swap, calculate size on fly based on parameter)
-Power configuration strategy
-swap file
-Hibernate with encryption
-Add keyboard hook earlier
-Restoration of settings
-Fix network printer add
-Switch back to PulseAudio for better Bluetooth support
