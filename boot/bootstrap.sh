@@ -51,12 +51,23 @@ sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
 echo 'HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
+# Set up passwordless authentication based on group membership
+mkdir -p /etc/sudoers.d
+echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
+
+mkdir -p /etc/polkit-1/rules.d
+cat > /etc/polkit-1/rules.d/49-nopasswd_global.rules <<-EOF
+polkit.addRule(function(action, subject) {
+    if (subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
+EOF
+
 # Create users and set passwords
 echo "Set password for root"
 passwd root
 
-mkdir -p /etc/sudoers.d
-echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
 useradd -m -G wheel -c "${DISPLAY_NAME}" "${USERNAME}"
 echo "Set password for ${USERNAME}"
 passwd "${USERNAME}"
