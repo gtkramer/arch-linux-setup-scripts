@@ -51,8 +51,13 @@ if ! sgdisk -v "${BLOCK_DEV}"; then
 	exit 1
 fi
 
-DEV_BOOT="${BLOCK_DEV}p1"
-DEV_ROOT="${BLOCK_DEV}p2"
+if [[ ${BLOCK_DEV} =~ ^/dev/nvme ]]; then
+    PARTITION_PREFIX=p
+else
+    unset PARTITION_PREFIX
+fi
+DEV_BOOT="${BLOCK_DEV}${PARTITION_PREFIX}1"
+DEV_ROOT="${BLOCK_DEV}${PARTITION_PREFIX}2"
 
 # Create file systems
 mkfs.fat -F32 "${DEV_BOOT}"
