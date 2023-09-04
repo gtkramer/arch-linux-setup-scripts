@@ -40,7 +40,6 @@ if [ -z "${BLOCK_DEV}" ]; then
 fi
 
 # Configure boot
-${PACMAN_INSTALL} efibootmgr
 efibootmgr | sed -nr 's/^Boot([[:digit:]]+).*Linux$/\1/p' | while read -r BOOT_NUM; do
 	efibootmgr -b "${BOOT_NUM}" -B
 done
@@ -73,5 +72,4 @@ echo "Set password for ${USERNAME}"
 passwd "${USERNAME}"
 
 # Enable network to come up automatically
-${PACMAN_INSTALL} networkmanager
 systemctl enable NetworkManager
