@@ -61,13 +61,13 @@ cd ~
 mkdir files
 mount /dev/sdX files
 cd files/boot
-./install.sh
+./install.sh -b <block device>
 cd ~
 umount files
 arch-chroot /mnt
 mount /dev/sdX /mnt
 cd /mnt/boot
-./bootstrap.sh
+./bootstrap.sh -b <block device>
 exit
 reboot
 ```
