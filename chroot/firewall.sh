@@ -6,9 +6,11 @@ source "${SCRIPT_DIR}/../parameters.sh"
 
 ${PACMAN_REMOVE} iptables
 ${PACMAN_INSTALL} ufw iptables-nft
-systemctl enable --now ufw
+systemctl enable ufw
 
-ufw reset
+ufw enable
 ufw default deny incoming
 ufw default deny forward
 ufw default allow outgoing
+
+chmod 640 /etc/ufw/*.rules
