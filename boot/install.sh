@@ -42,12 +42,13 @@ fi
 # Update system clock
 timedatectl set-ntp true
 
-# Create partitions
+# Create physical partitions
 sgdisk -Z "${BLOCK_DEV}"
 sgdisk -n 1:1M:+128M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
-sgdisk -n 2:0:0 -t 2:8304 -c 2:root "${BLOCK_DEV}"
+END_SECTOR="$(sgdisk -E "${BLOCK_DEV}")"
+sgdisk -n 2:0:$(( $END_SECTOR - ($END_SECTOR + 1) % 2048 )) -t 2:8309 -c 2:crypt "${BLOCK_DEV}"
 if ! sgdisk -v "${BLOCK_DEV}"; then
-	echo "Drive partitions failed verification for ${BLOCK_DEV}" >&2
+	echo "Physical partitions failed verification for ${BLOCK_DEV}" >&2
 	exit 1
 fi
 
@@ -57,32 +58,45 @@ else
     unset PARTITION_PREFIX
 fi
 DEV_BOOT="${BLOCK_DEV}${PARTITION_PREFIX}1"
-DEV_ROOT="${BLOCK_DEV}${PARTITION_PREFIX}2"
+DEV_CRYPT="${BLOCK_DEV}${PARTITION_PREFIX}2"
 
-# Create file systems
+# Set up boot device
 mkfs.fat -F32 "${DEV_BOOT}"
 
-cryptsetup -y -v luksFormat "${DEV_ROOT}"
-cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${DEV_ROOT}" root
-MAP_ROOT=/dev/mapper/root
-mkfs.ext4 -F "${MAP_ROOT}"
+# Set up crypt device
+cryptsetup -y -v luksFormat "${DEV_CRYPT}"
+cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${DEV_CRYPT}" crypt
+
+CRYPT_DEV=/dev/mapper/crypt
+VOL_GROUP=vg1
+VOL_DEV="/dev/${VOL_GROUP}"
+pvcreate "${CRYPT_DEV}"
+vgcreate "${VOL_GROUP}" "${CRYPT_DEV}"
+
+MEM_TOTAL="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
+lvcreate -L "${MEM_TOTAL}K" "${VOL_GROUP}" -n swap
+lvcreate -L 64G "${VOL_GROUP}" -n root
+lvcreate -l 100%FREE "${VOL_GROUP}" -n home
+
+mkfs.ext4 -F "${VOL_DEV}/root"
+mkfs.ext4 -F "${VOL_DEV}/home"
+mkswap "${VOL_DEV}/swap"
 
 # Mount file systems
 mkdir -p /mnt
-mount "${MAP_ROOT}" /mnt
+mount "${VOL_DEV}/root" /mnt
 mkdir -p /mnt/boot
 mount "${DEV_BOOT}" /mnt/boot
+mkdir -p /mnt/home
+mount "${VOL_DEV}/home" /mnt/home
+swapon "${VOL_DEV}/swap"
 
 # Configure mirrors
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 
 # Install system
-pacstrap /mnt base base-devel linux linux-firmware
+pacstrap /mnt base base-devel linux linux-firmware lvm2
 
 # Configure file systems
 FSTAB_FILE=/mnt/etc/fstab
 genfstab -L /mnt >> "${FSTAB_FILE}"
-
-sed -r -i "s_^${MAP_ROOT}(\\s+\\S+){3}_&,discard_" "${FSTAB_FILE}"
-
-sed -i "s_^${DEV_BOOT}_PARTLABEL=boot_" "${FSTAB_FILE}"

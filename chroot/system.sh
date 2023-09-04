@@ -18,3 +18,6 @@ localectl --no-convert set-x11-keymap "${KEYMAP}"
 
 # Set hostname
 hostnamectl set-hostname "${HOSTNAME}"
+
+# Enable TRIM for SSD
+systemctl enable fstrim.timer

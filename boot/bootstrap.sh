@@ -44,11 +44,11 @@ ${PACMAN_INSTALL} efibootmgr
 efibootmgr | sed -nr 's/^Boot([[:digit:]]+).*Linux$/\1/p' | while read -r BOOT_NUM; do
 	efibootmgr -b "${BOOT_NUM}" -B
 done
-efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=root:root root=/dev/mapper/root rw initrd=/initramfs-linux.img quiet'
+efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=crypt:crypt root=/dev/mapper/vg1-root resume=/dev/mapper/vg1-swap rw initrd=/initramfs-linux.img quiet'
 
 # Configure hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
-echo 'HOOKS=(base udev keyboard keymap consolefont autodetect modconf block encrypt filesystems fsck)' >> /etc/mkinitcpio.conf
+echo 'HOOKS=(base udev keyboard keymap consolefont autodetect modconf block encrypt lvm2 resume filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # Set up passwordless authentication based on group membership
