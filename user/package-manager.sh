@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 source "${SCRIPT_DIR}/../parameters.sh"
 
-sudo ${PACMAN_INSTALL} git
+sudo ${PACMAN_INSTALL} git pkgfile
 TEMP_DIR="$(mktemp -d)"
 git clone https://aur.archlinux.org/aurman.git "${TEMP_DIR}"
 pushd "${TEMP_DIR}"
