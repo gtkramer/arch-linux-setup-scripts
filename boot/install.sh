@@ -100,3 +100,5 @@ pacstrap /mnt base base-devel linux linux-firmware lvm2 efibootmgr networkmanage
 # Configure file systems
 FSTAB_FILE=/mnt/etc/fstab
 genfstab -L /mnt >> "${FSTAB_FILE}"
+
+sed -i "s_^${DEV_BOOT}_PARTLABEL=boot_" "${FSTAB_FILE}"
