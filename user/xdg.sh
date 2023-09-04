@@ -10,3 +10,9 @@ export XDG_CACHE_HOME="\${HOME}/.cache"
 export XDG_DATA_HOME="\${HOME}/.local/share"
 export XDG_STATE_HOME="\${HOME}/.local/state"
 EOF
+
+source /etc/profile.d/xdg.sh
+mkdir -p "${XDG_CONFIG_HOME}"
+mkdir -p "${XDG_CACHE_HOME}"
+mkdir -p "${XDG_DATA_HOME}"
+mkdir -p "${XDG_STATE_HOME}"
