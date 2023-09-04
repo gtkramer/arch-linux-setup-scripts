@@ -46,7 +46,7 @@ ${AURMAN_INSTALL} archlinux-artwork yt-dlp
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code tresorit)
+PACKAGES=(vim git visual-studio-code dotnet tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
 	PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
 	if [ ! -e "${PACKAGE_PATH}" ]; then
