@@ -6,10 +6,10 @@ source "${SCRIPT_DIR}/../../parameters.sh"
 
 sudo ${PACMAN_INSTALL} vim
 
-if ! grep -Pq '^set spell$' /etc/vimrc; then
-	echo 'set spell' | sudo tee -a /etc/vimrc > /dev/null
+if ! grep -Pq '^set spell$' "${HOME}/.vimrc"; then
+	echo 'set spell' >> "${HOME}/.vimrc"
 fi
 
 if ! grep -Pq ' VISUAL=' "${HOME}/.bash_profile"; then
-	echo "export VISUAL=vim" >> "${HOME}/.bash_profile"
+	echo 'export VISUAL=vim' >> "${HOME}/.bash_profile"
 fi
