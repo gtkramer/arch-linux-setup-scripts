@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 source "${SCRIPT_DIR}/../parameters.sh"
 
-${PACMAN_INSTALL} powerline powerline-fonts vte-common
+sudo ${PACMAN_INSTALL} powerline powerline-fonts vte-common
 
 if ! grep -q powerline-daemon "${HOME}/.bashrc"; then
 	cat >> "${HOME}/.bashrc" << EOF
