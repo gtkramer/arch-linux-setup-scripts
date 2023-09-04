@@ -6,10 +6,10 @@ source "${SCRIPT_DIR}/../../parameters.sh"
 
 ## PRODUCTIVITY
 # Internet
-${AURMAN_INSTALL} firefox thunderbird
+sudo ${PACMAN_INSTALL} firefox thunderbird
 
 # Development
-${AURMAN_INSTALL} dotnet-sdk hugo shellcheck
+sudo ${PACMAN_INSTALL} hugo
 
 # Messaging
 sudo ${PACMAN_INSTALL} signal-desktop
@@ -26,7 +26,7 @@ sudo ${PACMAN_INSTALL} handbrake mediainfo-gui
 
 ## VIEW AND PLAY
 # Players
-${AURMAN_INSTALL} haruna
+sudo ${PACMAN_INSTALL} haruna
 
 # Frameworks
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
@@ -36,7 +36,7 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
-${AURMAN_INSTALL} man-db dmidecode
+sudo ${PACMAN_INSTALL} man-db dmidecode
 
 # Accessories
 sudo ${PACMAN_INSTALL} p7zip
@@ -50,7 +50,7 @@ PACKAGES=(vim git visual-studio-code tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
 	PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
 	if [ ! -e "${PACKAGE_PATH}" ]; then
-		PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}/${PACKAGE}.sh"
+		PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}/install.sh"
 	fi
 	"${PACKAGE_PATH}"
 done
