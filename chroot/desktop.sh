@@ -5,7 +5,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 source "${SCRIPT_DIR}/../parameters.sh"
 
 # Video capabilities
-${PACMAN_INSTALL} xorg-server xorg-xwininfo nvidia nvidia-utils
+${PACMAN_INSTALL} xorg-server nvidia nvidia-utils
 systemctl enable nvidia-{hibernate,suspend,resume}
 cat >> /etc/modprobe.d/nvidia.conf <<EOF
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
@@ -16,5 +16,5 @@ EOF
 ${PACMAN_INSTALL} pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 
 # Desktop environment
-${PACMAN_INSTALL} plasma-meta phonon-backend-vlc konsole dolphin kdialog kdegraphics-thumbnailers ffmpegthumbs
+${PACMAN_INSTALL} plasma-meta phonon-qt5-vlc konsole dolphin kdialog
 systemctl enable sddm

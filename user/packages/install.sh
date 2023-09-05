@@ -25,15 +25,15 @@ sudo ${PACMAN_INSTALL} pinta hugin dcraw qcad
 sudo ${PACMAN_INSTALL} handbrake mediainfo-gui
 
 ## VIEW AND PLAY
-# Players
+# Audio and Video
 sudo ${PACMAN_INSTALL} vlc
 
-# Frameworks
-sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+# Pictures
+sudo ${PACMAN_INSTALL} kdegraphics-thumbnailers ffmpegthumbs
 
 ## SYSTEM TOOLS
 # Disk Management
-sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
+sudo ${PACMAN_INSTALL} partitionmanager dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 
 # System Administration
 sudo ${PACMAN_INSTALL} man-db dmidecode
