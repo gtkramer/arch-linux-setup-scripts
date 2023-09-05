@@ -12,5 +12,3 @@ ufw enable
 ufw default deny incoming
 ufw default deny forward
 ufw default allow outgoing
-
-chmod 640 /etc/ufw/*.rules
