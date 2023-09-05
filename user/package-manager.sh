@@ -22,6 +22,6 @@ sudo tee /etc/xdg/reflector/reflector.conf <<- EOF
 --protocol https
 --sort rate
 EOF
-sudo systemctl enable reflector.timer
+sudo systemctl enable --now reflector.timer
 
 echo "MAKEFLAGS=\"-j$(nproc)\"" | sudo tee -a /etc/makepkg.conf > /dev/null
