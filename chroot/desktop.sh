@@ -16,5 +16,5 @@ EOF
 ${PACMAN_INSTALL} pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 
 # Desktop environment
-${PACMAN_INSTALL} plasma-meta konsole dolphin kdialog
+${PACMAN_INSTALL} plasma-meta phonon-backend-vlc konsole dolphin kdialog kdegraphics-thumbnailers ffmpegthumbs
 systemctl enable sddm

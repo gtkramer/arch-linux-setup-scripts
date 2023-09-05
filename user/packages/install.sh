@@ -39,7 +39,7 @@ sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
 sudo ${PACMAN_INSTALL} man-db dmidecode
 
 # Accessories
-sudo ${PACMAN_INSTALL} p7zip
+sudo ${PACMAN_INSTALL} p7zip rsync
 
 ## OTHER
 ${AURMAN_INSTALL} archlinux-artwork yt-dlp
