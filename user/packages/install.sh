@@ -26,7 +26,7 @@ sudo ${PACMAN_INSTALL} handbrake mediainfo-gui
 
 ## VIEW AND PLAY
 # Players
-sudo ${PACMAN_INSTALL} haruna
+sudo ${PACMAN_INSTALL} vlc
 
 # Frameworks
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
