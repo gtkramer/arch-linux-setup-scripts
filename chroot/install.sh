@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-source "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../parameters.sh"
 
 CONFIGS=(desktop system firewall bluetooth)
 for CONFIG in "${CONFIGS[@]}"; do

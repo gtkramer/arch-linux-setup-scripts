@@ -2,7 +2,7 @@
 set -ex
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-source "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../parameters.sh"
 
 BUILD_DIR="${HOME}/Builds/Epic/UnrealEngine"
 if [[ ! -e "${BUILD_DIR}/.git" ]]; then

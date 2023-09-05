@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-source "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../parameters.sh"
 
 # Configure themes and fonts for GNOME desktop
 gsettings set org.gnome.desktop.interface cursor-size 16

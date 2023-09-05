@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-source "${SCRIPT_DIR}/../../parameters.sh"
+. "${SCRIPT_DIR}/../../parameters.sh"
 
 sudo ${PACMAN_INSTALL} noto-fonts noto-fonts-{cjk,emoji,extra} otf-cascadia-code gnu-free-fonts
 ${AURMAN_INSTALL} ttf-ms-fonts

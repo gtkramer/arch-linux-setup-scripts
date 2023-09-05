@@ -2,7 +2,7 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-source "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../parameters.sh"
 
 sudo ${PACMAN_INSTALL} virt-manager qemu-desktop dnsmasq swtpm
 sudo systemctl enable --now libvirtd
