@@ -4,45 +4,47 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
-## PRODUCTIVITY
-# Internet
-sudo ${PACMAN_INSTALL} firefox thunderbird
-
+## PRIMARY USER APPLICATIONS
 # Development
 sudo ${PACMAN_INSTALL} hugo
 
-# Messaging
-sudo ${PACMAN_INSTALL} signal-desktop
+# Graphics
+sudo ${PACMAN_INSTALL} krita hugin dcraw qcad
 
-# Security
+# Multimedia
+sudo ${PACMAN_INSTALL} vlc handbrake mediainfo-gui yt-dlp
+
+# Network
+sudo ${PACMAN_INSTALL} firefox signal-desktop
+
+# PIM
+sudo ${PACMAN_INSTALL} thunderbird
+
+# System
+sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
+
+# Utilities
+sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
+
+## AUR USER APPLICATIONS
+# Graphics
+${AURMAN_INSTALL} archlinux-artwork
+
+# Network
 ${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
 
-## EDIT
-# Pictures
-sudo ${PACMAN_INSTALL} pinta hugin dcraw qcad
+## BASE DESKTOP APPLICATIONS
+# Graphics
+sudo ${PACMAN_INSTALL} gwenview kdegraphics-thumbnailers okular spectacle svgpart
 
-# Videos
-sudo ${PACMAN_INSTALL} handbrake mediainfo-gui
+# Multimedia
+sudo ${PACMAN_INSTALL} ffmpegthumbs
 
-## VIEW AND PLAY
-# Audio and Video
-sudo ${PACMAN_INSTALL} vlc
+# System
+sudo ${PACMAN_INSTALL} ksystemlog partitionmanager
 
-# Pictures
-sudo ${PACMAN_INSTALL} kdegraphics-thumbnailers ffmpegthumbs
-
-## SYSTEM TOOLS
-# Disk Management
-sudo ${PACMAN_INSTALL} partitionmanager dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
-
-# System Administration
-sudo ${PACMAN_INSTALL} man-db dmidecode
-
-# Accessories
-sudo ${PACMAN_INSTALL} p7zip rsync
-
-## OTHER
-${AURMAN_INSTALL} archlinux-artwork yt-dlp
+# Utilities
+sudo ${PACMAN_INSTALL} ark filelight kalk kate kcharselect kclock kdf kdialog kgpg kweather
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
