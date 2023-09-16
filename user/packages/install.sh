@@ -21,7 +21,7 @@ sudo ${PACMAN_INSTALL} firefox signal-desktop
 sudo ${PACMAN_INSTALL} thunderbird
 
 # System
-sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm
+sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm nvme-cli
 
 # Utilities
 sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
