@@ -44,7 +44,7 @@ timedatectl set-ntp true
 
 # Create physical partitions
 sgdisk -Z "${BLOCK_DEV}"
-sgdisk -n 1:1M:+128M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
+sgdisk -n 1:1M:+256M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
 END_SECTOR="$(sgdisk -E "${BLOCK_DEV}")"
 sgdisk -n 2:0:$(( $END_SECTOR - ($END_SECTOR + 1) % 2048 )) -t 2:8309 -c 2:crypt "${BLOCK_DEV}"
 if ! sgdisk -v "${BLOCK_DEV}"; then
