@@ -18,9 +18,6 @@ sudo ${PACMAN_INSTALL} gstreamer gstreamer-vaapi gst-plugins-base gst-plugins-go
 # Network
 sudo ${PACMAN_INSTALL} signal-desktop
 
-# PIM
-sudo ${PACMAN_INSTALL} thunderbird
-
 # System
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm nvme-cli
 
@@ -49,7 +46,7 @@ sudo ${PACMAN_INSTALL} ark filelight kalk kate kcharselect kclock kdf kdialog kg
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(firefox vim git visual-studio-code dotnet tresorit)
+PACKAGES=(firefox thunderbird vim git visual-studio-code dotnet tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
 	PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
 	if [ ! -e "${PACKAGE_PATH}" ]; then
