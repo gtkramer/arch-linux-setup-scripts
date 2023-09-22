@@ -17,5 +17,5 @@ popd
 rm -rf "${TEMP_DIR}"
 
 if ! grep -q dotnet "${HOME}/.bashrc"; then
-	echo "export PATH=\"${INSTALL_DIR}:\${PATH}\"" >> "${HOME}/.bashrc"
+	echo "export PATH=\"\${HOME}/.dotnet:\${PATH}\"" >> "${HOME}/.bashrc"
 fi
