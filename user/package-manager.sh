@@ -16,7 +16,7 @@ rm -rf "${TEMP_DIR}"
 # Configure mirrors
 sudo ${PACMAN_INSTALL} reflector
 sudo mkdir -p /etc/xdg/reflector
-sudo tee /etc/xdg/reflector/reflector.conf <<- EOF
+sudo tee /etc/xdg/reflector/reflector.conf <<EOF
 --save /etc/pacman.d/mirrorlist
 --country "${COUNTRY_MIRROR}"
 --protocol https
