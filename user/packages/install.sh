@@ -33,7 +33,7 @@ ${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
 
 ## BASE DESKTOP APPLICATIONS
 # Graphics
-sudo ${PACMAN_INSTALL} gwenview kdegraphics-thumbnailers okular spectacle svgpart
+sudo ${PACMAN_INSTALL} gwenview kdegraphics-thumbnailers qt5-imageformats okular spectacle svgpart
 
 # Multimedia
 sudo ${PACMAN_INSTALL} ffmpegthumbs
