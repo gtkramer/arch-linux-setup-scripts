@@ -18,6 +18,9 @@ sudo ${PACMAN_INSTALL} gstreamer gstreamer-vaapi gst-plugins-base gst-plugins-go
 # Network
 sudo ${PACMAN_INSTALL} signal-desktop xdg-desktop-portal
 
+# Office
+sudo ${PACMAN_INSTALL} libreoffice-fresh
+
 # System
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm nvme-cli
 
