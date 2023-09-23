@@ -11,5 +11,4 @@ ${PACMAN_INSTALL} xorg-server xorg-xwininfo mesa mesa-utils vulkan-intel vulkan-
 ${PACMAN_INSTALL} pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 
 # Desktop environment
-${PACMAN_INSTALL} plasma-meta plasma-wayland-session sddm konsole dolphin
-systemctl enable sddm
+${PACMAN_INSTALL} plasma-meta plasma-wayland-session konsole dolphin
