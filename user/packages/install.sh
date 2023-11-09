@@ -13,7 +13,7 @@ sudo ${PACMAN_INSTALL} krita hugin dcraw qcad
 
 # Multimedia
 sudo ${PACMAN_INSTALL} haruna handbrake mediainfo-gui yt-dlp
-sudo ${PACMAN_INSTALL} gstreamer gstreamer-vaapi gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
 # Network
 sudo ${PACMAN_INSTALL} signal-desktop xdg-desktop-portal
