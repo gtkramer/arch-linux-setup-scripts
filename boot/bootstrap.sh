@@ -45,7 +45,7 @@ fi
 
 # Configure boot
 efibootmgr | sed -nr 's/^Boot([0-9A-Fa-f]{4}).*Linux.*$/\1/Ip' | while read -r BOOT_NUM; do
-	efibootmgr -b "${BOOT_NUM}" -B
+    efibootmgr -b "${BOOT_NUM}" -B
 done
 efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'cryptdevice=PARTLABEL=crypt:crypt root=/dev/mapper/vg1-root resume=/dev/mapper/vg1-swap rw initrd=/initramfs-linux.img quiet'
 
