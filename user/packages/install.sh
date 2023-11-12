@@ -23,7 +23,7 @@ sudo ${PACMAN_INSTALL} signal-desktop xdg-desktop-portal-gnome
 sudo ${PACMAN_INSTALL} libreoffice-fresh
 
 # System
-sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils f2fs-tools hdparm nvme-cli
+sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils ntfs-3g hdparm nvme-cli
 
 # Utilities
 sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
