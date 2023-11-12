@@ -5,7 +5,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 ${PACMAN_REMOVE} iptables
-${PACMAN_INSTALL} ufw iptables-nft
+${PACMAN_INSTALL} gufw iptables-nft
 systemctl enable ufw
 
 ufw enable

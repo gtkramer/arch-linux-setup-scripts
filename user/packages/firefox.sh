@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
-sudo ${PACMAN_INSTALL} firefox
+sudo ${PACMAN_INSTALL} firefox gnome-browser-connector xdg-desktop-portal-gnome
 if ! grep -q "MOZ_ENABLE_WAYLAND" ~/.bash_profile; then
     cat >> ~/.bash_profile <<EOL
 if [ "\$XDG_SESSION_TYPE" = "wayland" ]; then
@@ -12,3 +12,5 @@ if [ "\$XDG_SESSION_TYPE" = "wayland" ]; then
 fi
 EOL
 fi
+
+sudo ${PACMAN_REMOVE_ALL} epiphany

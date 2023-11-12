@@ -9,14 +9,15 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 sudo ${PACMAN_INSTALL} hugo
 
 # Graphics
-sudo ${PACMAN_INSTALL} krita hugin dcraw qcad
+sudo ${PACMAN_INSTALL} pinta hugin dcraw qcad
 
 # Multimedia
-sudo ${PACMAN_INSTALL} haruna handbrake mediainfo-gui yt-dlp
+sudo ${PACMAN_INSTALL} celluloid ffmpegthumbnailer handbrake mediainfo-gui yt-dlp
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+sudo ${PACMAN_REMOVE_ALL} gnome-music totem
 
 # Network
-sudo ${PACMAN_INSTALL} signal-desktop xdg-desktop-portal
+sudo ${PACMAN_INSTALL} signal-desktop xdg-desktop-portal-gnome
 
 # Office
 sudo ${PACMAN_INSTALL} libreoffice-fresh
@@ -35,17 +36,8 @@ ${AURMAN_INSTALL} archlinux-artwork
 ${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
 
 ## BASE DESKTOP APPLICATIONS
-# Graphics
-sudo ${PACMAN_INSTALL} gwenview kdegraphics-thumbnailers qt5-imageformats okular spectacle svgpart
-
-# Multimedia
-sudo ${PACMAN_INSTALL} ffmpegthumbs
-
 # System
-sudo ${PACMAN_INSTALL} ksystemlog partitionmanager
-
-# Utilities
-sudo ${PACMAN_INSTALL} ark filelight kalk kate kcharselect kclock kdf kdialog kgpg kweather
+${AURMAN_INSTALL} hardinfo-git
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"

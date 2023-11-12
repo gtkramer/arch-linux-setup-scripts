@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-CONFIGS=(desktop display-manager system firewall bluetooth)
+CONFIGS=(desktop system firewall bluetooth)
 for CONFIG in "${CONFIGS[@]}"; do
 	CONFIG_PATH="${SCRIPT_DIR}/${CONFIG}.sh"
 	if [ ! -e "${CONFIG_PATH}" ]; then

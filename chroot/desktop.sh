@@ -17,4 +17,9 @@ EOF
 ${PACMAN_INSTALL} pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 
 # Desktop environment
-${PACMAN_INSTALL} plasma-meta plasma-wayland-session konsole dolphin
+${PACMAN_INSTALL} gnome gnome-tweaks gnome-firmware
+${PACMAN_REMOVE_ALL} gnome-software
+
+# Display manager
+${PACMAN_INSTALL} gdm
+systemctl enable gdm
