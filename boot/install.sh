@@ -84,9 +84,11 @@ mkfs.fat -F32 "${DEV_BOOT}"
 if "${DESTROY_HOME}"; then
     cryptsetup -y -v luksFormat "${DEV_CRYPT}"
 fi
-cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${DEV_CRYPT}" crypt
-
 CRYPT_DEV=/dev/mapper/crypt
+if [[ ! -e "${CRYPT_DEV}" ]]; then
+    cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${DEV_CRYPT}" crypt
+fi
+
 VOL_GROUP=vg1
 VOL_DEV="/dev/${VOL_GROUP}"
 if "${DESTROY_HOME}"; then
@@ -97,6 +99,17 @@ if "${DESTROY_HOME}"; then
     lvcreate -L "${MEM_TOTAL}K" "${VOL_GROUP}" -n swap
     lvcreate -L 64G "${VOL_GROUP}" -n root
     lvcreate -l 100%FREE "${VOL_GROUP}" -n home
+else
+    for i in {1..10}; do
+        if [[ -e "${VOL_DEV}" ]]; then
+            break
+        fi
+        sleep 1s
+    done
+fi
+if [[ ! -e "${VOL_DEV}" ]]; then
+    echo "${VOL_DEV} did not appear after 10 seconds" >&2
+    exit 1
 fi
 
 mkfs.ext4 -F "${VOL_DEV}/root"
