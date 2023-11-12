@@ -5,29 +5,37 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 display_help() {
-	local script_name
-	script_name="$(basename "${0}")"
-	echo "Usage: ${script_name} -b|--block <block device>"
+    local script_name
+    script_name="$(basename "${0}")"
+    echo "Usage: ${script_name} -b <block device> [-d]"
+    echo
+    echo "  -b  Specify the block device"
+    echo "  -d  Destroy home"
+    echo "  -h  Show this help message"
 }
 
-PARAMS="$(getopt -o b:h -l block:,help --name "${0}" -- "${@}")"
-eval set -- "${PARAMS}"
+BLOCK_DEV=""
+DESTROY_HOME=false
 
-while true; do
-    case "${1}" in
-        -b|--block)
-            BLOCK_DEV="${2}"
-            shift 2
+while getopts "b:dh" opt; do
+    case "${opt}" in
+        b)
+            BLOCK_DEV="${OPTARG}"
             ;;
-        -h|--help)
+        d)
+            DESTROY_HOME=true
+            ;;
+        h)
             display_help
             exit 0
             ;;
-        --)
-            shift
-            break
+        \?)
+            echo "Invalid option: -${OPTARG}" >&2
+            display_help >&2
+            exit 1
             ;;
-        *)
+        :)
+            echo "Option -${OPTARG} requires an argument." >&2
             display_help >&2
             exit 1
             ;;
@@ -35,21 +43,30 @@ while true; do
 done
 
 if [ -z "${BLOCK_DEV}" ]; then
-	echo 'Parameter -b|--block is required' >&2
-	exit 1
+    echo "Error: Block device is required." >&2
+    display_help >&2
+    exit 1
+fi
+
+if "${DESTROY_HOME}"; then
+    echo "WARNING: You have chosen to destroy all data in /home. This operation is irreversible."
+    echo "If you wish to abort this operation, press Ctrl+C within the next 5 seconds."
+    sleep 5s
 fi
 
 # Update system clock
 timedatectl set-ntp true
 
 # Create physical partitions
-sgdisk -Z "${BLOCK_DEV}"
-sgdisk -n 1:1M:+256M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
-END_SECTOR="$(sgdisk -E "${BLOCK_DEV}")"
-sgdisk -n 2:0:$(( $END_SECTOR - ($END_SECTOR + 1) % 2048 )) -t 2:8309 -c 2:crypt "${BLOCK_DEV}"
-if ! sgdisk -v "${BLOCK_DEV}"; then
-	echo "Physical partitions failed verification for ${BLOCK_DEV}" >&2
-	exit 1
+if "${DESTROY_HOME}"; then
+    sgdisk -Z "${BLOCK_DEV}"
+    sgdisk -n 1:1M:+256M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
+    END_SECTOR="$(sgdisk -E "${BLOCK_DEV}")"
+    sgdisk -n 2:0:$(( END_SECTOR - (END_SECTOR + 1) % 2048 )) -t 2:8309 -c 2:crypt "${BLOCK_DEV}"
+    if ! sgdisk -v "${BLOCK_DEV}"; then
+        echo "Physical partitions failed verification for ${BLOCK_DEV}" >&2
+        exit 1
+    fi
 fi
 
 if [[ ${BLOCK_DEV} =~ ^/dev/nvme ]]; then
@@ -64,22 +81,28 @@ DEV_CRYPT="${BLOCK_DEV}${PARTITION_PREFIX}2"
 mkfs.fat -F32 "${DEV_BOOT}"
 
 # Set up crypt device
-cryptsetup -y -v luksFormat "${DEV_CRYPT}"
+if "${DESTROY_HOME}"; then
+    cryptsetup -y -v luksFormat "${DEV_CRYPT}"
+fi
 cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent open "${DEV_CRYPT}" crypt
 
 CRYPT_DEV=/dev/mapper/crypt
 VOL_GROUP=vg1
 VOL_DEV="/dev/${VOL_GROUP}"
-pvcreate "${CRYPT_DEV}"
-vgcreate "${VOL_GROUP}" "${CRYPT_DEV}"
+if "${DESTROY_HOME}"; then
+    pvcreate "${CRYPT_DEV}"
+    vgcreate "${VOL_GROUP}" "${CRYPT_DEV}"
 
-MEM_TOTAL="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
-lvcreate -L "${MEM_TOTAL}K" "${VOL_GROUP}" -n swap
-lvcreate -L 64G "${VOL_GROUP}" -n root
-lvcreate -l 100%FREE "${VOL_GROUP}" -n home
+    MEM_TOTAL="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
+    lvcreate -L "${MEM_TOTAL}K" "${VOL_GROUP}" -n swap
+    lvcreate -L 64G "${VOL_GROUP}" -n root
+    lvcreate -l 100%FREE "${VOL_GROUP}" -n home
+fi
 
 mkfs.ext4 -F "${VOL_DEV}/root"
-mkfs.ext4 -F "${VOL_DEV}/home"
+if "${DESTROY_HOME}"; then
+    mkfs.ext4 -F "${VOL_DEV}/home"
+fi
 mkswap "${VOL_DEV}/swap"
 
 # Mount file systems
