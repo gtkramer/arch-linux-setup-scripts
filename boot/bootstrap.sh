@@ -51,7 +51,7 @@ efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'crypt
 
 # Configure hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
-echo 'HOOKS=(base udev autodetect modconf keyboard keymap consolefont block encrypt lvm2 resume filesystems fsck)' >> /etc/mkinitcpio.conf
+echo 'HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt lvm2 resume filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # Set up passwordless authentication based on group membership

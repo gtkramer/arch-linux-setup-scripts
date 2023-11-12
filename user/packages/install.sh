@@ -13,7 +13,7 @@ sudo ${PACMAN_INSTALL} pinta hugin dcraw qcad
 
 # Multimedia
 sudo ${PACMAN_INSTALL} celluloid ffmpegthumbnailer handbrake mediainfo-gui yt-dlp
-sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+sudo ${PACMAN_INSTALL} intel-media-driver libva-utils gstreamer gstreamer-vaapi gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 sudo ${PACMAN_REMOVE_ALL} gnome-music totem
 
 # Network
