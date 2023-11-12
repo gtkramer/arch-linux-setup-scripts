@@ -5,29 +5,32 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 display_help() {
-	local script_name
-	script_name="$(basename "${0}")"
-	echo "Usage: ${script_name} -b|--block <block device>"
+    local script_name
+    script_name="$(basename "${0}")"
+    echo "Usage: ${script_name} -b <block device>"
+    echo
+    echo "  -b  Specify the block device"
+    echo "  -h  Show this help message"
 }
 
-PARAMS="$(getopt -o b:h -l block:,help --name "${0}" -- "${@}")"
-eval set -- "${PARAMS}"
+BLOCK_DEV=""
 
-while true; do
-    case "${1}" in
-        -b|--block)
-            BLOCK_DEV="${2}"
-            shift 2
+while getopts "b:h" opt; do
+    case "${opt}" in
+        b)
+            BLOCK_DEV="${OPTARG}"
             ;;
-        -h|--help)
+        h)
             display_help
             exit 0
             ;;
-        --)
-            shift
-            break
+        \?)
+            echo "Invalid option: -${OPTARG}" >&2
+            display_help >&2
+            exit 1
             ;;
-        *)
+        :)
+            echo "Option -${OPTARG} requires an argument." >&2
             display_help >&2
             exit 1
             ;;
@@ -35,8 +38,9 @@ while true; do
 done
 
 if [ -z "${BLOCK_DEV}" ]; then
-	echo 'Parameter -b|--block is required' >&2
-	exit 1
+    echo "Error: Block device is required." >&2
+    display_help >&2
+    exit 1
 fi
 
 # Configure boot
