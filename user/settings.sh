@@ -18,7 +18,7 @@ gsettings set org.gnome.desktop.interface monospace-font-name 'Monospace 11'
 # Configure other settings for GNOME desktop
 gsettings set org.gnome.desktop.interface clock-format '12h'
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
-gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'hibernate'
+gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
 
