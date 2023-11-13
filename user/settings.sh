@@ -27,3 +27,7 @@ gsettings set org.gnome.system.location enabled true
 gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
 gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true
 gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 2700
+
+# Sort folders before files in file chooser for GTK3 and GTK4
+gsettings set org.gtk.gtk4.Settings.FileChooser sort-directories-first true
+gsettings set org.gtk.Settings.FileChooser sort-directories-first true
