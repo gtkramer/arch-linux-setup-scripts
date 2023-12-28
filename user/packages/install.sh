@@ -9,7 +9,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 sudo ${PACMAN_INSTALL} hugo
 
 # Graphics
-sudo ${PACMAN_INSTALL} pinta hugin dcraw qcad
+sudo ${PACMAN_INSTALL} hugin dcraw qcad
 
 # Multimedia
 sudo ${PACMAN_INSTALL} celluloid ffmpegthumbnailer handbrake mediainfo-gui yt-dlp
@@ -17,10 +17,11 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_REMOVE_ALL} gnome-music totem
 
 # Network
-sudo ${PACMAN_INSTALL} signal-desktop xdg-desktop-portal-gnome
+sudo ${PACMAN_INSTALL} firefox signal-desktop xdg-desktop-portal-gnome
+sudo ${PACMAN_REMOVE_ALL} epiphany
 
-# Office
-sudo ${PACMAN_INSTALL} libreoffice-fresh
+# PIM
+sudo ${PACMAN_INSTALL} geary
 
 # System
 sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils ntfs-3g hdparm nvme-cli
@@ -30,7 +31,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 
 ## AUR USER APPLICATIONS
 # Graphics
-${AURMAN_INSTALL} archlinux-artwork
+${AURMAN_INSTALL} archlinux-artwork gimp-git
 
 # Network
 ${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
