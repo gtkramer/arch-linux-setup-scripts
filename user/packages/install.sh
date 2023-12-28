@@ -24,7 +24,7 @@ sudo ${PACMAN_REMOVE_ALL} epiphany
 sudo ${PACMAN_INSTALL} geary
 
 # System
-sudo ${PACMAN_INSTALL} dosfstools e2fsprogs exfat-utils ntfs-3g hdparm nvme-cli
+sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfat-utils ntfs-3g hdparm nvme-cli
 
 # Utilities
 sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
