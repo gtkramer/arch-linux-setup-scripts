@@ -10,20 +10,25 @@ display_help() {
     echo "Usage: ${script_name} -b <block device> [-d]"
     echo
     echo "  -b  Specify the block device"
-    echo "  -d  Destroy home"
+    echo "  -d  Destroy /home partition"
+    echo "  -c  Clean dot files and folders for all users in /home partition"
     echo "  -h  Show this help message"
 }
 
 BLOCK_DEV=""
 DESTROY_HOME=false
+CLEAN_DOT=false
 
-while getopts "b:dh" opt; do
+while getopts "b:dch" opt; do
     case "${opt}" in
         b)
             BLOCK_DEV="${OPTARG}"
             ;;
         d)
             DESTROY_HOME=true
+            ;;
+        c)
+            CLEAN_DOT=true
             ;;
         h)
             display_help
@@ -138,3 +143,8 @@ FSTAB_FILE=/mnt/etc/fstab
 genfstab -L /mnt >> "${FSTAB_FILE}"
 
 sed -i "s_^${DEV_BOOT}_PARTLABEL=boot_" "${FSTAB_FILE}"
+
+# Post install cleanup of dot files and folders in /home partition for all users
+if "${CLEAN_DOT}"; then
+    find /mnt/home -mindepth 2 -maxdepth 2 -name '.*' -exec rm -rf {} +
+fi
