@@ -42,7 +42,7 @@ ${AURMAN_INSTALL} hardinfo-git
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(firefox thunderbird vim git visual-studio-code dotnet tresorit)
+PACKAGES=(vim git visual-studio-code dotnet tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
     PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
     if [ ! -e "${PACKAGE_PATH}" ]; then
