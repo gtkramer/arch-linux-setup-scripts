@@ -147,4 +147,7 @@ sed -i "s_^${DEV_BOOT}_PARTLABEL=boot_" "${FSTAB_FILE}"
 # Post install cleanup of dot files and folders in /home partition for all users
 if "${CLEAN_DOT}"; then
     find /mnt/home -mindepth 2 -maxdepth 2 -name '.*' -exec rm -rf {} +
+    find /mnt/home -mindepth 1 -maxdepth 1 -type d | while read -r HOME_DIR; do
+        rsync --chown="$(stat -c '%U:%G' "${HOME_DIR}")" -a /mnt/etc/skel/ "${HOME_DIR}/"
+    done
 fi
