@@ -17,7 +17,7 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_REMOVE_ALL} gnome-music totem
 
 # Network
-sudo ${PACMAN_INSTALL} firefox signal-desktop xdg-desktop-portal-gnome
+sudo ${PACMAN_INSTALL} firefox gnome-browser-connector signal-desktop xdg-desktop-portal-gnome
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # PIM
