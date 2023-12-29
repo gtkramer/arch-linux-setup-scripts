@@ -12,3 +12,15 @@ export PACMAN_REMOVE='pacman --noconfirm -Rdd'
 export PACMAN_INSTALL='pacman -Syu --noconfirm'
 export AURMAN_INSTALL='aurman -Syu --noconfirm --noedit'
 export PACMAN_REMOVE_ALL='pacman --noconfirm -Rns'
+
+manual_aur_install() {
+    local git_url="${1}"
+    local extra_opts="${2}"
+
+    local temp_dir="$(mktemp -d)"
+    git clone "${git_url}" "${temp_dir}"
+    pushd "${temp_dir}"
+    makepkg --noconfirm -sri ${2}
+    popd
+    rm -rf "${temp_dir}"
+}
