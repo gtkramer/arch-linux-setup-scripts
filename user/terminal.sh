@@ -6,6 +6,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 
 sudo ${PACMAN_INSTALL} powerline powerline-fonts vte-common
 
+touch "${HOME}/.bashrc"
 if ! grep -q powerline-daemon "${HOME}/.bashrc"; then
     cat >> "${HOME}/.bashrc" <<EOF
 powerline-daemon -q

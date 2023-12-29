@@ -16,6 +16,7 @@ chmod +x dotnet-install.sh
 popd
 rm -rf "${TEMP_DIR}"
 
+touch "${HOME}/.bashrc"
 if ! grep -q dotnet "${HOME}/.bashrc"; then
     echo "export PATH=\"\${HOME}/.dotnet:\${PATH}\"" >> "${HOME}/.bashrc"
 fi
