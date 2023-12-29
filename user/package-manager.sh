@@ -5,13 +5,8 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 sudo ${PACMAN_INSTALL} git pkgfile
-TEMP_DIR="$(mktemp -d)"
-git clone https://aur.archlinux.org/aurman.git "${TEMP_DIR}"
-pushd "${TEMP_DIR}"
 gpg --recv-keys 910B8C499BED531B
-makepkg -sri
-popd
-rm -rf "${TEMP_DIR}"
+manual_aur_install https://aur.archlinux.org/aurman.git
 
 # Configure mirrors
 sudo ${PACMAN_INSTALL} reflector
