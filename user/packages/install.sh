@@ -6,7 +6,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 
 ## PRIMARY USER APPLICATIONS
 # Development
-sudo ${PACMAN_INSTALL} hugo
+sudo ${PACMAN_INSTALL} hugo clang lldb
 
 # Graphics
 sudo ${PACMAN_INSTALL} hugin dcraw qcad
