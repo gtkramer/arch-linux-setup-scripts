@@ -34,7 +34,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 ${AURMAN_INSTALL} archlinux-artwork
 
 # Network
-${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
+${AURMAN_INSTALL} protonvpn-gui protonvpn-cli network-manager-applet
 
 ## BASE DESKTOP APPLICATIONS
 # System
