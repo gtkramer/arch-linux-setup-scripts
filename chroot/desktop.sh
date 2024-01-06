@@ -28,3 +28,4 @@ ${PACMAN_REMOVE_ALL} gnome-software
 # Display manager
 ${PACMAN_INSTALL} gdm
 systemctl enable gdm
+sed -i 's/^#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf

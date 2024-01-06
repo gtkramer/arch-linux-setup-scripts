@@ -10,4 +10,3 @@ sudo ln -sf /usr/share/fontconfig/conf.avail/98-visual-studio-code.conf /etc/fon
 
 mkdir -p "${HOME}/.config/Code/User"
 cp -f "${SCRIPT_DIR}/settings.json" "${HOME}/.config/Code/User"
-cp -f "${SCRIPT_DIR}/code-flags.conf" "${HOME}/.config"
