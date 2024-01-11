@@ -18,3 +18,7 @@ run_as_gdm_user gsettings set org.gnome.system.location enabled true
 run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
 run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true
 run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 2700
+
+run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
+run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
