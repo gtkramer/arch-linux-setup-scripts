@@ -6,7 +6,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 
 ## PRIMARY USER APPLICATIONS
 # Development
-sudo ${PACMAN_INSTALL} hugo clang lldb
+sudo ${PACMAN_INSTALL} hugo clang lldb dotnet-sdk
 
 # Graphics
 sudo ${PACMAN_INSTALL} hugin dcraw qcad
@@ -42,7 +42,7 @@ ${AURMAN_INSTALL} hardinfo-git
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code dotnet tresorit)
+PACKAGES=(vim git visual-studio-code tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
     PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
     if [ ! -e "${PACKAGE_PATH}" ]; then
