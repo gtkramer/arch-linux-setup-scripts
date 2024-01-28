@@ -6,18 +6,17 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 
 ## PRIMARY USER APPLICATIONS
 # Development
-sudo ${PACMAN_INSTALL} hugo clang lldb dotnet-sdk
+sudo ${PACMAN_INSTALL} clang lldb dotnet-sdk
 
 # Graphics
-sudo ${PACMAN_INSTALL} hugin dcraw qcad
+sudo ${PACMAN_INSTALL} hugin dcraw
 
 # Multimedia
-sudo ${PACMAN_INSTALL} celluloid ffmpegthumbnailer handbrake mediainfo-gui yt-dlp
+sudo ${PACMAN_INSTALL} gnome-music totem handbrake handbrake-cli mediainfo-gui yt-dlp
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi onevpl-intel-gpu libva-utils
-sudo ${PACMAN_REMOVE_ALL} gnome-music totem
 
 # Network
-sudo ${PACMAN_INSTALL} firefox gnome-browser-connector signal-desktop xdg-desktop-portal-gnome
+sudo ${PACMAN_INSTALL} firefox gnome-browser-connector signal-desktop xdg-desktop-portal-gnome network-manager-applet
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # PIM
@@ -31,10 +30,10 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 
 ## AUR USER APPLICATIONS
 # Graphics
-${AURMAN_INSTALL} archlinux-artwork pinta-git
+${AURMAN_INSTALL} pinta-git
 
 # Network
-${AURMAN_INSTALL} protonvpn-gui protonvpn-cli network-manager-applet
+${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
 
 ## BASE DESKTOP APPLICATIONS
 # System
