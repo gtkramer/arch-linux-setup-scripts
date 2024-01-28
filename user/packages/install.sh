@@ -31,7 +31,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 
 ## AUR USER APPLICATIONS
 # Graphics
-${AURMAN_INSTALL} archlinux-artwork
+${AURMAN_INSTALL} archlinux-artwork pinta-git
 
 # Network
 ${AURMAN_INSTALL} protonvpn-gui protonvpn-cli network-manager-applet
