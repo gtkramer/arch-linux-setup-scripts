@@ -17,10 +17,11 @@ manual_aur_install() {
     local git_url="${1}"
     local extra_opts="${2}"
 
-    local temp_dir="$(mktemp -d)"
+    local temp_dir
+    temp_dir="$(mktemp -d)"
     git clone "${git_url}" "${temp_dir}"
-    pushd "${temp_dir}"
-    makepkg --noconfirm -sri ${2}
-    popd
+    pushd "${temp_dir}" || exit
+    makepkg --noconfirm -sri ${extra_opts}
+    popd || exit
     rm -rf "${temp_dir}"
 }
