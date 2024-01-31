@@ -57,6 +57,7 @@ mkinitcpio -p linux
 # Set up passwordless authentication based on group membership
 mkdir -p /etc/sudoers.d
 echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
+chmod 440 /etc/sudoers.d/wheel
 
 mkdir -p /etc/polkit-1/rules.d
 cat > /etc/polkit-1/rules.d/49-nopasswd_global.rules <<EOF
