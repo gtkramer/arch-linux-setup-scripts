@@ -37,7 +37,7 @@ ${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
 
 ## BASE DESKTOP APPLICATIONS
 # System
-${AURMAN_INSTALL} hardinfo-git
+${AURMAN_INSTALL} hardinfo2
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
