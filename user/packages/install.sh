@@ -13,7 +13,7 @@ sudo ${PACMAN_INSTALL} hugin dcraw
 
 # Multimedia
 sudo ${PACMAN_INSTALL} gnome-music totem handbrake handbrake-cli mediainfo-gui yt-dlp
-sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi onevpl-intel-gpu libva-utils
+sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
 # Network
 sudo ${PACMAN_INSTALL} firefox gnome-browser-connector signal-desktop xdg-desktop-portal-gnome network-manager-applet
