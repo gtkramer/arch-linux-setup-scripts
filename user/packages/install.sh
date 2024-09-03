@@ -33,7 +33,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 ${AURMAN_INSTALL} pinta-git
 
 # Network
-${AURMAN_INSTALL} microsoft-edge-stable-bin protonvpn-gui protonvpn-cli
+${AURMAN_INSTALL} microsoft-edge-stable-bin proton-vpn-gtk-app
 
 ## BASE DESKTOP APPLICATIONS
 # System
