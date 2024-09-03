@@ -9,7 +9,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 sudo ${PACMAN_INSTALL} clang lldb dotnet-sdk
 
 # Graphics
-sudo ${PACMAN_INSTALL} hugin dcraw
+sudo ${PACMAN_INSTALL} hugin dcraw pinta
 
 # Multimedia
 sudo ${PACMAN_INSTALL} gnome-music totem handbrake handbrake-cli mediainfo-gui yt-dlp
@@ -29,9 +29,6 @@ sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfat-utils ntfs-3g hdparm 
 sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 
 ## AUR USER APPLICATIONS
-# Graphics
-${AURMAN_INSTALL} pinta-git
-
 # Network
 ${AURMAN_INSTALL} microsoft-edge-stable-bin proton-vpn-gtk-app
 
