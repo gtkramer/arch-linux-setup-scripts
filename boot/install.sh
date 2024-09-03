@@ -113,7 +113,7 @@ else
     done
 fi
 if [[ ! -e "${VOL_DEV}" ]]; then
-    echo "${VOL_DEV} did not appear after 10 seconds" >&2
+    echo "${VOL_DEV} volume device does not exist" >&2
     exit 1
 fi
 
