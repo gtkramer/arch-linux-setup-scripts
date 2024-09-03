@@ -16,7 +16,7 @@ sudo ${PACMAN_INSTALL} gnome-music totem handbrake handbrake-cli mediainfo-gui y
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
 # Network
-sudo ${PACMAN_INSTALL} firefox gnome-browser-connector signal-desktop xdg-desktop-portal-gnome network-manager-applet
+sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop xdg-desktop-portal-gnome network-manager-applet
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # PIM
@@ -33,7 +33,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 ${AURMAN_INSTALL} pinta-git
 
 # Network
-${AURMAN_INSTALL} protonvpn-gui protonvpn-cli
+${AURMAN_INSTALL} microsoft-edge-stable-bin protonvpn-gui protonvpn-cli
 
 ## BASE DESKTOP APPLICATIONS
 # System
