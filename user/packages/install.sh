@@ -16,7 +16,7 @@ sudo ${PACMAN_INSTALL} gnome-music celluloid handbrake handbrake-cli mediainfo-g
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi vpl-gpu-rt libva-utils
 
 # Network
-sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop xdg-desktop-portal-gnome
+sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop xdg-desktop-portal-gnome discord
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # PIM
