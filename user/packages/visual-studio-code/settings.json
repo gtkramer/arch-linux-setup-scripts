@@ -1,9 +1,9 @@
 {
-    "workbench.colorTheme": "Default Light Modern",
     "workbench.startupEditor": "none",
     "window.zoomLevel": 1,
     "window.titleBarStyle": "custom",
-    "editor.stickyScroll.enabled": true,
+    "security.workspace.trust.enabled": false,
+    "window.autoDetectColorScheme": true,
     "editor.stickyTabStops": true,
-    "security.workspace.trust.enabled": false
+    "editor.renderWhitespace": "all"
 }
