@@ -6,7 +6,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 
 ## PRIMARY USER APPLICATIONS
 # Development
-sudo ${PACMAN_INSTALL} clang lldb dotnet-sdk
+sudo ${PACMAN_INSTALL} cmake meson clang lldb dotnet-sdk
 
 # Graphics
 sudo ${PACMAN_INSTALL} hugin dcraw pinta
