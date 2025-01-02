@@ -19,4 +19,5 @@ sudo tee /etc/xdg/reflector/reflector.conf <<EOF
 EOF
 sudo systemctl enable --now reflector.timer
 
+sudo sed -i '/^MAKEFLAGS/d' /etc/makepkg.conf
 echo "MAKEFLAGS=\"-j$(nproc)\"" | sudo tee -a /etc/makepkg.conf > /dev/null
