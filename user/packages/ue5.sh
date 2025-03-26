@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-. "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../../parameters.sh"
 
 BUILD_DIR="${HOME}/Applications/UnrealEngine"
 if [[ ! -e "${BUILD_DIR}/.git" ]]; then
