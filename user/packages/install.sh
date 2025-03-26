@@ -34,7 +34,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 
 ## AUR USER APPLICATIONS
 # Network
-${AURMAN_INSTALL} microsoft-edge-stable-bin proton-vpn-gtk-app
+${AURMAN_INSTALL} proton-vpn-gtk-app
 
 ## BASE DESKTOP APPLICATIONS
 # System
@@ -42,7 +42,7 @@ ${AURMAN_INSTALL} hardinfo2
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code tresorit)
+PACKAGES=(vim git visual-studio-code edge tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
     PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
     if [ ! -e "${PACKAGE_PATH}" ]; then
