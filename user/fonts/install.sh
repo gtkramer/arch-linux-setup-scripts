@@ -11,7 +11,7 @@ for LOCAK_PACKAGE in "${LOCAL_PACKAGES[@]}"; do
     popd
 done
 
-sudo ${PACMAN_INSTALL} noto-fonts-{emoji,extra} otf-cascadia-code gnu-free-fonts
+sudo ${PACMAN_INSTALL} noto-fonts-{emoji,extra} otf-cascadia-code
 ${AURMAN_INSTALL} ttf-ms-fonts
 
 sudo cp -f "${SCRIPT_DIR}/99-generic-family.conf" "${SCRIPT_DIR}/98-gnome.conf" /usr/share/fontconfig/conf.avail
