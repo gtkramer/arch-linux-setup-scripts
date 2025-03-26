@@ -1,0 +1,19 @@
+# Maintainer: George Kramer <george.kramer@live.com>
+
+pkgname=otf-noto-fonts-cjk
+pkgver=2.003
+pkgrel=1
+pkgdesc="Noto CJK fonts in OTF format"
+arch=('any')
+url="https://github.com/notofonts/noto-cjk"
+license=('OFL')
+conflicts=('noto-fonts-cjk')
+provides=('noto-fonts-cjk')
+source=("https://github.com/notofonts/noto-cjk/releases/download/Serif${pkgver}/05_NotoSerifCJKOTF.zip")
+sha256sums=('9a8475c8272209e3e98fa8818b802d80f6b3016b3df77eb7d0893c0c7ae54245')
+
+package() {
+    local installdir="${pkgdir}/usr/share/fonts/OTF"
+    install -d "${installdir}"
+    find "${srcdir}" -iname '*.otf' | xargs -I {} install -m644 "{}" "${installdir}"
+}

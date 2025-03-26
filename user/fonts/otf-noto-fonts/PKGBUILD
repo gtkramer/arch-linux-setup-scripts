@@ -1,0 +1,23 @@
+# Maintainer: George Kramer <george.kramer@live.com>
+
+pkgname=otf-noto-fonts
+pkgver=2.015
+pkgrel=1
+pkgdesc="Noto Latin, Greek, Cyrillic fonts in OTF format"
+arch=('any')
+url="https://github.com/notofonts/latin-greek-cyrillic"
+license=('OFL')
+conflicts=('noto-fonts')
+provides=('noto-fonts')
+source=(
+	"https://github.com/notofonts/latin-greek-cyrillic/releases/download/NotoSans-v${pkgver}/NotoSans-v${pkgver}.zip"
+	"https://github.com/notofonts/latin-greek-cyrillic/releases/download/NotoSerif-v${pkgver}/NotoSerif-v${pkgver}.zip"
+)
+sha256sums=('0c34df072a3fa7efbb7cbf34950e1f971a4447cffe365d3a359e2d4089b958f5' '0e9a43c8a4b94ac76f55069ed1d7385bbcaf6b99527a94deb5619e032b7e76c1')
+
+package() {
+    local installdir="${pkgdir}/usr/share/fonts/OTF"
+    install -d "${installdir}"
+    find "${srcdir}/NotoSans/full/otf" -iname '*.otf' | xargs -I {} install -m644 "{}" "${installdir}"
+    find "${srcdir}/NotoSerif/hinted/ttf" -iname '*.ttf' | xargs -I {} install -m644 "{}" "${installdir}"
+}

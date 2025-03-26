@@ -10,8 +10,8 @@ sudo ${PACMAN_INSTALL} dconf-editor
 gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'
 
-gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Sans Bold 10'
-gsettings set org.gnome.desktop.interface font-name 'Sans 10'
+gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Sans Bold 11'
+gsettings set org.gnome.desktop.interface font-name 'Sans 11'
 gsettings set org.gnome.desktop.interface document-font-name 'Serif 11'
 gsettings set org.gnome.desktop.interface monospace-font-name 'Monospace 11'
 
