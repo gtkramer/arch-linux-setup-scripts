@@ -7,7 +7,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 LOCAL_PACKAGES=(otf-noto-fonts otf-noto-fonts-cjk)
 for LOCAK_PACKAGE in "${LOCAL_PACKAGES[@]}"; do
     pushd "${SCRIPT_DIR}/${LOCAL_PACKAGE}"
-    makepkg -sri
+    makepkg --noconfirm -sri
     popd
 done
 
