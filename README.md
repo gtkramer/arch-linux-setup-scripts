@@ -6,7 +6,9 @@ Given the decision was made to not support a GUI installer for a long time, Arch
 * Developing in C#
 * Using general image, video, document, and messaging productivity tools
 * Using programs that support a security orientation
-* Using a discrete Intel GPU to support graphically-intense workflows
+* Using a discrete NVIDIA GPU to have
+  * Excellent gaming performance to replace a console
+  * Excellent video encoding performance to back up optical media
 * Using an ASUS motherboard
 
 The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying parameters.sh and then modify other files from there.
