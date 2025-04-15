@@ -23,9 +23,6 @@ sudo ${PACMAN_REMOVE_ALL} totem
 sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
-# PIM
-sudo ${PACMAN_INSTALL} geary
-
 # System
 sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfat-utils ntfs-3g hdparm nvme-cli
 
