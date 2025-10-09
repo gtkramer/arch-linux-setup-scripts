@@ -8,7 +8,6 @@ sudo ${PACMAN_INSTALL} git pkgfile
 gpg --recv-keys 910B8C499BED531B
 manual_aur_install https://aur.archlinux.org/aurman.git
 
-# Configure mirrors
 sudo ${PACMAN_INSTALL} reflector
 sudo mkdir -p /etc/xdg/reflector
 sudo tee /etc/xdg/reflector/reflector.conf <<EOF
