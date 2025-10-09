@@ -19,7 +19,7 @@ sudo ${PACMAN_INSTALL} handbrake handbrake-cli mediainfo-gui yt-dlp
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi vpl-gpu-rt libva-utils
 
 # Network
-sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord
+sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # System
@@ -27,10 +27,6 @@ sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfat-utils ntfs-3g hdparm 
 
 # Utilities
 sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
-
-## AUR USER APPLICATIONS
-# Network
-${AURMAN_INSTALL} proton-vpn-gtk-app
 
 ## BASE DESKTOP APPLICATIONS
 # System
