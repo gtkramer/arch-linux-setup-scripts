@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
-## PRIMARY USER APPLICATIONS
+## PRIMARY PACKAGES
 # Development
 sudo ${PACMAN_INSTALL} cmake meson clang lldb dotnet-sdk
 
@@ -23,14 +23,11 @@ sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord proton-vpn
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # System
-sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfat-utils ntfs-3g hdparm nvme-cli mission-center
+sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfatprogs ntfs-3g hdparm nvme-cli smartmontools mission-center gparted
+sudo ${PACMAN_REMOVE_ALL} gnome-system-monitor gnome-disk-utility
 
 # Utilities
 sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
-
-## BASE DESKTOP APPLICATIONS
-# System
-${AURMAN_INSTALL} hardinfo2
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
