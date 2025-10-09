@@ -22,6 +22,9 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
+# Office
+sudo ${PACMAN_INSTALL} libreoffice-fresh
+
 # System
 sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfatprogs ntfs-3g hdparm nvme-cli smartmontools mission-center gparted
 sudo ${PACMAN_REMOVE_ALL} gnome-system-monitor gnome-disk-utility
