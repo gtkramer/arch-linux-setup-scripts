@@ -16,7 +16,7 @@ sudo ${PACMAN_INSTALL} solaar
 
 # Multimedia
 sudo ${PACMAN_INSTALL} gnome-music celluloid ffmpegthumbnailer handbrake handbrake-cli mediainfo-gui yt-dlp
-sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi vpl-gpu-rt libva-utils
 sudo ${PACMAN_REMOVE_ALL} totem
 
 # Network
