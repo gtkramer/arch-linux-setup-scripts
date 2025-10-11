@@ -174,7 +174,7 @@ if "${DESTROY_DATA}"; then
 fi
 mkswap "${VOL_DEV}/swap"
 if "${DESTROY_DATA}"; then
-    mkfs.ext4 -F "${CRYPTSRV_PART}"
+    mkfs.ext4 -F "${CRYPTSRV_DEV}"
 fi
 
 # Mount file systems
@@ -186,7 +186,7 @@ mkdir -p /mnt/home
 mount "${VOL_DEV}/home" /mnt/home
 swapon "${VOL_DEV}/swap"
 mkdir -p /mnt/srv
-mount "${CRYPTSRV_PART}" /mnt/srv
+mount "${CRYPTSRV_DEV}" /mnt/srv
 
 # Configure mirrors
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
