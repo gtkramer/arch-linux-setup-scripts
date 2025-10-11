@@ -7,11 +7,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 sudo ${PACMAN_INSTALL} vim
 
 touch "${HOME}/.vimrc"
-if ! grep -Pq '^set spell$' "${HOME}/.vimrc"; then
-    echo 'set spell' >> "${HOME}/.vimrc"
-fi
-
-touch "${HOME}/.bash_profile"
-if ! grep -Pq ' VISUAL=' "${HOME}/.bash_profile"; then
-    echo 'export VISUAL=vim' >> "${HOME}/.bash_profile"
-fi
+truncate -s0 "${HOME}/.vimrc"
+echo 'set spell' >> "${HOME}/.vimrc"
+echo 'filetype plugin on' >> "${HOME}/.vimrc"
+echo 'syntax on' >> "${HOME}/.vimrc"
