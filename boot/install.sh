@@ -84,7 +84,7 @@ timedatectl set-ntp true
 if "${DESTROY_DATA}"; then
     sgdisk -Z "${BLOCK_DEV}"
     sgdisk -n 1:1M:+512M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
-    BLOCK_END_SECTOR="$(sgdisk -E "${BLOCK_DEV}")"
+    BLOCK_END_SECTOR="$(sgdisk -E "${BLOCK_DEV}" | grep -P '^\d+$')"
     sgdisk -n 2:0:$(( BLOCK_END_SECTOR - (BLOCK_END_SECTOR + 1) % 2048 )) -t 2:8309 -c 2:crypt "${BLOCK_DEV}"
     if ! sgdisk -v "${BLOCK_DEV}"; then
         echo "Physical partitions failed verification for ${BLOCK_DEV}" >&2
@@ -92,7 +92,7 @@ if "${DESTROY_DATA}"; then
     fi
 
     sgdisk -Z "${SRV_DEV}"
-    SRV_END_SECTOR="$(sgdisk -E "${SRV_DEV}")"
+    SRV_END_SECTOR="$(sgdisk -E "${SRV_DEV}" | grep -P '^\d+$')"
     sgdisk -n 1:0:$(( SRV_END_SECTOR - (SRV_END_SECTOR + 1) % 2048 )) -t 1:8309 -c 1:cryptsrv "${SRV_DEV}"
     if ! sgdisk -v "${SRV_DEV}"; then
         echo "Physical partitions failed verification for ${SRV_DEV}" >&2
