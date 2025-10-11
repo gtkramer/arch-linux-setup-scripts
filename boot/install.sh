@@ -196,7 +196,7 @@ pacstrap /mnt base base-devel linux linux-firmware lvm2 intel-ucode efibootmgr n
 
 # Configure file systems
 FSTAB_FILE=/mnt/etc/fstab
-genfstab -L /mnt >> "${FSTAB_FILE}"
+genfstab -U /mnt >> "${FSTAB_FILE}"
 
 CRYPTTAB_FILE=/mnt/etc/crypttab.initramfs
 CRYPT_UUID="$(cryptsetup luksUUID "${CRYPT_PART}")"
