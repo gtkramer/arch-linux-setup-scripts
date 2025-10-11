@@ -55,6 +55,7 @@ efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'root=
 
 # Configure hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
+touch /etc/vconsole.conf
 echo 'HOOKS=(systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
