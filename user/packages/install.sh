@@ -20,6 +20,7 @@ sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-b
 
 # Network
 sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
+${AURMAN_INSTALL} brave-bin
 sudo ${PACMAN_REMOVE_ALL} epiphany
 
 # Office
@@ -34,7 +35,7 @@ sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
 
 ## CUSTOM PACKAGES
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code edge tresorit)
+PACKAGES=(vim git visual-studio-code tresorit)
 for PACKAGE in "${PACKAGES[@]}"; do
     PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
     if [ ! -e "${PACKAGE_PATH}" ]; then
