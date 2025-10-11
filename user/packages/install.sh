@@ -9,7 +9,8 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 sudo ${PACMAN_INSTALL} cmake meson clang lldb dotnet-sdk
 
 # Graphics
-sudo ${PACMAN_INSTALL} hugin dcraw pinta
+sudo ${PACMAN_INSTALL} hugin dcraw
+${AURMAN_INSTALL} pinta
 
 # Hardware
 sudo ${PACMAN_INSTALL} solaar
