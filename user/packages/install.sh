@@ -15,7 +15,7 @@ sudo ${PACMAN_INSTALL} hugin dcraw pinta
 sudo ${PACMAN_INSTALL} solaar
 
 # Multimedia
-sudo ${PACMAN_INSTALL} handbrake handbrake-cli mediainfo-gui yt-dlp
+sudo ${PACMAN_INSTALL} handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
 sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi vpl-gpu-rt libva-utils
 
 # Network
