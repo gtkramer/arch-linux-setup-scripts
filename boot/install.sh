@@ -17,16 +17,12 @@ usage() {
 
 # Parse parameters
 BLOCK_DEV=""
-SRV_DEV=""
 DESTROY_DATA=false
 CLEAN_DOT=false
-while getopts "b:s:dch" opt; do
+while getopts "b:dch" opt; do
     case "${opt}" in
         b)
             BLOCK_DEV="${OPTARG}"
-            ;;
-        s)
-            SRV_DEV="${OPTARG}"
             ;;
         d)
             DESTROY_DATA=true
@@ -61,16 +57,6 @@ if [[ ! -e "${BLOCK_DEV}" ]]; then
     exit 1
 fi
 
-if [[ -z "${SRV_DEV}" ]]; then
-    echo "Error: Server device is required." >&2
-    usage >&2
-    exit 1
-fi
-if [[ ! -e "${SRV_DEV}" ]]; then
-    echo "Error: Server device ${SRV_DEV} does not exist." >&2
-    exit 1
-fi
-
 if "${DESTROY_DATA}"; then
     echo "WARNING: You have chosen to destroy all existing data. This operation is irreversible."
     echo "If you wish to abort this operation, press Ctrl+C within the next 5 seconds."
@@ -90,14 +76,6 @@ if "${DESTROY_DATA}"; then
         echo "Physical partitions failed verification for ${BLOCK_DEV}" >&2
         exit 1
     fi
-
-    sgdisk -Z "${SRV_DEV}"
-    SRV_END_SECTOR="$(sgdisk -E "${SRV_DEV}" | grep -P '^\d+$')"
-    sgdisk -n 1:0:$(( SRV_END_SECTOR - (SRV_END_SECTOR + 1) % 2048 )) -t 1:8309 -c 1:cryptsrv "${SRV_DEV}"
-    if ! sgdisk -v "${SRV_DEV}"; then
-        echo "Physical partitions failed verification for ${SRV_DEV}" >&2
-        exit 1
-    fi
 fi
 
 if [[ ${BLOCK_DEV} =~ ^/dev/nvme ]]; then
@@ -107,13 +85,6 @@ else
 fi
 BOOT_PART="${BLOCK_DEV}${BLOCK_PART_PREFIX}1"
 CRYPT_PART="${BLOCK_DEV}${BLOCK_PART_PREFIX}2"
-
-if [[ ${SRV_DEV} =~ ^/dev/nvme ]]; then
-    SRV_PART_PREFIX=p
-else
-    SRV_PART_PREFIX=""
-fi
-CRYPTSRV_PART="${SRV_DEV}${SRV_PART_PREFIX}1"
 
 # Set up crypt device
 if "${DESTROY_DATA}"; then
@@ -152,20 +123,6 @@ if [[ ! -e "${VOL_DEV}" ]]; then
     exit 1
 fi
 
-# Set up cryptsrv device
-if "${DESTROY_DATA}"; then
-    cryptsetup -y -v luksFormat "${CRYPTSRV_PART}"
-fi
-CRYPTSRV_DEV=/dev/mapper/cryptsrv
-if [[ ! -e "${CRYPTSRV_DEV}" ]]; then
-    if [[ "$(cat "/sys/block/$(basename "${SRV_DEV}")/queue/rotational")" == 0 ]]; then
-        SRV_CRYPT_OPTS="--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue"
-    else
-        SRV_CRYPT_OPTS=""
-    fi
-    cryptsetup ${SRV_CRYPT_OPTS} --persistent open "${CRYPTSRV_PART}" cryptsrv
-fi
-
 # Create file systems
 mkfs.fat -F32 "${BOOT_PART}"
 mkfs.ext4 -F "${VOL_DEV}/root"
@@ -173,9 +130,6 @@ if "${DESTROY_DATA}"; then
     mkfs.ext4 -F "${VOL_DEV}/home"
 fi
 mkswap "${VOL_DEV}/swap"
-if "${DESTROY_DATA}"; then
-    mkfs.ext4 -F "${CRYPTSRV_DEV}"
-fi
 
 # Mount file systems
 mkdir -p /mnt
@@ -185,8 +139,6 @@ mount "${BOOT_PART}" /mnt/boot
 mkdir -p /mnt/home
 mount "${VOL_DEV}/home" /mnt/home
 swapon "${VOL_DEV}/swap"
-mkdir -p /mnt/srv
-mount "${CRYPTSRV_DEV}" /mnt/srv
 
 # Configure mirrors
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
@@ -200,9 +152,7 @@ genfstab -U /mnt >> "${FSTAB_FILE}"
 
 CRYPTTAB_FILE=/mnt/etc/crypttab.initramfs
 CRYPT_UUID="$(cryptsetup luksUUID "${CRYPT_PART}")"
-CRYPTSRV_UUID="$(cryptsetup luksUUID "${CRYPTSRV_PART}")"
 echo "crypt       UUID=${CRYPT_UUID}    none    luks" > "${CRYPTTAB_FILE}"
-echo "cryptsrv    UUID=${CRYPTSRV_UUID}    none    luks" >> "${CRYPTTAB_FILE}"
 
 # Post install cleanup of dot files and folders in /home partition for all users
 if "${CLEAN_DOT}"; then
