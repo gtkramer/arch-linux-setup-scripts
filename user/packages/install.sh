@@ -17,7 +17,7 @@ sudo ${PACMAN_INSTALL} solaar
 
 # Multimedia
 sudo ${PACMAN_INSTALL} handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
-sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi vpl-gpu-rt libva-utils
+sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
 # Network
 sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
