@@ -12,7 +12,7 @@ Given the decision was made to not support a GUI installer for a long time, Arch
 * Using an ASUS motherboard
 * Using two identical HDDs in a LUKS-encrypted ZFS mirror mounted at /srv
 
-The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying parameters.sh and then modify other files from there.
+The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying common.sh and then modify other files from there.
 
 ## Assumptions
 

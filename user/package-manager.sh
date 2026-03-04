@@ -2,7 +2,7 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-. "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../common.sh"
 
 pacman_install git pkgfile
 gpg --recv-keys 910B8C499BED531B

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-. "${SCRIPT_DIR}/../../parameters.sh"
+. "${SCRIPT_DIR}/../../common.sh"
 
 local_packages=(otf-noto-fonts otf-noto-fonts-cjk)
 for local_package in "${local_packages[@]}"; do

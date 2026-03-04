@@ -2,7 +2,7 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-. "${SCRIPT_DIR}/../../parameters.sh"
+. "${SCRIPT_DIR}/../../common.sh"
 
 configs=(printing yubi optical)
 for config in "${configs[@]}"; do

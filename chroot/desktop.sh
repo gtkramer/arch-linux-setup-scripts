@@ -2,7 +2,7 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-. "${SCRIPT_DIR}/../parameters.sh"
+. "${SCRIPT_DIR}/../common.sh"
 
 # Video capabilities
 pacman_install xorg-server xorg-xeyes nvidia-open-lts nvidia-utils vulkan-tools

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-. "${SCRIPT_DIR}/../../parameters.sh"
+. "${SCRIPT_DIR}/../../common.sh"
 
 pacman_install emby-server tesseract-data-eng
 sudo systemctl enable --now emby-server
