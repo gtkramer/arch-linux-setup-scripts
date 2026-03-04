@@ -11,6 +11,15 @@ readonly LOCALE=en_US.UTF-8
 readonly KEY_MAP=us
 readonly COUNTRY_MIRROR='United States'
 
+die() {
+    echo "ERROR: ${1}" >&2
+    exit 1
+}
+
+warn() {
+    echo "WARNING: ${1}" >&2
+}
+
 _run_as_root() {
     if [[ ${EUID} -eq 0 ]]; then
         "$@"

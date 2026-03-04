@@ -30,29 +30,26 @@ while getopts "dch" opt; do
             exit 0
             ;;
         \?)
-            echo "Invalid option: -${OPTARG}" >&2
             usage >&2
-            exit 1
+            die "Invalid option: -${OPTARG}"
             ;;
     esac
 done
 shift $((OPTIND - 1))
 
 if [[ $# -lt 1 ]]; then
-    echo "Error: Block device is required." >&2
     usage >&2
-    exit 1
+    die "Block device is required."
 fi
 
 block_dev="${1}"
 
 if [[ ! -e "${block_dev}" ]]; then
-    echo "Error: Block device ${block_dev} does not exist." >&2
-    exit 1
+    die "Block device ${block_dev} does not exist."
 fi
 
 if "${destroy_data}"; then
-    echo "WARNING: You have chosen to destroy all existing data. This operation is irreversible."
+    warn "You have chosen to destroy all existing data. This operation is irreversible."
     echo "If you wish to abort this operation, press Ctrl+C within the next 5 seconds."
     sleep 5s
 fi
@@ -67,8 +64,7 @@ if "${destroy_data}"; then
     block_end_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
     sgdisk -n 2:0:$(( block_end_sector - (block_end_sector + 1) % 2048 )) -t 2:8309 -c 2:crypt "${block_dev}"
     if ! sgdisk -v "${block_dev}"; then
-        echo "Physical partitions failed verification for ${block_dev}" >&2
-        exit 1
+        die "Physical partitions failed verification for ${block_dev}"
     fi
 fi
 
@@ -113,8 +109,7 @@ else
     done
 fi
 if [[ ! -e "${vol_dev}" ]]; then
-    echo "${vol_dev} volume device does not exist" >&2
-    exit 1
+    die "${vol_dev} volume device does not exist"
 fi
 
 # Create file systems

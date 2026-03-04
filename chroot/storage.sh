@@ -48,35 +48,30 @@ while getopts "h" opt; do
             exit 0
             ;;
         \?)
-            echo "Invalid option: -${OPTARG}" >&2
             usage >&2
-            exit 1
+            die "Invalid option: -${OPTARG}"
             ;;
     esac
 done
 shift $((OPTIND - 1))
 
 if [[ $# -lt 2 ]]; then
-    echo "Error: Two block devices are required." >&2
     usage >&2
-    exit 1
+    die "Two block devices are required."
 fi
 
 if [[ ! -e "${1}" ]]; then
-    echo "Error: Block device ${1} does not exist." >&2
-    exit 1
+    die "Block device ${1} does not exist."
 fi
 if [[ ! -e "${2}" ]]; then
-    echo "Error: Block device ${2} does not exist." >&2
-    exit 1
+    die "Block device ${2} does not exist."
 fi
 
 srv_dev_1="$(realpath "${1}")"
 srv_dev_2="$(realpath "${2}")"
 
 if [[ "${srv_dev_1}" == "${srv_dev_2}" ]]; then
-    echo "Error: Both arguments resolve to the same device: ${srv_dev_1}" >&2
-    exit 1
+    die "Both arguments resolve to the same device: ${srv_dev_1}"
 fi
 
 srv_devs=("${srv_dev_1}" "${srv_dev_2}")
@@ -86,7 +81,7 @@ declare -A srv_luks_map=(
     ["${srv_dev_2}"]=cryptsrv1
 )
 
-echo "WARNING: This will DESTROY ALL DATA on the following drives:"
+warn "This will DESTROY ALL DATA on the following drives:"
 echo "  ${srv_devs[0]}"
 echo "  ${srv_devs[1]}"
 echo "If you wish to abort, press Ctrl+C within the next 10 seconds."
@@ -109,8 +104,7 @@ for disk in "${!srv_luks_map[@]}"; do
     end_sector="$(sgdisk -E "${disk}" | grep -P '^\d+$')"
     sgdisk -n 1:0:$(( end_sector - (end_sector + 1) % 2048 )) -t 1:8309 -c 1:"${name}" "${disk}"
     if ! sgdisk -v "${disk}"; then
-        echo "Physical partitions failed verification for ${disk}" >&2
-        exit 1
+        die "Physical partitions failed verification for ${disk}"
     fi
 
     # Determine the partition device path
@@ -127,8 +121,7 @@ for disk in "${!srv_luks_map[@]}"; do
         sleep 1s
     done
     if [[ ! -e "${part}" ]]; then
-        echo "Error: Partition ${part} did not appear." >&2
-        exit 1
+        die "Partition ${part} did not appear."
     fi
 
     srv_parts["${disk}"]="${part}"
