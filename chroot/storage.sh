@@ -246,6 +246,33 @@ systemctl enable zfs-import-cache
 systemctl enable zfs-mount
 systemctl enable zfs.target
 
+# ---------------------------------------------------------------------------
+# Monthly ZFS scrub timer to detect and correct silent data corruption
+# ---------------------------------------------------------------------------
+cat > /etc/systemd/system/zfs-scrub@.timer <<'EOF'
+[Unit]
+Description=Monthly ZFS scrub on %i
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+cat > /etc/systemd/system/zfs-scrub@.service <<'EOF'
+[Unit]
+Description=ZFS scrub on %i
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/zpool scrub %i
+EOF
+
+systemctl daemon-reload
+systemctl enable zfs-scrub@${ZFS_POOL}.timer
+
 echo ""
 echo "========================================"
 echo " ZFS storage setup complete"
@@ -254,6 +281,8 @@ echo " Pool:    ${ZFS_POOL} (mirror)"
 echo " Mount:   ${ZFS_MOUNT}"
 echo " Drives:  ${srv_devs[*]}"
 echo " ARC max: $(( ARC_MAX_BYTES / 1024 / 1024 / 1024 )) GB"
+echo " Scrub:   monthly (zfs-scrub@${ZFS_POOL}.timer)"
+echo " SMART:   enabled (smartd)"
 echo ""
 echo " Reboot for sd-encrypt to auto-unlock"
 echo " these drives with your boot passphrase."
