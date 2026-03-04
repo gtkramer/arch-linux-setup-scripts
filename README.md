@@ -10,12 +10,14 @@ Given the decision was made to not support a GUI installer for a long time, Arch
   * Excellent gaming performance to replace a console
   * Excellent video encoding performance to back up optical media
 * Using an ASUS motherboard
+* Using two identical HDDs in a LUKS-encrypted ZFS mirror mounted at /srv
 
 The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying parameters.sh and then modify other files from there.
 
 ## Assumptions
 
 * A wired internet connection is available and used for the entire process
+* Two identical HDDs are installed for ZFS mirror storage — identify them with `lsblk` or `ls -l /dev/disk/by-id/`
 
 ## Process Overview
 
@@ -83,7 +85,17 @@ cd /mnt/chroot
 reboot
 ```
 
+Optionally, set up the LUKS-encrypted ZFS mirror for `/srv`.  This can be done at any time, not just during initial setup.  Use the same passphrase as the boot drive so that systemd's `sd-encrypt` hook can unlock all LUKS volumes with a single prompt at boot.
+
+```
+cd /mnt/chroot
+./storage.sh -s /dev/sdA -t /dev/sdB
+reboot
+```
+
 Upon logging into the desktop, execute the desired scripts from the user folder.
+
+The ZFS mirror pool is mounted at `/srv` and will auto-unlock and auto-mount on every subsequent boot (only one passphrase prompt).
 
 ## Post Installation
 
