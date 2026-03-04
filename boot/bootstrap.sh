@@ -47,15 +47,10 @@ if [[ ! -e "${BLOCK_DEV}" ]]; then
     exit 1
 fi
 
-# Configure boot via systemd-boot
+# Configure bootloader
 bootctl install
 
 mkdir -p /boot/loader/entries
-cat > /boot/loader/loader.conf <<'EOF'
-default arch-lts.conf
-timeout 3
-editor  no
-EOF
 
 cat > /boot/loader/entries/arch-lts.conf <<EOF
 title   Arch Linux (LTS)
@@ -71,7 +66,26 @@ initrd  /initramfs-linux-lts-fallback.img
 options root=/dev/mapper/vg0-root quiet
 EOF
 
-# Configure hooks
+cat > /boot/loader/loader.conf <<'EOF'
+default arch-lts.conf
+timeout 3
+editor  no
+EOF
+
+mkdir -p /etc/pacman.d/hooks
+cat > /etc/pacman.d/hooks/95-systemd-boot.hook <<EOF
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = systemd
+
+[Action]
+Description = Gracefully upgrading systemd-boot...
+When = PostTransaction
+Exec = /usr/bin/systemctl restart systemd-boot-update.service
+EOF
+
+# Configure boot hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
 touch /etc/vconsole.conf
 echo 'HOOKS=(systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
