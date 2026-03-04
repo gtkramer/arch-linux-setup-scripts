@@ -7,23 +7,18 @@ readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 usage() {
     local script_name
     script_name="$(basename "${0}")"
-    echo "Usage: ${script_name} -b <block device> [-d]"
+    echo "Usage: ${script_name} [-d] [-c] <block device>"
     echo
-    echo "  -b  Specify the block device"
     echo "  -d  Destroy all existing data"
     echo "  -c  Clean dot files and folders for all users in /home partition"
     echo "  -h  Show this help message"
 }
 
 # Parse parameters
-block_dev=""
 destroy_data=false
 clean_dot=false
-while getopts "b:dch" opt; do
+while getopts "dch" opt; do
     case "${opt}" in
-        b)
-            block_dev="${OPTARG}"
-            ;;
         d)
             destroy_data=true
             ;;
@@ -39,19 +34,18 @@ while getopts "b:dch" opt; do
             usage >&2
             exit 1
             ;;
-        :)
-            echo "Option -${OPTARG} requires an argument." >&2
-            usage >&2
-            exit 1
-            ;;
     esac
 done
+shift $((OPTIND - 1))
 
-if [[ -z "${block_dev}" ]]; then
+if [[ $# -lt 1 ]]; then
     echo "Error: Block device is required." >&2
     usage >&2
     exit 1
 fi
+
+block_dev="${1}"
+
 if [[ ! -e "${block_dev}" ]]; then
     echo "Error: Block device ${block_dev} does not exist." >&2
     exit 1

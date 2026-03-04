@@ -4,49 +4,6 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-usage() {
-    local script_name
-    script_name="$(basename "${0}")"
-    echo "Usage: ${script_name} -b <block device>"
-    echo
-    echo "  -b  Specify the block device"
-    echo "  -h  Show this help message"
-}
-
-# Parse parameters
-BLOCK_DEV=""
-while getopts "b:h" opt; do
-    case "${opt}" in
-        b)
-            BLOCK_DEV="${OPTARG}"
-            ;;
-        h)
-            usage
-            exit 0
-            ;;
-        \?)
-            echo "Invalid option: -${OPTARG}" >&2
-            usage >&2
-            exit 1
-            ;;
-        :)
-            echo "Option -${OPTARG} requires an argument." >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
-done
-
-if [[ -z "${BLOCK_DEV}" ]]; then
-    echo "Error: Block device is required." >&2
-    usage >&2
-    exit 1
-fi
-if [[ ! -e "${BLOCK_DEV}" ]]; then
-    echo "Error: Block device ${BLOCK_DEV} does not exist." >&2
-    exit 1
-fi
-
 # Configure bootloader
 bootctl install
 

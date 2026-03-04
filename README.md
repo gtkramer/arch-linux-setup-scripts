@@ -65,13 +65,13 @@ cd ~
 mkdir files
 mount /dev/sdX files
 cd files/boot
-./install.sh -b <block device>
+./install.sh <block device>
 cd ~
 umount files
 arch-chroot /mnt
 mount /dev/sdX /mnt
 cd /mnt/boot
-./bootstrap.sh -b <block device>
+./bootstrap.sh
 exit
 reboot
 ```
@@ -89,7 +89,7 @@ Optionally, set up the LUKS-encrypted ZFS mirror for `/srv`.  This can be done a
 
 ```
 cd /mnt/chroot
-./storage.sh -s /dev/sdA -t /dev/sdB
+./storage.sh /dev/sdA /dev/sdB
 reboot
 ```
 

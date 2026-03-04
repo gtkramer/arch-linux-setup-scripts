@@ -32,26 +32,17 @@ readonly ARC_MAX_BYTES=17179869184  # 16 GB
 usage() {
     local script_name
     script_name="$(basename "${0}")"
-    echo "Usage: ${script_name} -s <block device> -t <block device>"
+    echo "Usage: ${script_name} <block device 1> <block device 2>"
     echo
-    echo "  -s  First storage HDD  (e.g. /dev/sda)"
-    echo "  -t  Second storage HDD (e.g. /dev/sdb)"
+    echo "  Two storage HDDs to form a LUKS-encrypted ZFS mirror (e.g. /dev/sda /dev/sdb)"
     echo "  -h  Show this help message"
 }
 
 # ---------------------------------------------------------------------------
 # Parse parameters
 # ---------------------------------------------------------------------------
-srv_dev_1=""
-srv_dev_2=""
-while getopts "s:t:h" opt; do
+while getopts "h" opt; do
     case "${opt}" in
-        s)
-            srv_dev_1="${OPTARG}"
-            ;;
-        t)
-            srv_dev_2="${OPTARG}"
-            ;;
         h)
             usage
             exit 0
@@ -61,27 +52,21 @@ while getopts "s:t:h" opt; do
             usage >&2
             exit 1
             ;;
-        :)
-            echo "Option -${OPTARG} requires an argument." >&2
-            usage >&2
-            exit 1
-            ;;
     esac
 done
+shift $((OPTIND - 1))
 
-if [[ -z "${srv_dev_1}" ]]; then
-    echo "Error: First storage device (-s) is required." >&2
+if [[ $# -lt 2 ]]; then
+    echo "Error: Two block devices are required." >&2
     usage >&2
     exit 1
 fi
+
+srv_dev_1="${1}"
+srv_dev_2="${2}"
+
 if [[ ! -e "${srv_dev_1}" ]]; then
     echo "Error: Block device ${srv_dev_1} does not exist." >&2
-    exit 1
-fi
-
-if [[ -z "${srv_dev_2}" ]]; then
-    echo "Error: Second storage device (-t) is required." >&2
-    usage >&2
     exit 1
 fi
 if [[ ! -e "${srv_dev_2}" ]]; then
