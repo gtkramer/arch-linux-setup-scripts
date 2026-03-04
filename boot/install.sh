@@ -61,73 +61,73 @@ timedatectl set-ntp true
 if "${destroy_data}"; then
     sgdisk -Z "${block_dev}"
     sgdisk -n 1:1M:+512M -t 1:ef00 -c 1:boot "${block_dev}"
-    block_end_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
-    sgdisk -n 2:0:$(( block_end_sector - (block_end_sector + 1) % 2048 )) -t 2:8309 -c 2:crypt "${block_dev}"
+    last_usable_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
+    sgdisk -n 2:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 )) -t 2:8309 -c 2:crypt "${block_dev}"
     if ! sgdisk -v "${block_dev}"; then
         die "Physical partitions failed verification for ${block_dev}"
     fi
 fi
 
 if [[ ${block_dev} =~ ^/dev/nvme ]]; then
-    block_part_prefix=p
+    part_separator=p
 else
-    block_part_prefix=""
+    part_separator=""
 fi
-boot_part="${block_dev}${block_part_prefix}1"
-crypt_part="${block_dev}${block_part_prefix}2"
+boot_part_dev="${block_dev}${part_separator}1"
+luks_part_dev="${block_dev}${part_separator}2"
 
-# Set up crypt device
+# Set up LUKS device
 if "${destroy_data}"; then
-    cryptsetup -y -v luksFormat "${crypt_part}"
+    cryptsetup -y -v luksFormat "${luks_part_dev}"
 fi
-crypt_dev=/dev/mapper/crypt
-if [[ ! -e "${crypt_dev}" ]]; then
+luks_dev=/dev/mapper/crypt
+if [[ ! -e "${luks_dev}" ]]; then
     if [[ "$(cat "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
-        block_crypt_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
+        luks_open_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
-        block_crypt_opts=()
+        luks_open_opts=()
     fi
-    cryptsetup "${block_crypt_opts[@]}" --persistent open "${crypt_part}" crypt
+    cryptsetup "${luks_open_opts[@]}" --persistent open "${luks_part_dev}" crypt
 fi
 
-vol_group=vg0
-vol_dev="/dev/${vol_group}"
+vg_name=vg0
+vg_dev="/dev/${vg_name}"
 if "${destroy_data}"; then
-    pvcreate "${crypt_dev}"
-    vgcreate "${vol_group}" "${crypt_dev}"
+    pvcreate "${luks_dev}"
+    vgcreate "${vg_name}" "${luks_dev}"
 
     mem_total="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
-    lvcreate -L "${mem_total}K" "${vol_group}" -n swap
-    lvcreate -L 64G "${vol_group}" -n root
-    lvcreate -l 100%FREE "${vol_group}" -n home
+    lvcreate -L "${mem_total}K" "${vg_name}" -n swap
+    lvcreate -L 64G "${vg_name}" -n root
+    lvcreate -l 100%FREE "${vg_name}" -n home
 else
     for _ in {1..10}; do
-        if [[ -e "${vol_dev}" ]]; then
+        if [[ -e "${vg_dev}" ]]; then
             break
         fi
         sleep 1s
     done
 fi
-if [[ ! -e "${vol_dev}" ]]; then
-    die "${vol_dev} volume device does not exist"
+if [[ ! -e "${vg_dev}" ]]; then
+    die "${vg_dev} volume device does not exist"
 fi
 
 # Create file systems
-mkfs.fat -F32 "${boot_part}"
-mkfs.ext4 -F "${vol_dev}/root"
+mkfs.fat -F32 "${boot_part_dev}"
+mkfs.ext4 -F "${vg_dev}/root"
 if "${destroy_data}"; then
-    mkfs.ext4 -F "${vol_dev}/home"
+    mkfs.ext4 -F "${vg_dev}/home"
 fi
-mkswap "${vol_dev}/swap"
+mkswap "${vg_dev}/swap"
 
 # Mount file systems
 mkdir -p /mnt
-mount "${vol_dev}/root" /mnt
+mount "${vg_dev}/root" /mnt
 mkdir -p /mnt/boot
-mount "${boot_part}" /mnt/boot
+mount "${boot_part_dev}" /mnt/boot
 mkdir -p /mnt/home
-mount "${vol_dev}/home" /mnt/home
-swapon "${vol_dev}/swap"
+mount "${vg_dev}/home" /mnt/home
+swapon "${vg_dev}/swap"
 
 # Configure mirrors
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
@@ -140,8 +140,8 @@ fstab_file=/mnt/etc/fstab
 genfstab -U /mnt >> "${fstab_file}"
 
 crypttab_file=/mnt/etc/crypttab.initramfs
-crypt_uuid="$(cryptsetup luksUUID "${crypt_part}")"
-echo "crypt       UUID=${crypt_uuid}    none    luks" > "${crypttab_file}"
+luks_uuid="$(cryptsetup luksUUID "${luks_part_dev}")"
+echo "crypt       UUID=${luks_uuid}    none    luks" > "${crypttab_file}"
 
 # Post install cleanup of dot files and folders in /home partition for all users
 if "${clean_dot}"; then
