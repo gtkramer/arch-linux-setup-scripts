@@ -272,18 +272,3 @@ EOF
 
 systemctl daemon-reload
 systemctl enable zfs-scrub@${ZFS_POOL}.timer
-
-echo ""
-echo "========================================"
-echo " ZFS storage setup complete"
-echo "========================================"
-echo " Pool:    ${ZFS_POOL} (mirror)"
-echo " Mount:   ${ZFS_MOUNT}"
-echo " Drives:  ${srv_devs[*]}"
-echo " ARC max: $(( ARC_MAX_BYTES / 1024 / 1024 / 1024 )) GB"
-echo " Scrub:   monthly (zfs-scrub@${ZFS_POOL}.timer)"
-echo " SMART:   enabled (smartd)"
-echo ""
-echo " Reboot for sd-encrypt to auto-unlock"
-echo " these drives with your boot passphrase."
-echo "========================================"
