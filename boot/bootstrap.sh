@@ -47,17 +47,35 @@ if [[ ! -e "${BLOCK_DEV}" ]]; then
     exit 1
 fi
 
-# Configure boot
-efibootmgr | sed -nr 's/^Boot([0-9A-Fa-f]{4}).*Linux.*$/\1/Ip' | while read -r boot_num; do
-    efibootmgr -b "${boot_num}" -B
-done
-efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'root=/dev/mapper/vg0-root initrd=/initramfs-linux.img quiet'
+# Configure boot via systemd-boot
+bootctl install
+
+mkdir -p /boot/loader/entries
+cat > /boot/loader/loader.conf <<'EOF'
+default arch-lts.conf
+timeout 3
+editor  no
+EOF
+
+cat > /boot/loader/entries/arch-lts.conf <<EOF
+title   Arch Linux (LTS)
+linux   /vmlinuz-linux-lts
+initrd  /initramfs-linux-lts.img
+options root=/dev/mapper/vg0-root quiet
+EOF
+
+cat > /boot/loader/entries/arch-lts-fallback.conf <<EOF
+title   Arch Linux (LTS Fallback)
+linux   /vmlinuz-linux-lts
+initrd  /initramfs-linux-lts-fallback.img
+options root=/dev/mapper/vg0-root quiet
+EOF
 
 # Configure hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
 touch /etc/vconsole.conf
 echo 'HOOKS=(systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
-mkinitcpio -p linux
+mkinitcpio -p linux-lts
 
 # Set up passwordless authentication based on group membership
 mkdir -p /etc/sudoers.d
