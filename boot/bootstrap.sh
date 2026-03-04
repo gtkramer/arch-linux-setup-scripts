@@ -77,19 +77,10 @@ touch /etc/vconsole.conf
 echo 'HOOKS=(systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -p linux-lts
 
-# Set up passwordless authentication based on group membership
+# Require password for privilege escalation
 mkdir -p /etc/sudoers.d
-echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
+echo '%wheel ALL=(ALL:ALL) ALL' > /etc/sudoers.d/wheel
 chmod 440 /etc/sudoers.d/wheel
-
-mkdir -p /etc/polkit-1/rules.d
-cat > /etc/polkit-1/rules.d/49-nopasswd_global.rules <<EOF
-polkit.addRule(function(action, subject) {
-    if (subject.isInGroup("wheel")) {
-        return polkit.Result.YES;
-    }
-});
-EOF
 
 # Create users and set passwords
 echo "Set password for root"
