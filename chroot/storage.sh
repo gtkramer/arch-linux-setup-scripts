@@ -62,15 +62,20 @@ if [[ $# -lt 2 ]]; then
     exit 1
 fi
 
-srv_dev_1="${1}"
-srv_dev_2="${2}"
-
-if [[ ! -e "${srv_dev_1}" ]]; then
-    echo "Error: Block device ${srv_dev_1} does not exist." >&2
+if [[ ! -e "${1}" ]]; then
+    echo "Error: Block device ${1} does not exist." >&2
     exit 1
 fi
-if [[ ! -e "${srv_dev_2}" ]]; then
-    echo "Error: Block device ${srv_dev_2} does not exist." >&2
+if [[ ! -e "${2}" ]]; then
+    echo "Error: Block device ${2} does not exist." >&2
+    exit 1
+fi
+
+srv_dev_1="$(realpath "${1}")"
+srv_dev_2="$(realpath "${2}")"
+
+if [[ "${srv_dev_1}" == "${srv_dev_2}" ]]; then
+    echo "Error: Both arguments resolve to the same device: ${srv_dev_1}" >&2
     exit 1
 fi
 
