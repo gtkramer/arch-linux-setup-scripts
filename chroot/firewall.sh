@@ -12,3 +12,4 @@ ufw enable
 ufw default deny incoming
 ufw default deny forward
 ufw default allow outgoing
+ufw logging on
