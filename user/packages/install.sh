@@ -1,46 +1,45 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
 ## PRIMARY PACKAGES
 # Development
-sudo ${PACMAN_INSTALL} cmake meson clang lldb dotnet-sdk
+pacman_install cmake meson clang lldb dotnet-sdk
 
 # Graphics
-sudo ${PACMAN_INSTALL} hugin dcraw
-${AURMAN_INSTALL} pinta
+pacman_install hugin dcraw
+aurman_install pinta
 
 # Hardware
-sudo ${PACMAN_INSTALL} solaar
+pacman_install solaar
 
 # Multimedia
-sudo ${PACMAN_INSTALL} handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
-sudo ${PACMAN_INSTALL} gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+pacman_install handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
+pacman_install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
 
 # Network
-sudo ${PACMAN_INSTALL} gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
-${AURMAN_INSTALL} brave-bin
-sudo ${PACMAN_REMOVE_ALL} epiphany
+pacman_install gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
+aurman_install brave-bin
+pacman_remove_all epiphany
 
 # Office
-sudo ${PACMAN_INSTALL} libreoffice-fresh
+pacman_install libreoffice-fresh
 
 # System
-sudo ${PACMAN_INSTALL} gptfdisk dosfstools e2fsprogs exfatprogs ntfs-3g hdparm nvme-cli smartmontools mission-center gparted
-sudo ${PACMAN_REMOVE_ALL} gnome-system-monitor gnome-disk-utility
+pacman_install gptfdisk dosfstools e2fsprogs exfatprogs ntfs-3g hdparm nvme-cli smartmontools mission-center gparted
+pacman_remove_all gnome-system-monitor gnome-disk-utility
 
 # Utilities
-sudo ${PACMAN_INSTALL} p7zip man-db dmidecode rsync
+pacman_install p7zip man-db dmidecode rsync
 
 ## CUSTOM PACKAGES
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PACKAGES=(vim git visual-studio-code tresorit)
-for PACKAGE in "${PACKAGES[@]}"; do
-    PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}.sh"
-    if [ ! -e "${PACKAGE_PATH}" ]; then
-        PACKAGE_PATH="${SCRIPT_DIR}/${PACKAGE}/install.sh"
+packages=(vim git visual-studio-code tresorit)
+for package in "${packages[@]}"; do
+    package_path="${SCRIPT_DIR}/${package}.sh"
+    if [[ ! -e "${package_path}" ]]; then
+        package_path="${SCRIPT_DIR}/${package}/install.sh"
     fi
-    "${PACKAGE_PATH}"
+    "${package_path}"
 done

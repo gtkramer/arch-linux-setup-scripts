@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
-sudo ${PACMAN_INSTALL} vim
+pacman_install vim
 
-touch "${HOME}/.vimrc"
-truncate -s0 "${HOME}/.vimrc"
-echo 'set spell' >> "${HOME}/.vimrc"
-echo 'filetype plugin on' >> "${HOME}/.vimrc"
-echo 'syntax on' >> "${HOME}/.vimrc"
+cat > "${HOME}/.vimrc" <<'EOF'
+set spell
+filetype plugin on
+syntax on
+EOF

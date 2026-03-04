@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-sudo ${PACMAN_INSTALL} xdg-desktop-portal-gnome
+pacman_install xdg-desktop-portal-gnome
 
 sudo tee /etc/profile.d/xdg.sh > /dev/null <<EOF
 export XDG_CONFIG_HOME="\${HOME}/.config"

@@ -1,27 +1,38 @@
-export USERNAME=george
-export DISPLAY_NAME='George Kramer'
-export GIT_NAME="${DISPLAY_NAME}"
-export GIT_EMAIL=george.kramer@live.com
-export GIT_EDITOR=vim
-export TIMEZONE=America/Los_Angeles
-export HOSTNAME=tufb660mplus
-export LOCALE=en_US.UTF-8
-export KEYMAP=us
-export COUNTRY_MIRROR='United States'
-export PACMAN_REMOVE='pacman --noconfirm -Rdd'
-export PACMAN_INSTALL='pacman -Syu --noconfirm'
-export AURMAN_INSTALL='aurman -Syu --noconfirm --noedit'
-export PACMAN_REMOVE_ALL='pacman --noconfirm -Rns'
+#!/usr/bin/env bash
+
+readonly USER_NAME=george
+readonly DISPLAY_NAME='George Kramer'
+readonly GIT_NAME="${DISPLAY_NAME}"
+readonly GIT_EMAIL=george.kramer@live.com
+readonly GIT_EDITOR=vim
+readonly TIMEZONE=America/Los_Angeles
+readonly HOST_NAME=tufb660mplus
+readonly LOCALE=en_US.UTF-8
+readonly KEY_MAP=us
+readonly COUNTRY_MIRROR='United States'
+
+_run_as_root() {
+    if [[ ${EUID} -eq 0 ]]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
+}
+
+pacman_install() { _run_as_root pacman -Syu --noconfirm "$@"; }
+pacman_remove() { _run_as_root pacman --noconfirm -Rdd "$@"; }
+pacman_remove_all() { _run_as_root pacman --noconfirm -Rns "$@"; }
+aurman_install() { aurman -Syu --noconfirm --noedit "$@"; }
 
 manual_aur_install() {
     local git_url="${1}"
-    local extra_opts="${2}"
+    shift
 
     local temp_dir
     temp_dir="$(mktemp -d)"
     git clone "${git_url}" "${temp_dir}"
     pushd "${temp_dir}" || exit
-    makepkg --noconfirm -sri ${extra_opts}
+    makepkg --noconfirm -sri "$@"
     popd || exit
     rm -rf "${temp_dir}"
 }

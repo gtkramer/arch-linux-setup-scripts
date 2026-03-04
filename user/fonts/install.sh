@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
-LOCAL_PACKAGES=(otf-noto-fonts otf-noto-fonts-cjk)
-for LOCAL_PACKAGE in "${LOCAL_PACKAGES[@]}"; do
-    pushd "${SCRIPT_DIR}/${LOCAL_PACKAGE}"
+local_packages=(otf-noto-fonts otf-noto-fonts-cjk)
+for local_package in "${local_packages[@]}"; do
+    pushd "${SCRIPT_DIR}/${local_package}"
     makepkg --noconfirm -sri
     popd
 done
 
-sudo ${PACMAN_INSTALL} noto-fonts-{emoji,extra} otf-cascadia-code
-${AURMAN_INSTALL} ttf-ms-fonts
+pacman_install noto-fonts-{emoji,extra} otf-cascadia-code
+aurman_install ttf-ms-fonts
 
 sudo cp -f "${SCRIPT_DIR}/99-generic-family.conf" "${SCRIPT_DIR}/98-gnome.conf" /usr/share/fontconfig/conf.avail
 sudo ln -sf /usr/share/fontconfig/conf.avail/99-generic-family.conf /etc/fonts/conf.d

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../parameters.sh"
 
-CONFIGS=(printing yubi optical)
-for CONFIG in "${CONFIGS[@]}"; do
-    CONFIG_PATH="${SCRIPT_DIR}/${CONFIG}.sh"
-    if [ ! -e "${CONFIG_PATH}" ]; then
-        CONFIG_PATH="${SCRIPT_DIR}/${CONFIG}/install.sh"
+configs=(printing yubi optical)
+for config in "${configs[@]}"; do
+    config_path="${SCRIPT_DIR}/${config}.sh"
+    if [[ ! -e "${config_path}" ]]; then
+        config_path="${SCRIPT_DIR}/${config}/install.sh"
     fi
-    "${CONFIG_PATH}"
+    "${config_path}"
 done

@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 # Video capabilities
-${PACMAN_INSTALL} xorg-server xorg-xeyes nvidia-open-lts nvidia-utils vulkan-tools
+pacman_install xorg-server xorg-xeyes nvidia-open-lts nvidia-utils vulkan-tools
 
 # Audio capabilities
-${PACMAN_INSTALL} pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
+pacman_install pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 
 # Desktop environment
-${PACMAN_INSTALL} gnome gnome-tweaks gnome-firmware
-${PACMAN_REMOVE_ALL} gnome-software
+pacman_install gnome gnome-tweaks gnome-firmware
+pacman_remove_all gnome-software
 
 # Display manager
-${PACMAN_INSTALL} gdm
+pacman_install gdm
 systemctl enable gdm

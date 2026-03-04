@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-sudo ${PACMAN_INSTALL} git pkgfile
+pacman_install git pkgfile
 gpg --recv-keys 910B8C499BED531B
 manual_aur_install https://aur.archlinux.org/aurman.git
 
-sudo ${PACMAN_INSTALL} reflector
+pacman_install reflector
 sudo mkdir -p /etc/xdg/reflector
 sudo tee /etc/xdg/reflector/reflector.conf <<EOF
 --save /etc/pacman.d/mirrorlist

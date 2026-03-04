@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-sudo ${PACMAN_INSTALL} dconf-editor
+pacman_install dconf-editor
 
 # Configure themes and fonts for GNOME desktop
 gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'

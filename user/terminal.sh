@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-sudo ${PACMAN_INSTALL} powerline powerline-fonts vte-common
+pacman_install powerline powerline-fonts vte-common
 
 touch "${HOME}/.bashrc"
 if ! grep -q powerline-daemon "${HOME}/.bashrc"; then

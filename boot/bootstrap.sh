@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 usage() {
@@ -48,8 +48,8 @@ if [[ ! -e "${BLOCK_DEV}" ]]; then
 fi
 
 # Configure boot
-efibootmgr | sed -nr 's/^Boot([0-9A-Fa-f]{4}).*Linux.*$/\1/Ip' | while read -r BOOT_NUM; do
-    efibootmgr -b "${BOOT_NUM}" -B
+efibootmgr | sed -nr 's/^Boot([0-9A-Fa-f]{4}).*Linux.*$/\1/Ip' | while read -r boot_num; do
+    efibootmgr -b "${boot_num}" -B
 done
 efibootmgr -c -d "${BLOCK_DEV}" -p 1 -L 'Arch Linux' -l /vmlinuz-linux -u 'root=/dev/mapper/vg0-root initrd=/initramfs-linux.img quiet'
 
@@ -77,9 +77,9 @@ EOF
 echo "Set password for root"
 passwd root
 
-useradd -m -G wheel -c "${DISPLAY_NAME}" "${USERNAME}"
-echo "Set password for ${USERNAME}"
-passwd "${USERNAME}"
+useradd -m -G wheel -c "${DISPLAY_NAME}" "${USER_NAME}"
+echo "Set password for ${USER_NAME}"
+passwd "${USER_NAME}"
 
 # Enable network to come up automatically
 systemctl enable NetworkManager

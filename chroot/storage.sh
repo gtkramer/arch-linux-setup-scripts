@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 # ============================================================================
@@ -25,9 +25,9 @@ SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 # if their physical connection points on the motherboard change.
 # ============================================================================
 
-ZFS_POOL=srv
-ZFS_MOUNT=/srv
-ARC_MAX_BYTES=17179869184  # 16 GB
+readonly ZFS_POOL=srv
+readonly ZFS_MOUNT=/srv
+readonly ARC_MAX_BYTES=17179869184  # 16 GB
 
 usage() {
     local script_name
@@ -42,15 +42,15 @@ usage() {
 # ---------------------------------------------------------------------------
 # Parse parameters
 # ---------------------------------------------------------------------------
-SRV_DEV_1=""
-SRV_DEV_2=""
+srv_dev_1=""
+srv_dev_2=""
 while getopts "s:t:h" opt; do
     case "${opt}" in
         s)
-            SRV_DEV_1="${OPTARG}"
+            srv_dev_1="${OPTARG}"
             ;;
         t)
-            SRV_DEV_2="${OPTARG}"
+            srv_dev_2="${OPTARG}"
             ;;
         h)
             usage
@@ -69,90 +69,90 @@ while getopts "s:t:h" opt; do
     esac
 done
 
-if [[ -z "${SRV_DEV_1}" ]]; then
+if [[ -z "${srv_dev_1}" ]]; then
     echo "Error: First storage device (-s) is required." >&2
     usage >&2
     exit 1
 fi
-if [[ ! -e "${SRV_DEV_1}" ]]; then
-    echo "Error: Block device ${SRV_DEV_1} does not exist." >&2
+if [[ ! -e "${srv_dev_1}" ]]; then
+    echo "Error: Block device ${srv_dev_1} does not exist." >&2
     exit 1
 fi
 
-if [[ -z "${SRV_DEV_2}" ]]; then
+if [[ -z "${srv_dev_2}" ]]; then
     echo "Error: Second storage device (-t) is required." >&2
     usage >&2
     exit 1
 fi
-if [[ ! -e "${SRV_DEV_2}" ]]; then
-    echo "Error: Block device ${SRV_DEV_2} does not exist." >&2
+if [[ ! -e "${srv_dev_2}" ]]; then
+    echo "Error: Block device ${srv_dev_2} does not exist." >&2
     exit 1
 fi
 
-SRV_DEVS=("${SRV_DEV_1}" "${SRV_DEV_2}")
+srv_devs=("${srv_dev_1}" "${srv_dev_2}")
 
-declare -A SRV_LUKS_MAP=(
-    ["${SRV_DEV_1}"]=cryptsrv0
-    ["${SRV_DEV_2}"]=cryptsrv1
+declare -A srv_luks_map=(
+    ["${srv_dev_1}"]=cryptsrv0
+    ["${srv_dev_2}"]=cryptsrv1
 )
 
 echo "WARNING: This will DESTROY ALL DATA on the following drives:"
-echo "  ${SRV_DEVS[0]}"
-echo "  ${SRV_DEVS[1]}"
+echo "  ${srv_devs[0]}"
+echo "  ${srv_devs[1]}"
 echo "If you wish to abort, press Ctrl+C within the next 10 seconds."
 sleep 10s
 
 # ---------------------------------------------------------------------------
 # Partition, encrypt, and open each storage drive
 # ---------------------------------------------------------------------------
-declare -A SRV_PARTS
-for DISK in "${!SRV_LUKS_MAP[@]}"; do
-    NAME="${SRV_LUKS_MAP[${DISK}]}"
+declare -A srv_parts
+for disk in "${!srv_luks_map[@]}"; do
+    name="${srv_luks_map[${disk}]}"
 
     echo ""
     echo "========================================"
-    echo " Setting up ${DISK} as ${NAME}"
+    echo " Setting up ${disk} as ${name}"
     echo "========================================"
 
     # Wipe and create a single partition spanning the full drive
-    sgdisk -Z "${DISK}"
-    END_SECTOR="$(sgdisk -E "${DISK}" | grep -P '^\d+$')"
-    sgdisk -n 1:0:$(( END_SECTOR - (END_SECTOR + 1) % 2048 )) -t 1:8309 -c 1:"${NAME}" "${DISK}"
-    if ! sgdisk -v "${DISK}"; then
-        echo "Physical partitions failed verification for ${DISK}" >&2
+    sgdisk -Z "${disk}"
+    end_sector="$(sgdisk -E "${disk}" | grep -P '^\d+$')"
+    sgdisk -n 1:0:$(( end_sector - (end_sector + 1) % 2048 )) -t 1:8309 -c 1:"${name}" "${disk}"
+    if ! sgdisk -v "${disk}"; then
+        echo "Physical partitions failed verification for ${disk}" >&2
         exit 1
     fi
 
     # Determine the partition device path
-    if [[ "${DISK}" =~ ^/dev/nvme ]]; then
-        PART="${DISK}p1"
+    if [[ "${disk}" =~ ^/dev/nvme ]]; then
+        part="${disk}p1"
     else
-        PART="${DISK}1"
+        part="${disk}1"
     fi
 
     # Wait for the partition device to appear
     udevadm settle
     for _ in {1..10}; do
-        [[ -e "${PART}" ]] && break
+        [[ -e "${part}" ]] && break
         sleep 1s
     done
-    if [[ ! -e "${PART}" ]]; then
-        echo "Error: Partition ${PART} did not appear." >&2
+    if [[ ! -e "${part}" ]]; then
+        echo "Error: Partition ${part} did not appear." >&2
         exit 1
     fi
 
-    SRV_PARTS["${DISK}"]="${PART}"
+    srv_parts["${disk}"]="${part}"
 
     # LUKS encrypt — cryptsetup prompts for a passphrase interactively
-    cryptsetup -y -v luksFormat "${PART}"
+    cryptsetup -y -v luksFormat "${part}"
 
     # Open the LUKS container
-    if [[ "$(cat "/sys/block/$(basename "${DISK}")/queue/rotational")" == 0 ]]; then
-        CRYPT_OPTS="--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue"
+    if [[ "$(cat "/sys/block/$(basename "${disk}")/queue/rotational")" == 0 ]]; then
+        crypt_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
-        CRYPT_OPTS=""
+        crypt_opts=()
     fi
-    cryptsetup ${CRYPT_OPTS} --persistent open "${PART}" "${NAME}"
+    cryptsetup "${crypt_opts[@]}" --persistent open "${part}" "${name}"
 done
 
 # ---------------------------------------------------------------------------
@@ -162,12 +162,12 @@ done
 # crypttab.initramfs, so using the same passphrase as the boot drive means
 # these volumes are unlocked without a second prompt.
 # ---------------------------------------------------------------------------
-CRYPTTAB_FILE=/etc/crypttab.initramfs
-for DISK in "${!SRV_LUKS_MAP[@]}"; do
-    NAME="${SRV_LUKS_MAP[${DISK}]}"
-    SRV_UUID="$(cryptsetup luksUUID "${SRV_PARTS[${DISK}]}")"
-    if ! grep -q "^${NAME}" "${CRYPTTAB_FILE}" 2>/dev/null; then
-        echo "${NAME}    UUID=${SRV_UUID}    none    luks" >> "${CRYPTTAB_FILE}"
+crypttab_file=/etc/crypttab.initramfs
+for disk in "${!srv_luks_map[@]}"; do
+    name="${srv_luks_map[${disk}]}"
+    srv_uuid="$(cryptsetup luksUUID "${srv_parts[${disk}]}")"
+    if ! grep -q "^${name}" "${crypttab_file}" 2>/dev/null; then
+        echo "${name}    UUID=${srv_uuid}    none    luks" >> "${crypttab_file}"
     fi
 done
 
@@ -189,7 +189,7 @@ Server = https://archzfs.com/$repo/$arch
 EOF
 fi
 
-${PACMAN_INSTALL} zfs-linux-lts zfs-utils
+pacman_install zfs-linux-lts zfs-utils
 
 # ---------------------------------------------------------------------------
 # Limit ARC cache to 16 GB so the remaining RAM is available for applications
@@ -203,9 +203,9 @@ modprobe zfs
 # ---------------------------------------------------------------------------
 # Create ZFS mirror pool with settings optimized for large video files
 # ---------------------------------------------------------------------------
-MAPPER_DEVS=()
-for NAME in "${SRV_LUKS_MAP[@]}"; do
-    MAPPER_DEVS+=("/dev/mapper/${NAME}")
+mapper_devs=()
+for name in "${srv_luks_map[@]}"; do
+    mapper_devs+=("/dev/mapper/${name}")
 done
 
 zpool create -f \
@@ -218,9 +218,9 @@ zpool create -f \
     -O compression=lz4 \
     -O recordsize=1M \
     -m "${ZFS_MOUNT}" \
-    "${ZFS_POOL}" mirror "${MAPPER_DEVS[@]}"
+    "${ZFS_POOL}" mirror "${mapper_devs[@]}"
 
-chown "${USERNAME}":"${USERNAME}" "${ZFS_MOUNT}"
+chown "${USER_NAME}":"${USER_NAME}" "${ZFS_MOUNT}"
 
 # ---------------------------------------------------------------------------
 # Persist the ZFS pool cache so it is auto-imported on boot
@@ -252,7 +252,7 @@ echo " ZFS storage setup complete"
 echo "========================================"
 echo " Pool:    ${ZFS_POOL} (mirror)"
 echo " Mount:   ${ZFS_MOUNT}"
-echo " Drives:  ${SRV_DEVS[*]}"
+echo " Drives:  ${srv_devs[*]}"
 echo " ARC max: $(( ARC_MAX_BYTES / 1024 / 1024 / 1024 )) GB"
 echo ""
 echo " Reboot for sd-encrypt to auto-unlock"

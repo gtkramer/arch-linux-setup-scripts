@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../../parameters.sh"
 
-${AURMAN_INSTALL} visual-studio-code-bin
+aurman_install visual-studio-code-bin
 
 mkdir -p "${HOME}/.config/Code/User"
 cp -f "${SCRIPT_DIR}/settings.json" "${HOME}/.config/Code/User"

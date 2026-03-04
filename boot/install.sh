@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
 usage() {
@@ -16,19 +16,19 @@ usage() {
 }
 
 # Parse parameters
-BLOCK_DEV=""
-DESTROY_DATA=false
-CLEAN_DOT=false
+block_dev=""
+destroy_data=false
+clean_dot=false
 while getopts "b:dch" opt; do
     case "${opt}" in
         b)
-            BLOCK_DEV="${OPTARG}"
+            block_dev="${OPTARG}"
             ;;
         d)
-            DESTROY_DATA=true
+            destroy_data=true
             ;;
         c)
-            CLEAN_DOT=true
+            clean_dot=true
             ;;
         h)
             usage
@@ -47,17 +47,17 @@ while getopts "b:dch" opt; do
     esac
 done
 
-if [[ -z "${BLOCK_DEV}" ]]; then
+if [[ -z "${block_dev}" ]]; then
     echo "Error: Block device is required." >&2
     usage >&2
     exit 1
 fi
-if [[ ! -e "${BLOCK_DEV}" ]]; then
-    echo "Error: Block device ${BLOCK_DEV} does not exist." >&2
+if [[ ! -e "${block_dev}" ]]; then
+    echo "Error: Block device ${block_dev} does not exist." >&2
     exit 1
 fi
 
-if "${DESTROY_DATA}"; then
+if "${destroy_data}"; then
     echo "WARNING: You have chosen to destroy all existing data. This operation is irreversible."
     echo "If you wish to abort this operation, press Ctrl+C within the next 5 seconds."
     sleep 5s
@@ -67,78 +67,78 @@ fi
 timedatectl set-ntp true
 
 # Create physical partitions
-if "${DESTROY_DATA}"; then
-    sgdisk -Z "${BLOCK_DEV}"
-    sgdisk -n 1:1M:+512M -t 1:ef00 -c 1:boot "${BLOCK_DEV}"
-    BLOCK_END_SECTOR="$(sgdisk -E "${BLOCK_DEV}" | grep -P '^\d+$')"
-    sgdisk -n 2:0:$(( BLOCK_END_SECTOR - (BLOCK_END_SECTOR + 1) % 2048 )) -t 2:8309 -c 2:crypt "${BLOCK_DEV}"
-    if ! sgdisk -v "${BLOCK_DEV}"; then
-        echo "Physical partitions failed verification for ${BLOCK_DEV}" >&2
+if "${destroy_data}"; then
+    sgdisk -Z "${block_dev}"
+    sgdisk -n 1:1M:+512M -t 1:ef00 -c 1:boot "${block_dev}"
+    block_end_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
+    sgdisk -n 2:0:$(( block_end_sector - (block_end_sector + 1) % 2048 )) -t 2:8309 -c 2:crypt "${block_dev}"
+    if ! sgdisk -v "${block_dev}"; then
+        echo "Physical partitions failed verification for ${block_dev}" >&2
         exit 1
     fi
 fi
 
-if [[ ${BLOCK_DEV} =~ ^/dev/nvme ]]; then
-    BLOCK_PART_PREFIX=p
+if [[ ${block_dev} =~ ^/dev/nvme ]]; then
+    block_part_prefix=p
 else
-    BLOCK_PART_PREFIX=""
+    block_part_prefix=""
 fi
-BOOT_PART="${BLOCK_DEV}${BLOCK_PART_PREFIX}1"
-CRYPT_PART="${BLOCK_DEV}${BLOCK_PART_PREFIX}2"
+boot_part="${block_dev}${block_part_prefix}1"
+crypt_part="${block_dev}${block_part_prefix}2"
 
 # Set up crypt device
-if "${DESTROY_DATA}"; then
-    cryptsetup -y -v luksFormat "${CRYPT_PART}"
+if "${destroy_data}"; then
+    cryptsetup -y -v luksFormat "${crypt_part}"
 fi
-CRYPT_DEV=/dev/mapper/crypt
-if [[ ! -e "${CRYPT_DEV}" ]]; then
-    if [[ "$(cat "/sys/block/$(basename "${BLOCK_DEV}")/queue/rotational")" == 0 ]]; then
-        BLOCK_CRYPT_OPTS="--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue"
+crypt_dev=/dev/mapper/crypt
+if [[ ! -e "${crypt_dev}" ]]; then
+    if [[ "$(cat "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
+        block_crypt_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
-        BLOCK_CRYPT_OPTS=""
+        block_crypt_opts=()
     fi
-    cryptsetup ${BLOCK_CRYPT_OPTS} --persistent open "${CRYPT_PART}" crypt
+    cryptsetup "${block_crypt_opts[@]}" --persistent open "${crypt_part}" crypt
 fi
 
-VOL_GROUP=vg0
-VOL_DEV="/dev/${VOL_GROUP}"
-if "${DESTROY_DATA}"; then
-    pvcreate "${CRYPT_DEV}"
-    vgcreate "${VOL_GROUP}" "${CRYPT_DEV}"
+vol_group=vg0
+vol_dev="/dev/${vol_group}"
+if "${destroy_data}"; then
+    pvcreate "${crypt_dev}"
+    vgcreate "${vol_group}" "${crypt_dev}"
 
-    MEM_TOTAL="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
-    lvcreate -L "${MEM_TOTAL}K" "${VOL_GROUP}" -n swap
-    lvcreate -L 64G "${VOL_GROUP}" -n root
-    lvcreate -l 100%FREE "${VOL_GROUP}" -n home
+    mem_total="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
+    lvcreate -L "${mem_total}K" "${vol_group}" -n swap
+    lvcreate -L 64G "${vol_group}" -n root
+    lvcreate -l 100%FREE "${vol_group}" -n home
 else
     for _ in {1..10}; do
-        if [[ -e "${VOL_DEV}" ]]; then
+        if [[ -e "${vol_dev}" ]]; then
             break
         fi
         sleep 1s
     done
 fi
-if [[ ! -e "${VOL_DEV}" ]]; then
-    echo "${VOL_DEV} volume device does not exist" >&2
+if [[ ! -e "${vol_dev}" ]]; then
+    echo "${vol_dev} volume device does not exist" >&2
     exit 1
 fi
 
 # Create file systems
-mkfs.fat -F32 "${BOOT_PART}"
-mkfs.ext4 -F "${VOL_DEV}/root"
-if "${DESTROY_DATA}"; then
-    mkfs.ext4 -F "${VOL_DEV}/home"
+mkfs.fat -F32 "${boot_part}"
+mkfs.ext4 -F "${vol_dev}/root"
+if "${destroy_data}"; then
+    mkfs.ext4 -F "${vol_dev}/home"
 fi
-mkswap "${VOL_DEV}/swap"
+mkswap "${vol_dev}/swap"
 
 # Mount file systems
 mkdir -p /mnt
-mount "${VOL_DEV}/root" /mnt
+mount "${vol_dev}/root" /mnt
 mkdir -p /mnt/boot
-mount "${BOOT_PART}" /mnt/boot
+mount "${boot_part}" /mnt/boot
 mkdir -p /mnt/home
-mount "${VOL_DEV}/home" /mnt/home
-swapon "${VOL_DEV}/swap"
+mount "${vol_dev}/home" /mnt/home
+swapon "${vol_dev}/swap"
 
 # Configure mirrors
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
@@ -147,17 +147,17 @@ reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc
 pacstrap /mnt base base-devel linux-lts linux-firmware lvm2 intel-ucode efibootmgr networkmanager
 
 # Configure file systems
-FSTAB_FILE=/mnt/etc/fstab
-genfstab -U /mnt >> "${FSTAB_FILE}"
+fstab_file=/mnt/etc/fstab
+genfstab -U /mnt >> "${fstab_file}"
 
-CRYPTTAB_FILE=/mnt/etc/crypttab.initramfs
-CRYPT_UUID="$(cryptsetup luksUUID "${CRYPT_PART}")"
-echo "crypt       UUID=${CRYPT_UUID}    none    luks" > "${CRYPTTAB_FILE}"
+crypttab_file=/mnt/etc/crypttab.initramfs
+crypt_uuid="$(cryptsetup luksUUID "${crypt_part}")"
+echo "crypt       UUID=${crypt_uuid}    none    luks" > "${crypttab_file}"
 
 # Post install cleanup of dot files and folders in /home partition for all users
-if "${CLEAN_DOT}"; then
+if "${clean_dot}"; then
     find /mnt/home -mindepth 2 -maxdepth 2 -name '.*' -exec rm -rf {} +
-    find /mnt/home -mindepth 1 -maxdepth 1 -type d | while read -r HOME_DIR; do
-        rsync --chown="$(stat -c '%U:%G' "${HOME_DIR}")" -a /mnt/etc/skel/ "${HOME_DIR}/"
+    find /mnt/home -mindepth 1 -maxdepth 1 -type d | while read -r home_dir; do
+        rsync --chown="$(stat -c '%U:%G' "${home_dir}")" -a /mnt/etc/skel/ "${home_dir}/"
     done
 fi

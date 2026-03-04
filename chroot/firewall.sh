@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../parameters.sh"
 
-${PACMAN_REMOVE} iptables
-${PACMAN_INSTALL} gufw iptables-nft
+pacman_remove iptables
+pacman_install gufw iptables-nft
 systemctl enable ufw
 
 ufw enable
