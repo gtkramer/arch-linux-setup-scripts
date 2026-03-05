@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
+readonly SCRIPT_DIR
 . "${SCRIPT_DIR}/../common.sh"
 
 pacman_install powerline powerline-fonts vte-common
