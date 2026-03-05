@@ -101,8 +101,8 @@ for disk in "${!data_luks_map[@]}"; do
 
     # Wipe and create a single partition spanning the full drive
     sgdisk -Z "${disk}"
-    end_sector="$(sgdisk -E "${disk}" | grep -P '^\d+$')"
-    sgdisk -n 1:0:$(( end_sector - (end_sector + 1) % 2048 )) -t 1:8309 "${disk}"
+    last_usable_sector="$(sgdisk -E "${disk}" | grep -P '^\d+$')"
+    sgdisk -n 1:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 )) -t 1:8309 "${disk}"
     if ! sgdisk -v "${disk}"; then
         die "Physical partitions failed verification for ${disk}"
     fi
