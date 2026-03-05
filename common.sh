@@ -43,7 +43,21 @@ pacman_remove() { _pacman --noconfirm -Rdd "${@}"; }
 pacman_remove_all() { _pacman --noconfirm -Rns "${@}"; }
 pacman_list_orphans() { _pacman -Qdtq 2>/dev/null || true; }
 pacman_clean_cache() { _pacman -Sc --noconfirm; }
+
 aur_install() { yay -Syu --noconfirm "${@}"; }
+
+manual_aur_install() {
+    local git_url="${1}"
+    shift
+
+    local temp_dir
+    temp_dir="$(mktemp -d)"
+    git clone "${git_url}" "${temp_dir}"
+    pushd "${temp_dir}" || exit
+    makepkg --noconfirm -sri "${@}"
+    popd || exit
+    rm -rf "${temp_dir}"
+}
 
 _fetch_key_by_fingerprint() {
     local fingerprint="${1}"
@@ -57,17 +71,4 @@ gpg_import_key() {
 pacman_import_key() {
     _fetch_key_by_fingerprint "${1}" | _run_as_root pacman-key --add -
     _run_as_root pacman-key --lsign-key "${1}"
-}
-
-manual_aur_install() {
-    local git_url="${1}"
-    shift
-
-    local temp_dir
-    temp_dir="$(mktemp -d)"
-    git clone "${git_url}" "${temp_dir}"
-    pushd "${temp_dir}" || exit
-    makepkg --noconfirm -sri "${@}"
-    popd || exit
-    rm -rf "${temp_dir}"
 }
