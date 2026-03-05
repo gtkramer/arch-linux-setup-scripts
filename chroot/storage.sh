@@ -5,7 +5,7 @@ readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../common.sh"
 
 # ============================================================================
-# LUKS-encrypted ZFS mirror on two HDDs, mounted at /srv
+# LUKS-encrypted ZFS mirror on two HDDs, mounted at /data
 #
 # This is a standalone script that can be run at any time (not only during
 # initial OS installation). It performs every step needed to go from two
@@ -25,8 +25,8 @@ readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 # if their physical connection points on the motherboard change.
 # ============================================================================
 
-readonly ZFS_POOL=srv
-readonly ZFS_MOUNT=/srv
+readonly ZFS_POOL=data
+readonly ZFS_MOUNT=/data
 readonly ARC_MAX_BYTES=17179869184  # 16 GB
 
 usage() {
@@ -67,32 +67,32 @@ if [[ ! -e "${2}" ]]; then
     die "Block device ${2} does not exist."
 fi
 
-srv_dev_1="$(realpath "${1}")"
-srv_dev_2="$(realpath "${2}")"
+data_dev_1="$(realpath "${1}")"
+data_dev_2="$(realpath "${2}")"
 
-if [[ "${srv_dev_1}" == "${srv_dev_2}" ]]; then
-    die "Both arguments resolve to the same device: ${srv_dev_1}"
+if [[ "${data_dev_1}" == "${data_dev_2}" ]]; then
+    die "Both arguments resolve to the same device: ${data_dev_1}"
 fi
 
-srv_devs=("${srv_dev_1}" "${srv_dev_2}")
+data_devs=("${data_dev_1}" "${data_dev_2}")
 
-declare -A srv_luks_map=(
-    ["${srv_dev_1}"]=cryptsrv0
-    ["${srv_dev_2}"]=cryptsrv1
+declare -A data_luks_map=(
+    ["${data_dev_1}"]=cryptdata0
+    ["${data_dev_2}"]=cryptdata1
 )
 
 warn "This will DESTROY ALL DATA on the following drives:"
-echo "  ${srv_devs[0]}"
-echo "  ${srv_devs[1]}"
+echo "  ${data_devs[0]}"
+echo "  ${data_devs[1]}"
 echo "If you wish to abort, press Ctrl+C within the next 10 seconds."
 sleep 10s
 
 # ---------------------------------------------------------------------------
 # Partition, encrypt, and open each storage drive
 # ---------------------------------------------------------------------------
-declare -A srv_parts
-for disk in "${!srv_luks_map[@]}"; do
-    name="${srv_luks_map[${disk}]}"
+declare -A data_parts
+for disk in "${!data_luks_map[@]}"; do
+    name="${data_luks_map[${disk}]}"
 
     echo ""
     echo "========================================"
@@ -124,7 +124,7 @@ for disk in "${!srv_luks_map[@]}"; do
         die "Partition ${part} did not appear."
     fi
 
-    srv_parts["${disk}"]="${part}"
+    data_parts["${disk}"]="${part}"
 
     # LUKS encrypt — cryptsetup prompts for a passphrase interactively
     cryptsetup -y -v luksFormat "${part}"
@@ -146,11 +146,11 @@ done
 # these volumes are unlocked without a second prompt.
 # ---------------------------------------------------------------------------
 crypttab_file=/etc/crypttab.initramfs
-for disk in "${!srv_luks_map[@]}"; do
-    name="${srv_luks_map[${disk}]}"
-    srv_uuid="$(cryptsetup luksUUID "${srv_parts[${disk}]}")"
+for disk in "${!data_luks_map[@]}"; do
+    name="${data_luks_map[${disk}]}"
+    data_uuid="$(cryptsetup luksUUID "${data_parts[${disk}]}")"
     if ! grep -q "^${name}" "${crypttab_file}" 2>/dev/null; then
-        echo "${name}    UUID=${srv_uuid}    none    luks" >> "${crypttab_file}"
+        echo "${name}    UUID=${data_uuid}    none    luks" >> "${crypttab_file}"
     fi
 done
 
@@ -187,7 +187,7 @@ modprobe zfs
 # Create ZFS mirror pool with settings optimized for large video files
 # ---------------------------------------------------------------------------
 mapper_devs=()
-for name in "${srv_luks_map[@]}"; do
+for name in "${data_luks_map[@]}"; do
     mapper_devs+=("/dev/mapper/${name}")
 done
 
