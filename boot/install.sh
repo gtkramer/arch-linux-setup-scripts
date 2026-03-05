@@ -124,7 +124,7 @@ mkswap "${vg_dev}/${LV_SWAP}"
 mkdir -p /mnt
 mount "${vg_dev}/${LV_ROOT}" /mnt
 mkdir -p /mnt/boot
-mount "${boot_part_dev}" /mnt/boot
+mount -o fmask=0077,dmask=0077 "${boot_part_dev}" /mnt/boot    # Protect the random seed file for systemd-boot from being world-readable
 mkdir -p /mnt/home
 mount "${vg_dev}/${LV_HOME}" /mnt/home
 swapon "${vg_dev}/${LV_SWAP}"
