@@ -55,9 +55,9 @@ while getopts "h" opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -lt 2 ]]; then
+if [[ $# -ne 2 ]]; then
     usage >&2
-    die "Two block devices are required."
+    die "Exactly two block devices are required."
 fi
 
 if [[ ! -e "${1}" ]]; then
