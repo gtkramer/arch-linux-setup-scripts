@@ -37,7 +37,7 @@ while getopts "dch" opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -lt 1 ]]; then
+if [[ "${#}" -lt 1 ]]; then
     usage >&2
     die "Block device is required."
 fi
@@ -68,7 +68,7 @@ if "${destroy_data}"; then
     fi
 fi
 
-if [[ ${block_dev} =~ ^/dev/nvme ]]; then
+if [[ "${block_dev}" =~ ^/dev/nvme ]]; then
     part_separator=p
 else
     part_separator=""

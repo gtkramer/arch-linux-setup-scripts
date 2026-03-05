@@ -55,7 +55,7 @@ while getopts "h" opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ $# -ne 2 ]]; then
+if [[ "${#}" -ne 2 ]]; then
     usage >&2
     die "Exactly two block devices are required."
 fi
@@ -254,4 +254,4 @@ ExecStart=/usr/bin/zpool scrub %i
 EOF
 
 systemctl daemon-reload
-systemctl enable zfs-scrub@${ZFS_POOL}.timer
+systemctl enable "zfs-scrub@${ZFS_POOL}.timer"

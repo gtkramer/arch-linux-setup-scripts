@@ -26,17 +26,17 @@ warn() {
 }
 
 _run_as_root() {
-    if [[ ${EUID} -eq 0 ]]; then
-        "$@"
+    if [[ "${EUID}" -eq 0 ]]; then
+        "${@}"
     else
-        sudo "$@"
+        sudo "${@}"
     fi
 }
 
-pacman_install() { _run_as_root pacman -Syu --noconfirm "$@"; }
-pacman_remove() { _run_as_root pacman --noconfirm -Rdd "$@"; }
-pacman_remove_all() { _run_as_root pacman --noconfirm -Rns "$@"; }
-aur_install() { yay -Syu --noconfirm "$@"; }
+pacman_install() { _run_as_root pacman -Syu --noconfirm "${@}"; }
+pacman_remove() { _run_as_root pacman --noconfirm -Rdd "${@}"; }
+pacman_remove_all() { _run_as_root pacman --noconfirm -Rns "${@}"; }
+aur_install() { yay -Syu --noconfirm "${@}"; }
 
 _fetch_key_by_fingerprint() {
     local fingerprint="${1}"
@@ -60,7 +60,7 @@ manual_aur_install() {
     temp_dir="$(mktemp -d)"
     git clone "${git_url}" "${temp_dir}"
     pushd "${temp_dir}" || exit
-    makepkg --noconfirm -sri "$@"
+    makepkg --noconfirm -sri "${@}"
     popd || exit
     rm -rf "${temp_dir}"
 }
