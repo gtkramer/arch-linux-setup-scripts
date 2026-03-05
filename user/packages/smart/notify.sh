@@ -4,8 +4,8 @@
 # Sourced by /usr/share/smartmontools/smartd_warning.sh with SMARTD_* env vars.
 # Uses gdbus (glib2) to call org.freedesktop.Notifications directly.
 
-readonly SUMMARY="Disk Health Warning: ${SMARTD_DEVICESTRING:-unknown}"
-readonly BODY="${SMARTD_MESSAGE:-A S.M.A.R.T. error has been detected.}"
+summary="Disk Health Warning: ${SMARTD_DEVICESTRING:-unknown}"
+body="${SMARTD_MESSAGE:-A S.M.A.R.T. error has been detected.}"
 
 while IFS= read -r session_id; do
     [[ -z "${session_id}" ]] && continue
@@ -23,7 +23,7 @@ while IFS= read -r session_id; do
             --object-path=/org/freedesktop/Notifications \
             --method=org.freedesktop.Notifications.Notify \
             'S.M.A.R.T.' 0 'drive-harddisk' \
-            "${SUMMARY}" "${BODY}" \
+            "${summary}" "${body}" \
             '[]' '{"urgency": <byte 2>}' -1 \
         > /dev/null 2>&1 || true
 done < <(loginctl list-sessions --no-legend | awk '{print $1}')

@@ -8,6 +8,6 @@ readonly SCRIPT_DIR
 pacman_install smartmontools
 sudo systemctl enable smartd
 
-readonly NOTIFY_SCRIPT='/etc/smartmontools/smartd_warning.d/notify.sh'
-sudo mkdir -p "$(dirname "${NOTIFY_SCRIPT}")"
-sudo cp -f "${SCRIPT_DIR}/$(basename "${NOTIFY_SCRIPT}")" "${NOTIFY_SCRIPT}"
+notify_script='/etc/smartmontools/smartd_warning.d/notify.sh'
+sudo mkdir -p "$(dirname "${notify_script}")"
+sudo cp -f "${SCRIPT_DIR}/$(basename "${notify_script}")" "${notify_script}"

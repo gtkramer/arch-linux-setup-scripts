@@ -26,9 +26,9 @@ readonly SCRIPT_DIR
 # if their physical connection points on the motherboard change.
 # ============================================================================
 
-readonly ZFS_POOL=data
-readonly ZFS_MOUNT=/data
-readonly ARC_MAX_BYTES=17179869184  # 16 GB
+zfs_pool=data
+zfs_mount=/data
+arc_max_bytes=17179869184  # 16 GB
 
 usage() {
     local script_name
@@ -83,7 +83,7 @@ declare -A data_luks_map=(
 )
 
 if has_partition_table "${data_dev_1}" || has_partition_table "${data_dev_2}"; then
-    warn "All existing data in ${ZFS_MOUNT} will be destroyed."
+    warn "All existing data in ${zfs_mount} will be destroyed."
     echo "To abort this operation, press Ctrl+C within the next 10 seconds..."
     sleep 10s
 fi
@@ -179,7 +179,7 @@ pacman_install zfs-linux-lts zfs-utils
 # Limit ARC cache to 16 GB so the remaining RAM is available for applications
 # ---------------------------------------------------------------------------
 cat > /etc/modprobe.d/zfs.conf <<EOF
-options zfs zfs_arc_max=${ARC_MAX_BYTES}
+options zfs zfs_arc_max=${arc_max_bytes}
 EOF
 
 modprobe zfs
@@ -201,16 +201,16 @@ zpool create -f \
     -O atime=off \
     -O compression=lz4 \
     -O recordsize=1M \
-    -m "${ZFS_MOUNT}" \
-    "${ZFS_POOL}" mirror "${mapper_devs[@]}"
+    -m "${zfs_mount}" \
+    "${zfs_pool}" mirror "${mapper_devs[@]}"
 
-chown "${USER_NAME}":"${USER_NAME}" "${ZFS_MOUNT}"
+chown "${USER_NAME}":"${USER_NAME}" "${zfs_mount}"
 
 # ---------------------------------------------------------------------------
 # Persist the ZFS pool cache so it is auto-imported on boot
 # ---------------------------------------------------------------------------
 mkdir -p /etc/zfs
-zpool set cachefile=/etc/zfs/zpool.cache "${ZFS_POOL}"
+zpool set cachefile=/etc/zfs/zpool.cache "${zfs_pool}"
 
 # ---------------------------------------------------------------------------
 # Ensure ZFS pool import waits for LUKS containers to be opened
@@ -255,4 +255,4 @@ ExecStart=/usr/bin/zpool scrub %i
 EOF
 
 systemctl daemon-reload
-systemctl enable "zfs-scrub@${ZFS_POOL}.timer"
+systemctl enable "zfs-scrub@${zfs_pool}.timer"
