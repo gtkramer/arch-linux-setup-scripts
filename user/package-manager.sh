@@ -5,8 +5,7 @@ readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../common.sh"
 
 pacman_install git pkgfile
-gpg --recv-keys 910B8C499BED531B
-manual_aur_install https://aur.archlinux.org/aurman.git
+manual_aur_install https://aur.archlinux.org/yay.git
 
 pacman_install reflector
 sudo mkdir -p /etc/xdg/reflector

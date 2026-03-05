@@ -36,7 +36,7 @@ _run_as_root() {
 pacman_install() { _run_as_root pacman -Syu --noconfirm "$@"; }
 pacman_remove() { _run_as_root pacman --noconfirm -Rdd "$@"; }
 pacman_remove_all() { _run_as_root pacman --noconfirm -Rns "$@"; }
-aurman_install() { aurman -Syu --noconfirm --noedit "$@"; }
+aur_install() { yay -Syu --noconfirm "$@"; }
 
 manual_aur_install() {
     local git_url="${1}"

@@ -10,7 +10,7 @@ pacman_install cmake meson clang lldb dotnet-sdk
 
 # Graphics
 pacman_install hugin dcraw
-aurman_install pinta
+aur_install pinta
 
 # Hardware
 pacman_install solaar
@@ -21,7 +21,7 @@ pacman_install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-p
 
 # Network
 pacman_install gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
-aurman_install brave-bin
+aur_install brave-bin
 pacman_remove_all epiphany
 
 # Office

@@ -12,7 +12,7 @@ for local_package in "${local_packages[@]}"; do
 done
 
 pacman_install noto-fonts-{emoji,extra} otf-cascadia-code
-aurman_install ttf-ms-fonts
+aur_install ttf-ms-fonts
 
 sudo cp -f "${SCRIPT_DIR}/99-generic-family.conf" "${SCRIPT_DIR}/98-gnome.conf" /usr/share/fontconfig/conf.avail
 sudo ln -sf /usr/share/fontconfig/conf.avail/99-generic-family.conf /etc/fonts/conf.d

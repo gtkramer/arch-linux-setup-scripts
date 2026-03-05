@@ -5,7 +5,7 @@ readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../../common.sh"
 
 # Install MakeMKV
-aurman_install makemkv makemkv-libaacs
+aur_install makemkv makemkv-libaacs
 echo "sg" | sudo tee /etc/modules-load.d/makemkv.conf
 
 # DVD playback

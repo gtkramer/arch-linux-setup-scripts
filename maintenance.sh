@@ -4,7 +4,7 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/common.sh"
 
-aurman_install --do_everything
+aur_install
 mapfile -t orphaned_packages < <(sudo pacman -Qdtq || true)
 if [[ "${#orphaned_packages[@]}" -ne 0 ]]; then
     sudo pacman -Rns --noconfirm "${orphaned_packages[@]}"
