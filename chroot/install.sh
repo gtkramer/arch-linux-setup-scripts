@@ -12,5 +12,3 @@ for config in "${configs[@]}"; do
     fi
     "${config_path}"
 done
-
-passwd -l root
