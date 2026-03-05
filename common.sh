@@ -38,6 +38,20 @@ pacman_remove() { _run_as_root pacman --noconfirm -Rdd "$@"; }
 pacman_remove_all() { _run_as_root pacman --noconfirm -Rns "$@"; }
 aur_install() { yay -Syu --noconfirm "$@"; }
 
+_fetch_key_by_fingerprint() {
+    local fingerprint="${1}"
+    curl -fsSL "https://keys.openpgp.org/vks/v1/by-fingerprint/${fingerprint}"
+}
+
+gpg_import_key() {
+    _fetch_key_by_fingerprint "${1}" | gpg --import
+}
+
+pacman_import_key() {
+    _fetch_key_by_fingerprint "${1}" | _run_as_root pacman-key --add -
+    _run_as_root pacman-key --lsign-key "${1}"
+}
+
 manual_aur_install() {
     local git_url="${1}"
     shift

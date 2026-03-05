@@ -160,15 +160,15 @@ mkinitcpio -P
 # ---------------------------------------------------------------------------
 # Install ZFS from the archzfs repository
 # ---------------------------------------------------------------------------
+
+# Key fingerprint from https://github.com/archzfs/archzfs/wiki
 if ! grep -q '\[archzfs\]' /etc/pacman.conf; then
-    pacman-key --recv-keys --keyserver keyserver.ubuntu.com \
-        DDF7DB817396A49B2A2723F7403BD972F75D9D76
-    pacman-key --lsign-key DDF7DB817396A49B2A2723F7403BD972F75D9D76
+    pacman_import_key 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9
 
     cat >> /etc/pacman.conf <<'EOF'
 
 [archzfs]
-Server = https://archzfs.com/$repo/$arch
+Server = https://github.com/archzfs/archzfs/releases/download/experimental
 EOF
 fi
 
