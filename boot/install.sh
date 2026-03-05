@@ -97,16 +97,15 @@ if [[ ! -e "${luks_dev}" ]]; then
     cryptsetup "${luks_open_opts[@]}" --persistent open "${luks_part_dev}" "${LUKS_NAME}"
 fi
 
-vg_name="${VG_NAME}"
-vg_dev="/dev/${vg_name}"
+vg_dev="/dev/${VG_NAME}"
 if ! "${preserve_home}"; then
     pvcreate "${luks_dev}"
-    vgcreate "${vg_name}" "${luks_dev}"
+    vgcreate "${VG_NAME}" "${luks_dev}"
 
     mem_total="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
-    lvcreate -L "${mem_total}K" "${vg_name}" -n "${LV_SWAP}"
-    lvcreate -L 64G "${vg_name}" -n "${LV_ROOT}"
-    lvcreate -l 100%FREE "${vg_name}" -n "${LV_HOME}"
+    lvcreate -L "${mem_total}K" "${VG_NAME}" -n "${LV_SWAP}"
+    lvcreate -L 64G "${VG_NAME}" -n "${LV_ROOT}"
+    lvcreate -l 100%FREE "${VG_NAME}" -n "${LV_HOME}"
 else
     for _ in {1..10}; do
         if [[ -e "${vg_dev}" ]]; then
