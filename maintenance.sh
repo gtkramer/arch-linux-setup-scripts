@@ -5,8 +5,8 @@ readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/common.sh"
 
 aur_install
-mapfile -t orphaned_packages < <(sudo pacman -Qdtq || true)
+mapfile -t orphaned_packages < <(pacman_list_orphans)
 if [[ "${#orphaned_packages[@]}" -ne 0 ]]; then
-    sudo pacman -Rns --noconfirm "${orphaned_packages[@]}"
+    pacman_remove_all "${orphaned_packages[@]}"
 fi
-sudo pacman -Sc --noconfirm
+pacman_clean_cache

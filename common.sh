@@ -33,9 +33,12 @@ _run_as_root() {
     fi
 }
 
-pacman_install() { _run_as_root pacman -Syu --noconfirm "${@}"; }
-pacman_remove() { _run_as_root pacman --noconfirm -Rdd "${@}"; }
-pacman_remove_all() { _run_as_root pacman --noconfirm -Rns "${@}"; }
+_pacman() { _run_as_root pacman "${@}"; }
+pacman_install() { _pacman -Syu --noconfirm "${@}"; }
+pacman_remove() { _pacman --noconfirm -Rdd "${@}"; }
+pacman_remove_all() { _pacman --noconfirm -Rns "${@}"; }
+pacman_list_orphans() { _pacman -Qdtq 2>/dev/null || true; }
+pacman_clean_cache() { _pacman -Sc --noconfirm; }
 aur_install() { yay -Syu --noconfirm "${@}"; }
 
 _fetch_key_by_fingerprint() {
