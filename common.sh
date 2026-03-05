@@ -10,6 +10,11 @@ readonly HOST_NAME=tufb660mplus
 readonly LOCALE=en_US.UTF-8
 readonly KEY_MAP=us
 readonly COUNTRY_MIRROR='United States'
+readonly LUKS_NAME=cryptlvm
+readonly VG_NAME=vg0
+readonly LV_ROOT=root
+readonly LV_HOME=home
+readonly LV_SWAP=swap
 
 die() {
     echo "ERROR: ${1}" >&2

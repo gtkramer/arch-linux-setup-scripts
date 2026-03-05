@@ -60,9 +60,9 @@ timedatectl set-ntp true
 # Create physical partitions
 if "${destroy_data}"; then
     sgdisk -Z "${block_dev}"
-    sgdisk -n 1:1M:+512M -t 1:ef00 -c 1:boot "${block_dev}"
+    sgdisk -n 1:1M:+512M -t 1:ef00 "${block_dev}"
     last_usable_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
-    sgdisk -n 2:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 )) -t 2:8309 -c 2:crypt "${block_dev}"
+    sgdisk -n 2:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 )) -t 2:8309 "${block_dev}"
     if ! sgdisk -v "${block_dev}"; then
         die "Physical partitions failed verification for ${block_dev}"
     fi
@@ -80,26 +80,26 @@ luks_part_dev="${block_dev}${part_separator}2"
 if "${destroy_data}"; then
     cryptsetup -y -v luksFormat "${luks_part_dev}"
 fi
-luks_dev=/dev/mapper/crypt
+luks_dev=/dev/mapper/${LUKS_NAME}
 if [[ ! -e "${luks_dev}" ]]; then
     if [[ "$(cat "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
         luks_open_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
         luks_open_opts=()
     fi
-    cryptsetup "${luks_open_opts[@]}" --persistent open "${luks_part_dev}" crypt
+    cryptsetup "${luks_open_opts[@]}" --persistent open "${luks_part_dev}" "${LUKS_NAME}"
 fi
 
-vg_name=vg0
+vg_name="${VG_NAME}"
 vg_dev="/dev/${vg_name}"
 if "${destroy_data}"; then
     pvcreate "${luks_dev}"
     vgcreate "${vg_name}" "${luks_dev}"
 
     mem_total="$(grep MemTotal /proc/meminfo | awk '{print $2}')"
-    lvcreate -L "${mem_total}K" "${vg_name}" -n swap
-    lvcreate -L 64G "${vg_name}" -n root
-    lvcreate -l 100%FREE "${vg_name}" -n home
+    lvcreate -L "${mem_total}K" "${vg_name}" -n "${LV_SWAP}"
+    lvcreate -L 64G "${vg_name}" -n "${LV_ROOT}"
+    lvcreate -l 100%FREE "${vg_name}" -n "${LV_HOME}"
 else
     for _ in {1..10}; do
         if [[ -e "${vg_dev}" ]]; then
@@ -114,20 +114,20 @@ fi
 
 # Create file systems
 mkfs.fat -F32 "${boot_part_dev}"
-mkfs.ext4 -F "${vg_dev}/root"
+mkfs.ext4 -F "${vg_dev}/${LV_ROOT}"
 if "${destroy_data}"; then
-    mkfs.ext4 -F "${vg_dev}/home"
+    mkfs.ext4 -F "${vg_dev}/${LV_HOME}"
 fi
-mkswap "${vg_dev}/swap"
+mkswap "${vg_dev}/${LV_SWAP}"
 
 # Mount file systems
 mkdir -p /mnt
-mount "${vg_dev}/root" /mnt
+mount "${vg_dev}/${LV_ROOT}" /mnt
 mkdir -p /mnt/boot
 mount "${boot_part_dev}" /mnt/boot
 mkdir -p /mnt/home
-mount "${vg_dev}/home" /mnt/home
-swapon "${vg_dev}/swap"
+mount "${vg_dev}/${LV_HOME}" /mnt/home
+swapon "${vg_dev}/${LV_SWAP}"
 
 # Configure mirrors
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
@@ -141,7 +141,7 @@ genfstab -U /mnt >> "${fstab_file}"
 
 crypttab_file=/mnt/etc/crypttab.initramfs
 luks_uuid="$(cryptsetup luksUUID "${luks_part_dev}")"
-echo "crypt       UUID=${luks_uuid}    none    luks" > "${crypttab_file}"
+echo "${LUKS_NAME}       UUID=${luks_uuid}    none    luks" > "${crypttab_file}"
 
 # Post install cleanup of dot files and folders in /home partition for all users
 if "${clean_dot}"; then

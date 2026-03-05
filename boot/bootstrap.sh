@@ -13,14 +13,14 @@ cat > /boot/loader/entries/arch-lts.conf <<EOF
 title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
 initrd  /initramfs-linux-lts.img
-options root=/dev/mapper/vg0-root quiet
+options root=/dev/mapper/${VG_NAME}-${LV_ROOT} quiet
 EOF
 
 cat > /boot/loader/entries/arch-lts-fallback.conf <<EOF
 title   Arch Linux (LTS Fallback)
 linux   /vmlinuz-linux-lts
 initrd  /initramfs-linux-lts-fallback.img
-options root=/dev/mapper/vg0-root quiet
+options root=/dev/mapper/${VG_NAME}-${LV_ROOT} quiet
 EOF
 
 cat > /boot/loader/loader.conf <<'EOF'
