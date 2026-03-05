@@ -26,9 +26,7 @@ readonly SCRIPT_DIR
 # if their physical connection points on the motherboard change.
 # ============================================================================
 
-zfs_pool=data
-zfs_mount=/data
-arc_max_bytes=17179869184  # 16 GB
+zfs_mount=/${ZFS_NAME}
 
 usage() {
     local script_name
@@ -78,8 +76,8 @@ fi
 data_devs=("${data_dev_1}" "${data_dev_2}")
 
 declare -A data_luks_map=(
-    ["${data_dev_1}"]=cryptdata0
-    ["${data_dev_2}"]=cryptdata1
+    ["${data_dev_1}"]=${ZFS_LUKS_NAME}0
+    ["${data_dev_2}"]=${ZFS_LUKS_NAME}1
 )
 
 if has_partition_table "${data_dev_1}" || has_partition_table "${data_dev_2}"; then
@@ -179,7 +177,7 @@ pacman_install zfs-linux-lts zfs-utils
 # Limit ARC cache to 16 GB so the remaining RAM is available for applications
 # ---------------------------------------------------------------------------
 cat > /etc/modprobe.d/zfs.conf <<EOF
-options zfs zfs_arc_max=${arc_max_bytes}
+options zfs zfs_arc_max=${ZFS_ARC_MAX}
 EOF
 
 modprobe zfs
@@ -202,7 +200,7 @@ zpool create -f \
     -O compression=lz4 \
     -O recordsize=1M \
     -m "${zfs_mount}" \
-    "${zfs_pool}" mirror "${mapper_devs[@]}"
+    "${ZFS_NAME}" mirror "${mapper_devs[@]}"
 
 chown "${USER_NAME}":"${USER_NAME}" "${zfs_mount}"
 
@@ -210,7 +208,7 @@ chown "${USER_NAME}":"${USER_NAME}" "${zfs_mount}"
 # Persist the ZFS pool cache so it is auto-imported on boot
 # ---------------------------------------------------------------------------
 mkdir -p /etc/zfs
-zpool set cachefile=/etc/zfs/zpool.cache "${zfs_pool}"
+zpool set cachefile=/etc/zfs/zpool.cache "${ZFS_NAME}"
 
 # ---------------------------------------------------------------------------
 # Ensure ZFS pool import waits for LUKS containers to be opened
@@ -255,4 +253,4 @@ ExecStart=/usr/bin/zpool scrub %i
 EOF
 
 systemctl daemon-reload
-systemctl enable "zfs-scrub@${zfs_pool}.timer"
+systemctl enable "zfs-scrub@${ZFS_NAME}.timer"
