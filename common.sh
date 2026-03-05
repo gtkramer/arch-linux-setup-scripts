@@ -25,6 +25,10 @@ warn() {
     echo "WARNING: ${1}" >&2
 }
 
+has_partition_table() {
+    blkid -p -s PTTYPE -o value "${1}" &> /dev/null
+}
+
 _run_as_root() {
     if [[ "${EUID}" -eq 0 ]]; then
         "${@}"

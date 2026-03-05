@@ -45,7 +45,7 @@ if [[ ! -e "${block_dev}" ]]; then
     die "Block device ${block_dev} does not exist."
 fi
 
-if blkid -p -s PTTYPE -o value "${block_dev}" &> /dev/null; then
+if has_partition_table "${block_dev}"; then
     have_partitions=true
 else
     have_partitions=false
