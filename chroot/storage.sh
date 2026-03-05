@@ -81,11 +81,11 @@ declare -A data_luks_map=(
     ["${data_dev_2}"]=cryptdata1
 )
 
-warn "This will DESTROY ALL DATA on the following drives:"
-echo "  ${data_devs[0]}"
-echo "  ${data_devs[1]}"
-echo "If you wish to abort, press Ctrl+C within the next 10 seconds."
-sleep 10s
+if has_partition_table "${data_dev_1}" || has_partition_table "${data_dev_2}"; then
+    warn "All existing data in ${ZFS_MOUNT} will be destroyed."
+    echo "To abort this operation, press Ctrl+C within the next 10 seconds..."
+    sleep 10s
+fi
 
 # ---------------------------------------------------------------------------
 # Partition, encrypt, and open each storage drive
@@ -131,11 +131,11 @@ for disk in "${!data_luks_map[@]}"; do
 
     # Open the LUKS container
     if [[ "$(cat "/sys/block/$(basename "${disk}")/queue/rotational")" == 0 ]]; then
-        crypt_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
+        luks_open_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
-        crypt_opts=()
+        luks_open_opts=()
     fi
-    cryptsetup "${crypt_opts[@]}" --persistent open "${part}" "${name}"
+    cryptsetup "${luks_open_opts[@]}" --persistent open "${part}" "${name}"
 done
 
 # ---------------------------------------------------------------------------
