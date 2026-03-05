@@ -4,8 +4,8 @@ set -euo pipefail
 readonly SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 . "${SCRIPT_DIR}/../common.sh"
 
-sudo mkdir -p ~gdm/.config/
-sudo chown gdm:gdm ~gdm/.config/
+sudo mkdir -p ~gdm/{.config,.cache}/
+sudo chown gdm:gdm ~gdm/{.config,.cache}/
 
 sudo cp -f "${HOME}/.config/monitors.xml" ~gdm/.config/
 sudo chown gdm:gdm ~gdm/.config/monitors.xml
