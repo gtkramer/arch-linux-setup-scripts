@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 readonly USER_NAME=george
 readonly DISPLAY_NAME='George Kramer'

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Sends a GNOME desktop notification to all logged-in graphical users
 # when smartd detects a disk health issue.
 # Sourced by /usr/share/smartmontools/smartd_warning.sh with SMARTD_* env vars.
