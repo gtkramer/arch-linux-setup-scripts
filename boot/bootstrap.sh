@@ -15,14 +15,14 @@ cat > /boot/loader/entries/arch-lts.conf <<EOF
 title   Arch Linux (LTS)
 linux   /vmlinuz-linux-lts
 initrd  /initramfs-linux-lts.img
-options root=/dev/mapper/${VG_NAME}-${LV_ROOT} resume=/dev/mapper/${VG_NAME}-${LV_SWAP} quiet
+options root=/dev/mapper/${VG_NAME}-${LV_ROOT} quiet
 EOF
 
 cat > /boot/loader/entries/arch-lts-fallback.conf <<EOF
 title   Arch Linux (LTS Fallback)
 linux   /vmlinuz-linux-lts
 initrd  /initramfs-linux-lts-fallback.img
-options root=/dev/mapper/${VG_NAME}-${LV_ROOT} resume=/dev/mapper/${VG_NAME}-${LV_SWAP} quiet
+options root=/dev/mapper/${VG_NAME}-${LV_ROOT} quiet
 EOF
 
 cat > /boot/loader/loader.conf <<'EOF'
@@ -49,6 +49,9 @@ sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
 touch /etc/vconsole.conf
 echo 'HOOKS=(systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -P
+
+# Disable all types of sleep
+systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
 # Require password for privilege escalation
 mkdir -p /etc/sudoers.d
