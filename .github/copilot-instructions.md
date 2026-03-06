@@ -13,11 +13,11 @@ Three sequential execution phases, each with a different privilege context:
 ## Script Conventions
 
 - **Shebang + strict mode:** Every script starts with `#!/usr/bin/env bash` and `set -euo pipefail`. The sole exception is `user/packages/smart/notify.sh` (a smartd callback, not a setup script).
-- **SCRIPT_DIR pattern:** Always declare and assign separately (SC2155) then source common.sh at the correct relative depth. The two-line idiom is `SCRIPT_DIR="$(dirname "$(realpath "${0}")")"` followed by `readonly SCRIPT_DIR`:
+- **SCRIPT_DIR pattern:** Always declare and assign separately (SC2155) then source common.sh at the correct relative depth. The standard header idiom is `SCRIPT_DIR="$(dirname "$(realpath "${0}")")"`  followed by `SCRIPT_NAME="$(basename "${0}")"` and `readonly SCRIPT_DIR SCRIPT_NAME`:
   - 1 level: `. "${SCRIPT_DIR}/../common.sh"` (boot/, chroot/, user/)
   - 2 levels: `. "${SCRIPT_DIR}/../../common.sh"` (user/devices/, user/fonts/, user/packages/)
   - 3 levels: `. "${SCRIPT_DIR}/../../../common.sh"` (user/packages/visual-studio-code/)
-- **Variables:** `readonly` is reserved for `SCRIPT_DIR` (in each script header) and the shared constants in `common.sh`. All other variables use `lower_snake_case` without `readonly`.
+- **Variables:** `readonly` is reserved for `SCRIPT_DIR` and `SCRIPT_NAME` (in each script header) and the shared constants in `common.sh`. All other variables use `lower_snake_case` without `readonly`.
 - **Functions in common.sh:** Public API is `snake_case` (e.g., `pacman_install`, `die`). Internal helpers are `_prefixed` (e.g., `_run_as_root`, `_pacman`).
 
 ## Aggregator install.sh Pattern

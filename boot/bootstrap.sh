@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-readonly SCRIPT_DIR
+SCRIPT_NAME="$(basename "${0}")"
+readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
 # Configure bootloader

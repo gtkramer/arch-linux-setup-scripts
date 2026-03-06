@@ -2,13 +2,12 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
-readonly SCRIPT_DIR
+SCRIPT_NAME="$(basename "${0}")"
+readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
 usage() {
-    local script_name
-    script_name="$(basename "${0}")"
-    echo "Usage: ${script_name} [-p] <block device>"
+    echo "Usage: ${SCRIPT_NAME} [-p] <block device>"
     echo
     echo "  -p  Preserve data in /home"
     echo "  -h  Show this help message"
