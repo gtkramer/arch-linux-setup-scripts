@@ -6,18 +6,10 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
-pacman_install powerline powerline-fonts vte-common
+sed -i '/PS1/d' "${HOME}/.bashrc"
+sed -i '/PROMPT_COMMAND/d' "${HOME}/.bashrc"
 
-touch "${HOME}/.bashrc"
-if ! grep -q powerline-daemon "${HOME}/.bashrc"; then
-    cat >> "${HOME}/.bashrc" <<EOF
-powerline-daemon -q
-POWERLINE_BASH_CONTINUATION=1
-POWERLINE_BASH_SELECT=1
-. /usr/share/powerline/bindings/bash/powerline.sh
+cat >> "${HOME}/.bashrc" <<'EOF'
+export PS1='[\u@\h:\w]\n\\$ '
+export PROMPT_COMMAND='printf "\n"'
 EOF
-fi
-
-if ! grep -q vte.sh "${HOME}/.bashrc"; then
-    echo '. /etc/profile.d/vte.sh' >> "${HOME}/.bashrc"
-fi
