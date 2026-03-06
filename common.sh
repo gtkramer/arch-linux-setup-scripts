@@ -63,16 +63,11 @@ manual_aur_install() {
     rm -rf "${temp_dir}"
 }
 
-_fetch_key_by_fingerprint() {
-    local fingerprint="${1}"
-    curl -fsSL "https://keys.openpgp.org/vks/v1/by-fingerprint/${fingerprint}"
-}
-
 gpg_import_key() {
-    _fetch_key_by_fingerprint "${1}" | gpg --import
+    gpg --recv-keys "${1}"
 }
 
 pacman_import_key() {
-    _fetch_key_by_fingerprint "${1}" | _run_as_root pacman-key --add -
+    _run_as_root pacman-key --recv-keys "${1}"
     _run_as_root pacman-key --lsign-key "${1}"
 }
