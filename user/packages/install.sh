@@ -18,8 +18,9 @@ aur_install pinta
 pacman_install solaar
 
 # Multimedia
-pacman_install handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
+pacman_install celluloid handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
 pacman_install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire
+pacman_remove_all showtime
 
 # Network
 pacman_install gnome-browser-connector signal-desktop discord proton-vpn-gtk-app
