@@ -76,6 +76,11 @@ if ! "${preserve_home}"; then
     fi
 fi
 
+# Wait for the partition device to appear
+partprobe "${block_dev}"
+udevadm settle
+
+# Determine the partition device path
 if [[ "${block_dev}" =~ ^/dev/nvme ]]; then
     part_separator=p
 else
@@ -98,6 +103,7 @@ if [[ ! -e "${luks_dev}" ]]; then
     cryptsetup "${luks_open_opts[@]}" --persistent open "${luks_part_dev}" "${LUKS_NAME}"
 fi
 
+# Set up LVM groups
 vg_dev="/dev/${VG_NAME}"
 if ! "${preserve_home}"; then
     pvcreate "${luks_dev}"
@@ -108,12 +114,9 @@ if ! "${preserve_home}"; then
     lvcreate -L 64G "${VG_NAME}" -n "${LV_ROOT}"
     lvcreate -l 100%FREE "${VG_NAME}" -n "${LV_HOME}"
 else
-    for _ in {1..10}; do
-        if [[ -e "${vg_dev}" ]]; then
-            break
-        fi
-        sleep 1s
-    done
+    # Activate existing LVM volumes on the LUKS device
+    udevadm settle
+    vgchange -ay "${VG_NAME}"
 fi
 if [[ ! -e "${vg_dev}" ]]; then
     die "${vg_dev} volume device does not exist."
