@@ -7,7 +7,7 @@ readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../../common.sh"
 
 pacman_install smartmontools
-sudo systemctl enable smartd
+sudo systemctl enable --now smartd
 
 notify_script='/etc/smartmontools/smartd_warning.d/notify.sh'
 sudo mkdir -p "$(dirname "${notify_script}")"
