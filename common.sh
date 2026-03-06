@@ -41,6 +41,12 @@ run_as_root() {
     fi
 }
 
+require_root() {
+    if [[ "${EUID}" -ne 0 ]]; then
+        die "Required to run as root or with sudo."
+    fi
+}
+
 _pacman() { run_as_root pacman "${@}"; }
 pacman_install() { _pacman -Syu --noconfirm "${@}"; }
 pacman_remove() { _pacman --noconfirm -Rdd "${@}"; }

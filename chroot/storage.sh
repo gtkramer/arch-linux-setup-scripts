@@ -6,6 +6,8 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
+require_root
+
 usage() {
     echo "Usage: ${SCRIPT_NAME} <block device 1> <block device 2>"
     echo
@@ -133,17 +135,39 @@ zpool create -f \
     -m "${ZFS_MOUNT}" \
     "${ZFS_POOL}" mirror "${luks_devs[@]}"
 
-mkdir -p /etc/zfs
-zpool set cachefile=/etc/zfs/zpool.cache "${ZFS_POOL}"
+zpool set cachefile=none "${ZFS_POOL}"
 
-sudo chown root:root "${ZFS_MOUNT}"
-sudo chmod 1777 "${ZFS_MOUNT}"
+chown root:root "${ZFS_MOUNT}"
+chmod 1777 "${ZFS_MOUNT}"
 
 # Enable ZFS services for automatic import and mount
+cat > /etc/systemd/system/zfs-export@.service <<'EOF'
+[Unit]
+Description=Export ZFS pool %I before shutdown
+Documentation=man:zpool-export(8)
+DefaultDependencies=no
+After=zfs-mount.service
+Conflicts=umount.target
+Before=umount.target
+Conflicts=shutdown.target
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/bin/zpool export %i
+
+[Install]
+WantedBy=zfs.target
+EOF
+systemctl daemon-reload
+
 systemctl enable zfs.target
 systemctl enable zfs-import.target
-systemctl enable zfs-import-cache
-systemctl enable zfs-mount
+systemctl enable zfs-import-scan.service
+systemctl enable zfs-mount.service
+systemctl enable "zfs-export@${ZFS_POOL}.service"
 systemctl enable "zfs-scrub-monthly@${ZFS_POOL}.timer"
 
 # Hide ZFS member devices from udisks2 since they are not mountable drives
