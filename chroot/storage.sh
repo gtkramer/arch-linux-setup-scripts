@@ -146,3 +146,8 @@ systemctl enable zfs-import.target
 systemctl enable zfs-import-cache
 systemctl enable zfs-mount
 systemctl enable "zfs-scrub-monthly@${ZFS_POOL}.timer"
+
+# Hide ZFS member devices from udisks2 since they are not mountable drives
+cat > /etc/udev/rules.d/69-zfs-member-hide.rules <<'EOF'
+KERNEL=="dm-*", ENV{ID_FS_TYPE}=="zfs_member", ENV{UDISKS_IGNORE}="1"
+EOF
