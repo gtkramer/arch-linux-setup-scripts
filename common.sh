@@ -16,8 +16,9 @@ readonly LV_ROOT=root
 readonly LV_HOME=home
 readonly LV_SWAP=swap
 readonly ZFS_LUKS_NAME=cryptdata
-readonly ZFS_NAME=data
+readonly ZFS_POOL=data
 readonly ZFS_ARC_MAX=17179869184
+readonly ZFS_MOUNT=/data
 
 die() {
     echo "ERROR: ${1}" >&2
