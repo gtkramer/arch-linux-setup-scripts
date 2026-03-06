@@ -7,7 +7,7 @@ readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
 # Video capabilities
-pacman_install xorg-server xorg-xeyes nvidia-open-lts nvidia-utils vulkan-tools
+pacman_install nvidia-open-lts nvidia-utils vulkan-tools
 sed -i '/^MODULES=/d' /etc/mkinitcpio.conf
 echo 'MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)' >> /etc/mkinitcpio.conf    # Load NVIDIA kernel modules early
 mkinitcpio -P
@@ -16,7 +16,7 @@ mkinitcpio -P
 pacman_install pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
 
 # Desktop environment
-pacman_install gnome gnome-tweaks gnome-firmware
+pacman_install gnome gnome-tweaks gnome-firmware xorg-xeyes
 pacman_remove_all gnome-software
 
 # Display manager
