@@ -106,4 +106,8 @@ The ZFS mirror pool is mounted at `/srv` and will auto-unlock and auto-mount on 
 
 ## Post Installation
 
-Verify boot order.  Have external devices first with the Arch Linux entry just above the HDD entry.
+Install the following GNOME extensions:
+
+  * ArcMenu
+  * Dash to Panel
+  * Night Theme Switcher
