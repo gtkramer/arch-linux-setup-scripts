@@ -47,7 +47,7 @@ EOF
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
 touch /etc/vconsole.conf
 echo 'HOOKS=(systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
-mkinitcpio -p linux-lts
+mkinitcpio -P
 
 # Require password for privilege escalation
 mkdir -p /etc/sudoers.d
