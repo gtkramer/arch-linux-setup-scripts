@@ -10,14 +10,13 @@ Given the decision was made to not support a GUI installer for a long time, Arch
   * Excellent gaming performance to replace a console
   * Excellent video encoding performance to back up optical media
 * Using an ASUS motherboard
-* Using two identical HDDs in a LUKS-encrypted ZFS mirror mounted at /srv
+* Using ZFS to mirror critical data with redundancy
 
 The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying common.sh and then modify other files from there.
 
 ## Assumptions
 
 * A wired internet connection is available and used for the entire process
-* Two identical HDDs are installed for ZFS mirror storage — identify them with `lsblk` or `ls -l /dev/disk/by-id/`
 
 ## Process Overview
 
@@ -59,6 +58,14 @@ Within the ASUS UEFI menus, browse to the USB automation drive with the new firm
 ## Installation
 
 Boot into the live environment with the two USB drives plugged in and then use the following commands to create a bootable system.
+
+If the USB automation drive contains a LUKS partition that needs to be unlocked, it may be done so by doing:
+
+```
+cryptsetup open /dev/sdX cryptusb
+```
+
+Then, instead of using /dev/sdX, use /dev/mapper/cryptusb to mount the device.
 
 ```
 cd ~
