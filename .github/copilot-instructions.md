@@ -18,7 +18,7 @@ Three sequential execution phases, each with a different privilege context:
   - 2 levels: `. "${SCRIPT_DIR}/../../common.sh"` (user/devices/, user/fonts/, user/packages/)
   - 3 levels: `. "${SCRIPT_DIR}/../../../common.sh"` (user/packages/visual-studio-code/)
 - **Variables:** `readonly` is reserved for `SCRIPT_DIR` and `SCRIPT_NAME` (in each script header) and the shared constants in `common.sh`. All other variables use `lower_snake_case` without `readonly`.
-- **Functions in common.sh:** Public API is `snake_case` (e.g., `pacman_install`, `die`). Internal helpers are `_prefixed` (e.g., `_run_as_root`, `_pacman`).
+- **Functions in common.sh:** Public API is `snake_case` (e.g., `pacman_install`, `die`). Internal helpers are `_prefixed` (e.g., `_pacman`).
 
 ## Aggregator install.sh Pattern
 

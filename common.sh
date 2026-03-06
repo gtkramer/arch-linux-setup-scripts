@@ -33,7 +33,7 @@ has_partition_table() {
     blkid -p -s PTTYPE -o value "${1}" &> /dev/null
 }
 
-_run_as_root() {
+run_as_root() {
     if [[ "${EUID}" -eq 0 ]]; then
         "${@}"
     else
@@ -41,7 +41,7 @@ _run_as_root() {
     fi
 }
 
-_pacman() { _run_as_root pacman "${@}"; }
+_pacman() { run_as_root pacman "${@}"; }
 pacman_install() { _pacman -Syu --noconfirm "${@}"; }
 pacman_remove() { _pacman --noconfirm -Rdd "${@}"; }
 pacman_remove_all() { _pacman --noconfirm -Rns "${@}"; }
@@ -68,6 +68,6 @@ gpg_import_key() {
 }
 
 pacman_import_key() {
-    _run_as_root pacman-key --recv-keys "${1}"
-    _run_as_root pacman-key --lsign-key "${1}"
+    run_as_root pacman-key --recv-keys "${1}"
+    run_as_root pacman-key --lsign-key "${1}"
 }
