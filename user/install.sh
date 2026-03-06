@@ -6,7 +6,7 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
-configs=(package-manager packages fonts devices settings terminal xdg virtualization)
+configs=(package-manager packages fonts devices settings terminal xdg)
 for config in "${configs[@]}"; do
     config_path="${SCRIPT_DIR}/${config}.sh"
     if [[ ! -e "${config_path}" ]]; then
