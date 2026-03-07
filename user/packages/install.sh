@@ -38,11 +38,4 @@ pacman_remove_all gnome-system-monitor gnome-disk-utility
 pacman_install p7zip man-db dmidecode rsync
 
 ## CUSTOM PACKAGES
-packages=(vim git visual-studio-code tresorit)
-for package in "${packages[@]}"; do
-    package_path="${SCRIPT_DIR}/${package}.sh"
-    if [[ ! -e "${package_path}" ]]; then
-        package_path="${SCRIPT_DIR}/${package}/install.sh"
-    fi
-    "${package_path}"
-done
+run_scripts "${SCRIPT_DIR}" vim git visual-studio-code tresorit

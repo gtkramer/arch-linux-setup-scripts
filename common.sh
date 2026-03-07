@@ -78,6 +78,19 @@ manual_aur_install() {
     rm -rf "${temp_dir}"
 }
 
+run_scripts() {
+    local base_dir="${1}"
+    shift
+    local name
+    for name in "${@}"; do
+        local script="${base_dir}/${name}.sh"
+        if [[ ! -e "${script}" ]]; then
+            script="${base_dir}/${name}/install.sh"
+        fi
+        "${script}"
+    done
+}
+
 gpg_import_key() {
     gpg --recv-keys "${1}"
 }
