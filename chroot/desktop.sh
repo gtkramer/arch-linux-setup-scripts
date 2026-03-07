@@ -7,7 +7,7 @@ readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
 # Video capabilities
-pacman_install nvidia-open-lts nvidia-utils vulkan-tools
+pacman_install nvidia-open-lts nvidia-utils mesa mesa-utils intel-gpu-tools vulkan-intel vulkan-tools
 sed -i '/^MODULES=/d' /etc/mkinitcpio.conf
 echo 'MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)' >> /etc/mkinitcpio.conf    # Load NVIDIA kernel modules early
 mkinitcpio -P

@@ -47,7 +47,7 @@ EOF
 # Configure boot hooks
 sed -i '/^HOOKS=/d' /etc/mkinitcpio.conf
 touch /etc/vconsole.conf
-echo 'HOOKS=(systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
+echo 'HOOKS=(systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)' >> /etc/mkinitcpio.conf
 mkinitcpio -P
 
 # Disable all types of sleep
