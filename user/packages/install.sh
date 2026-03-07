@@ -19,7 +19,7 @@ pacman_install solaar
 
 # Multimedia
 pacman_install celluloid handbrake handbrake-cli mediainfo-gui yt-dlp ffmpegthumbnailer
-pacman_install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gstreamer-vaapi intel-media-driver libvpl vpl-gpu-rt libva-utils
+pacman_install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-plugin-pipewire gst-plugin-va intel-media-driver libvpl vpl-gpu-rt libva-utils
 pacman_remove_all showtime
 
 # Network
