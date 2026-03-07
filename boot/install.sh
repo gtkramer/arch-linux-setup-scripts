@@ -137,7 +137,7 @@ swapon "${vg_dev}/${LV_SWAP}"
 reflector --country "${COUNTRY_MIRROR}" --sort rate --protocol https --save /etc/pacman.d/mirrorlist
 
 # Install system
-pacstrap /mnt base base-devel linux-lts linux-firmware lvm2 intel-ucode efibootmgr networkmanager
+pacstrap /mnt base base-devel linux-lts linux-firmware lvm2 intel-ucode efibootmgr networkmanager rsync
 
 # Configure file systems
 fstab_file=/mnt/etc/fstab

@@ -35,7 +35,7 @@ pacman_install gptfdisk dosfstools mtools e2fsprogs exfatprogs ntfs-3g hdparm nv
 pacman_remove_all gnome-system-monitor gnome-disk-utility
 
 # Utilities
-pacman_install p7zip man-db dmidecode rsync
+pacman_install p7zip man-db dmidecode
 
 ## CUSTOM PACKAGES
 run_scripts "${SCRIPT_DIR}" vim git visual-studio-code tresorit
