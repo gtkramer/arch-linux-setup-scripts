@@ -33,6 +33,15 @@ has_partition_table() {
     blkid -p -s PTTYPE -o value "${1}" &> /dev/null
 }
 
+get_partition_dev() {
+    local block_dev="${1}" part_num="${2}"
+    if [[ "${block_dev}" =~ ^/dev/nvme ]]; then
+        echo "${block_dev}p${part_num}"
+    else
+        echo "${block_dev}${part_num}"
+    fi
+}
+
 run_as_root() {
     if [[ "${EUID}" -eq 0 ]]; then
         "${@}"

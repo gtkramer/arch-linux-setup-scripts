@@ -79,11 +79,7 @@ for block_dev in "${!dev_luks_map[@]}"; do
     udevadm settle
 
     # Determine the partition device path
-    if [[ "${block_dev}" =~ ^/dev/nvme ]]; then
-        part="${block_dev}p1"
-    else
-        part="${block_dev}1"
-    fi
+    part="$(get_partition_dev "${block_dev}" 1)"
 
     # Set up LUKS device
     cryptsetup -y -v luksFormat "${part}"

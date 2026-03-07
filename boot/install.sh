@@ -80,13 +80,8 @@ partprobe "${block_dev}"
 udevadm settle
 
 # Determine the partition device path
-if [[ "${block_dev}" =~ ^/dev/nvme ]]; then
-    part_separator=p
-else
-    part_separator=""
-fi
-boot_part_dev="${block_dev}${part_separator}1"
-luks_part_dev="${block_dev}${part_separator}2"
+boot_part_dev="$(get_partition_dev "${block_dev}" 1)"
+luks_part_dev="$(get_partition_dev "${block_dev}" 2)"
 
 # Set up LUKS device
 if ! "${preserve_home}"; then
