@@ -31,7 +31,7 @@ pacman_remove_all epiphany
 pacman_install libreoffice-fresh
 
 # System
-pacman_install gptfdisk dosfstools e2fsprogs exfatprogs ntfs-3g hdparm nvme-cli mission-center gparted
+pacman_install gptfdisk dosfstools mtools e2fsprogs exfatprogs ntfs-3g hdparm nvme-cli mission-center gparted
 pacman_remove_all gnome-system-monitor gnome-disk-utility
 
 # Utilities
