@@ -57,13 +57,13 @@ require_root() {
 }
 
 _pacman() { run_as_root pacman "${@}"; }
-pacman_install() { _pacman -Syu --noconfirm "${@}"; }
+pacman_install() { _pacman -Syu --needed --noconfirm "${@}"; }
 pacman_remove() { _pacman --noconfirm -Rdd "${@}"; }
 pacman_remove_all() { _pacman --noconfirm -Rns "${@}"; }
 pacman_list_orphans() { _pacman -Qdtq 2>/dev/null || true; }
 pacman_clean_cache() { _pacman -Sc --noconfirm; }
 
-aur_install() { yay -Syu --noconfirm "${@}"; }
+aur_install() { yay -Syu --needed --noconfirm "${@}"; }
 
 manual_aur_install() {
     local git_url="${1}"
