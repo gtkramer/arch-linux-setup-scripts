@@ -92,21 +92,21 @@ cd /mnt/chroot
 reboot
 ```
 
-Optionally, set up the LUKS-encrypted ZFS mirror for `/srv`.  This can be done at any time, not just during initial setup.  Use the same passphrase as the boot drive so that systemd's `sd-encrypt` hook can unlock all LUKS volumes with a single prompt at boot.
-
-```
-cd /mnt/chroot
-./storage.sh /dev/sdA /dev/sdB
-reboot
-```
-
-Upon logging into the desktop, execute the desired scripts from the user folder.
-
-The ZFS mirror pool is mounted at `/srv` and will auto-unlock and auto-mount on every subsequent boot (only one passphrase prompt).
-
 ## Post Installation
 
 This is the section containing instructions for doing that after a system has been fully restored with most configurations, most data, and is mostly functional.
+
+### Configure ZFS Storage
+
+ZFS storage is configured for mirroring with a ZFS-on-LUKS approach.  LUKS underpins all drives, and systemd-boot unlocks the drives during startup.  From there, regular system operations take over with no special configurations--the encryption is transparent to most everything else.
+
+The LTS branches of the Kernel and associated modules are used to prioritize stability and "it just works".  After confirming that the ZFS module is available for the LTS Kernel in use, run the following to set up ZFS storage:
+
+```
+sudo ./storage.sh /dev/sdA /dev/sdB
+```
+
+This will create a generic mount point at `/data` that can be used for anything.
 
 ### Install GNOME Shell Extensions
 
