@@ -6,14 +6,7 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../../common.sh"
 
-local_packages=(otf-noto-fonts otf-noto-fonts-cjk)
-for local_package in "${local_packages[@]}"; do
-    pushd "${SCRIPT_DIR}/${local_package}"
-    makepkg --noconfirm -sri
-    popd
-done
-
-pacman_install noto-fonts-{emoji,extra} otf-cascadia-code
+pacman_install otf-noto-fonts otf-noto-fonts-{extra,cjk,emoji} otf-cascadia-code
 aur_install ttf-ms-fonts
 
 sudo cp -f "${SCRIPT_DIR}/99-generic-family.conf" "${SCRIPT_DIR}/98-gnome.conf" /usr/share/fontconfig/conf.avail
