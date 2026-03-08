@@ -19,6 +19,15 @@ readonly ZFS_LUKS_NAME=cryptdata
 readonly ZFS_POOL=data
 readonly ZFS_ARC_MAX=17179869184
 readonly ZFS_MOUNT=/data
+readonly SBCTL_KEYS_DIR=/var/lib/sbctl/keys
+readonly -a SBCTL_KEY_FILES=(
+    PK/PK.key
+    PK/PK.pem
+    KEK/KEK.key
+    KEK/KEK.pem
+    db/db.key
+    db/db.pem
+)
 
 die() {
     echo "ERROR: ${1}" >&2

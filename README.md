@@ -106,8 +106,66 @@ The ZFS mirror pool is mounted at `/srv` and will auto-unlock and auto-mount on 
 
 ## Post Installation
 
-Install the following GNOME extensions:
+This is the section containing instructions for doing that after a system has been fully restored with most configurations, most data, and is mostly functional.
 
-  * ArcMenu
-  * Dash to Panel
-  * Night Theme Switcher
+### Install GNOME Shell Extensions
+
+Browse to the [GNOME Shell Extensions](https://extensions.gnome.org) website, install the GNOME Shell integration browser extension from the banner, and then install the following GNOME Shell extensions:
+
+* ArcMenu
+* Dash to Panel
+* Night Theme Switcher
+
+### Enable UEFI Secure Boot
+
+The script installs `/usr/local/sbin/secure-boot-sign` and `/etc/pacman.d/hooks/99-secure-boot-sign.hook` so kernel and systemd updates automatically trigger signing.  Hook `99` is intentionally ordered after the existing `95-systemd-boot.hook`, so `systemd-boot` is copied first and then signed.
+
+#### First-Time Key Enrollment
+
+1. Reboot into UEFI firmware and open `Boot > Secure Boot`.
+1. Set `OS Type` to `Windows UEFI Mode`.
+1. Set `Secure Boot Mode` to `Custom`.
+1. Open `Key Management` and do `Clear Secure Boot keys`.
+1. Exit saving changes and reboot into Linux.
+1. Create keys, sign bootloader, and enroll keys:
+
+   ```
+   sudo ./chroot/secure-boot.sh -e
+   ```
+
+1. Back up private signing keys and store them securely:
+
+   ```
+   sudo tar -C /var/lib/sbctl -czf ~/sbctl-keys.tar.gz keys
+   ```
+
+1. Reboot into Linux.
+1. Verify Secure Boot and signing status (see `Verify Secure Boot` below).
+
+#### Reuse Existing Enrolled Keys on Reinstalls
+
+1. Reboot into UEFI firmware and open `Boot > Secure Boot`.
+1. Set `OS Type` to `Other OS`.
+1. Exit saving changes and reboot into Linux.
+1. Start and finish Linux install process.
+1. Import keys and sign bootloader:
+
+   ```
+   tar -xzf ~/sbctl-keys.tar.gz -C /tmp
+   sudo ./chroot/secure-boot.sh -k /tmp/keys
+   ```
+
+1. Reboot into UEFI firmware and open `Boot > Secure Boot`.
+1. Set `OS Type` to `Windows UEFI Mode`.
+1. Exit saving changes and reboot into Linux.
+1. Verify Secure Boot and signing status (see `Verify Secure Boot` below).
+
+If firmware keys were reset or cleared, use the first-time enrollment flow again.
+
+#### Verify Secure Boot
+
+```
+sudo bootctl status
+sudo sbctl status
+sudo sbctl verify
+```
