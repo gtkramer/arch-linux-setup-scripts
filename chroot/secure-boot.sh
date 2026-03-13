@@ -50,67 +50,6 @@ has_any_files() {
     [[ -d "${dir}" ]] && [[ -n "$(find "${dir}" -type f -print -quit 2>/dev/null)" ]]
 }
 
-install_sign_script() {
-    cat > /usr/local/sbin/secure-boot-sign <<'EOF'
-#!/bin/bash
-set -euo pipefail
-
-die() {
-    echo "ERROR: ${1}" >&2
-    exit 1
-}
-
-if ! mountpoint -q /boot; then
-    die "/boot is not mounted."
-fi
-
-mapfile -d '' efi_bins < <(
-    find /boot -mindepth 1 -maxdepth 1 \( -type f -o -type l \) -name 'vmlinuz-*' -print0
-)
-if ((${#efi_bins[@]} == 0)); then
-    die "No /boot/vmlinuz-* kernel images found."
-fi
-
-readonly systemd_efi_bin=/boot/EFI/systemd/systemd-bootx64.efi
-readonly fallback_efi_bin=/boot/EFI/BOOT/BOOTX64.EFI
-if [[ ! -f "${systemd_efi_bin}" ]]; then
-    die "systemd-boot boot manager ${systemd_efi_bin} not found."
-fi
-if [[ ! -f "${fallback_efi_bin}" ]]; then
-    die "Fallback EFI boot manager ${fallback_efi_bin} not found."
-fi
-efi_bins+=("${systemd_efi_bin}" "${fallback_efi_bin}")
-
-for efi_bin in "${efi_bins[@]}"; do
-    sbctl sign -s "${efi_bin}"
-done
-EOF
-    chmod +x /usr/local/sbin/secure-boot-sign
-}
-
-install_pacman_hook() {
-    mkdir -p /etc/pacman.d/hooks
-    cat > /etc/pacman.d/hooks/99-secure-boot-sign.hook <<'EOF'
-[Trigger]
-Type = Package
-Operation = Install
-Operation = Upgrade
-Target = linux
-Target = linux-lts
-Target = linux-zen
-Target = linux-hardened
-Target = linux-rt
-Target = linux-rt-lts
-Target = systemd
-
-[Action]
-Description = Signing EFI binaries for Secure Boot...
-When = PostTransaction
-Exec = /usr/local/sbin/secure-boot-sign
-Depends = sbctl
-EOF
-}
-
 enroll_keys=false
 import_keys_dir=
 while getopts "ek:h" opt; do
@@ -142,16 +81,19 @@ if [[ ! -d /sys/firmware/efi ]]; then
     die "System is not booted in EFI mode."
 fi
 
+if ! mountpoint -q /boot; then
+    die "/boot is not mounted."
+fi
+
 pacman_install sbctl
 
 ensure_sbctl_keys "${import_keys_dir}"
-install_sign_script
-/usr/local/sbin/secure-boot-sign
+
+sbctl sign-all -g
+
 if "${enroll_keys}"; then
     sbctl enroll-keys -m
 fi
-
-install_pacman_hook
 
 sbctl status
 sbctl verify || true
