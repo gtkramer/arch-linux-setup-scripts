@@ -6,4 +6,4 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
-run_scripts "${SCRIPT_DIR}" package-manager packages fonts devices settings terminal xdg
+run_scripts "${SCRIPT_DIR}" package-manager packages gaming fonts devices settings terminal xdg

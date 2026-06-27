@@ -94,7 +94,7 @@ reboot
 
 ## Post Installation
 
-This is the section containing instructions for doing that after a system has been fully restored with most configurations, most data, and is mostly functional.
+This sections contains instructions to follow after a system has been fully restored with most of its configurations and data and is mostly functional.
 
 ### Configure ZFS Storage
 
