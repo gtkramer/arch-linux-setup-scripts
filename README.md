@@ -130,6 +130,7 @@ Browse to the [GNOME Shell Extensions](https://extensions.gnome.org) website, in
 * ArcMenu
 * Dash to Panel
 * Night Theme Switcher
+* Power Off Options
 
 ### Enable UEFI Secure Boot
 
