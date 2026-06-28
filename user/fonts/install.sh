@@ -8,9 +8,9 @@ readonly SCRIPT_DIR SCRIPT_NAME
 
 local_packages=(otf-noto-fonts otf-noto-fonts-cjk)
 for local_package in "${local_packages[@]}"; do
-    pushd "${SCRIPT_DIR}/${local_package}"
+    pushd "${SCRIPT_DIR}/${local_package}" || exit
     makepkg --noconfirm -sri
-    popd
+    popd || exit
 done
 
 pacman_install noto-fonts-{emoji,extra} otf-cascadia-code

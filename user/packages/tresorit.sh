@@ -14,8 +14,8 @@ rm -rf "${HOME}/.local/share/tresorit"
 
 # Install
 temp_dir="$(mktemp -d)"
-pushd "${temp_dir}"
+pushd "${temp_dir}" || exit
 curl -LO https://installerstorage.blob.core.windows.net/public/install/tresorit_installer.run
 sh ./tresorit_installer.run
-popd
+popd || exit
 rm -rf "${temp_dir}"

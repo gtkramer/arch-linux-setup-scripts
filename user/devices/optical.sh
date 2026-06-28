@@ -8,7 +8,7 @@ readonly SCRIPT_DIR SCRIPT_NAME
 
 # Install MakeMKV
 aur_install makemkv makemkv-libaacs
-echo "sg" | sudo tee /etc/modules-load.d/makemkv.conf
+echo "sg" | sudo tee /etc/modules-load.d/makemkv.conf > /dev/null
 
 # DVD playback
 pacman_install libdvdread libdvdcss libdvdnav

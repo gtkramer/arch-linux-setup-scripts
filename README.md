@@ -48,7 +48,7 @@ Download the Arch Linux installer ISO image and then use the following commands 
 
 ```
 sudo sgdisk -Z /dev/sdY
-sudo dd if=archlinux-2016.10.01-dual.iso of=/dev/sdY bs=1M
+sudo dd if=archlinux-x86_64.iso of=/dev/sdY bs=1M status=progress
 ```
 
 ### Update UEFI Firmware

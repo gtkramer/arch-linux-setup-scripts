@@ -12,11 +12,11 @@ if [[ ! -e "${build_dir}/.git" ]]; then
     mkdir -p "${build_dir}"
     git clone --depth 1 --branch release git@github.com:EpicGames/UnrealEngine.git "${build_dir}"
 else
-    pushd "${build_dir}"
+    pushd "${build_dir}" || exit
     git reset --hard origin/release
     git clean -dxf
     git pull
-    popd
+    popd || exit
 fi
 
 cd "${build_dir}"

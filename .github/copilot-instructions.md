@@ -12,7 +12,7 @@ Three sequential execution phases, each with a different privilege context:
 
 ## Script Conventions
 
-- **Shebang + strict mode:** Every script starts with `#!/usr/bin/env bash` and `set -euo pipefail`. The sole exception is `user/packages/smart/notify.sh` (a smartd callback, not a setup script).
+- **Shebang + strict mode:** Every script starts with `#!/bin/bash` and `set -euo pipefail`. The sole exception is `user/packages/smart/notify.sh` (a smartd callback, not a setup script).
 - **SCRIPT_DIR pattern:** Always declare and assign separately (SC2155) then source common.sh at the correct relative depth. The standard header idiom is `SCRIPT_DIR="$(dirname "$(realpath "${0}")")"`  followed by `SCRIPT_NAME="$(basename "${0}")"` and `readonly SCRIPT_DIR SCRIPT_NAME`:
   - 1 level: `. "${SCRIPT_DIR}/../common.sh"` (boot/, chroot/, user/)
   - 2 levels: `. "${SCRIPT_DIR}/../../common.sh"` (user/devices/, user/fonts/, user/packages/)
