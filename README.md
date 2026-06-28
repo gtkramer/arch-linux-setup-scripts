@@ -10,7 +10,7 @@ Given the decision was made to not support a GUI installer for a long time, Arch
   * Excellent gaming performance to replace a console
   * Excellent video encoding performance to back up optical media
 * Using an ASUS motherboard
-* Using ZFS to mirror critical data with redundancy
+* Using btrfs to mirror critical data with redundancy
 
 The file and folder structure of the repository is a template of sorts that others may be able to reuse for their needs.  Start with modifying common.sh and then modify other files from there.
 
@@ -116,17 +116,17 @@ reboot
 
 This sections contains instructions to follow after a system has been fully restored with most of its configurations and data and is mostly functional.
 
-### Configure ZFS Storage
+### Configure Storage
 
-ZFS storage is configured for mirroring with a ZFS-on-LUKS approach.  LUKS underpins all drives, and systemd-boot unlocks the drives during startup.  From there, regular system operations take over with no special configurations--the encryption is transparent to most everything else.
+Bulk data is stored on a btrfs RAID1 mirror layered on LUKS.  LUKS underpins both drives and systemd-boot unlocks them during startup; btrfs then mirrors the data with end-to-end checksums, so bit rot is detected and self-healed from the good copy.  Because btrfs is in the mainline kernel, it never holds back a kernel update the way an out-of-tree module like ZFS can.
 
-The LTS branches of the Kernel and associated modules are used to prioritize stability and "it just works".  After confirming that the ZFS module is available for the LTS Kernel in use, run the following to set up ZFS storage:
+Run the following to set up storage.  This destroys all data on both devices:
 
 ```
 sudo ./storage.sh /dev/sdA /dev/sdB
 ```
 
-This will create a generic mount point at `/data` that can be used for anything.
+This creates a generic mount point at `/data` (a dedicated btrfs subvolume) that can be used for anything, scrubbed monthly by `btrfs-scrub@data.timer` to verify and repair the mirror.
 
 ### Install GNOME Shell Extensions
 

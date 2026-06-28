@@ -50,15 +50,15 @@ if [[ "${block_dev_1}" == "${block_dev_2}" ]]; then
 fi
 
 if has_partition_table "${block_dev_1}" || has_partition_table "${block_dev_2}"; then
-    warn "All existing data in ${ZFS_MOUNT} will be destroyed."
+    warn "All existing data in ${DATA_MOUNT} will be destroyed."
     echo "To abort this operation, press Ctrl+C within the next 10 seconds..."
     sleep 10s
 fi
 
 # Set up all LUKS devices
 declare -A dev_luks_map=(
-    ["${block_dev_1}"]=${ZFS_LUKS_NAME}0
-    ["${block_dev_2}"]=${ZFS_LUKS_NAME}1
+    ["${block_dev_1}"]=${DATA_LUKS_NAME}0
+    ["${block_dev_2}"]=${DATA_LUKS_NAME}1
 )
 
 luks_devs=()
@@ -100,73 +100,42 @@ done
 
 mkinitcpio -P
 
-# Install ZFS module
-pacman_import_key 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9
+# Create the btrfs RAID1 mirror across the LUKS devices. btrfs is in the
+# mainline kernel, so there is no out-of-tree module to lag behind kernel
+# updates; raid1 mirrors both data and metadata with end-to-end checksums,
+# so bit rot is detected and self-healed from the good copy on read/scrub.
+# block-group-tree keeps mount times fast on a large (>4 TiB) array.
+pacman_install btrfs-progs
 
-if ! grep -q "\[archzfs\]" /etc/pacman.conf; then
-    cat >> /etc/pacman.conf <<'EOF'
+mkfs.btrfs -f -L "${DATA_LABEL}" -O block-group-tree -d raid1 -m raid1 "${luks_devs[@]}"
+btrfs device scan
+udevadm settle
 
-[archzfs]
-Server = https://github.com/archzfs/archzfs/releases/download/experimental
-EOF
-fi
+# Hold the data in a dedicated subvolume rather than the top-level (id 5)
+# subvolume, so snapshots and future layout changes stay easy.
+mkdir -p "${DATA_MOUNT}"
+mount "${luks_devs[0]}" "${DATA_MOUNT}"
+btrfs subvolume create "${DATA_MOUNT}/${DATA_SUBVOL}"
+umount "${DATA_MOUNT}"
 
-pacman_install zfs-linux-lts zfs-utils
-
-# Load ZFS module
-mkdir -p /etc/modprobe.d
-echo "options zfs zfs_arc_max=${ZFS_ARC_MAX}" > /etc/modprobe.d/zfs.conf
-modprobe zfs
-
-# Create ZFS mirror pool
-zpool create -f \
-    -o ashift=12 \
-    -o autotrim=off \
-    -O acltype=posixacl \
-    -O xattr=sa \
-    -O dnodesize=auto \
-    -O atime=off \
-    -O compression=lz4 \
-    -O recordsize=1M \
-    -m "${ZFS_MOUNT}" \
-    "${ZFS_POOL}" mirror "${luks_devs[@]}"
-
-zpool set cachefile=none "${ZFS_POOL}"
-
-chown root:root "${ZFS_MOUNT}"
-chmod 1777 "${ZFS_MOUNT}"
-
-# Enable ZFS services for automatic import and mount
-cat > /etc/systemd/system/zfs-export@.service <<'EOF'
-[Unit]
-Description=Export ZFS pool %I before shutdown
-Documentation=man:zpool-export(8)
-DefaultDependencies=no
-After=zfs-mount.service
-Conflicts=umount.target
-Before=umount.target
-Conflicts=shutdown.target
-Before=shutdown.target
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/bin/true
-ExecStop=/usr/bin/zpool export %i
-
-[Install]
-WantedBy=zfs.target
-EOF
+# Persist the subvolume mount in fstab. nofail keeps a degraded or missing
+# mirror from blocking boot (mount it manually with -o degraded); the longer
+# mount timeout absorbs the slower assembly of a large RAID1 array.
+data_uuid="$(blkid -s UUID -o value "${luks_devs[0]}")"
+fstab_file=/etc/fstab
+sed -i "\#[[:space:]]${DATA_MOUNT}[[:space:]]#d" "${fstab_file}"
+echo "UUID=${data_uuid}    ${DATA_MOUNT}    btrfs    subvol=/${DATA_SUBVOL},compress=zstd,noatime,nofail,x-systemd.mount-timeout=5min    0 0" >> "${fstab_file}"
 systemctl daemon-reload
+mount "${DATA_MOUNT}"
 
-systemctl enable zfs.target
-systemctl enable zfs-import.target
-systemctl enable zfs-import-scan.service
-systemctl enable zfs-mount.service
-systemctl enable "zfs-export@${ZFS_POOL}.service"
-systemctl enable "zfs-scrub-monthly@${ZFS_POOL}.timer"
+chown root:root "${DATA_MOUNT}"
+chmod 1777 "${DATA_MOUNT}"
 
-# Hide ZFS member devices from udisks2 since they are not mountable drives
-cat > /etc/udev/rules.d/69-zfs-member-hide.rules <<'EOF'
-KERNEL=="dm-*", ENV{ID_FS_TYPE}=="zfs_member", ENV{UDISKS_IGNORE}="1"
+# Scrub the mirror monthly with the unit shipped in btrfs-progs (the @ instance
+# is the escaped mount point; results are logged to the journal)
+systemctl enable "btrfs-scrub@$(systemd-escape -p "${DATA_MOUNT}").timer"
+
+# Hide the btrfs member devices from udisks2 since /data is a system mount
+cat > /etc/udev/rules.d/69-data-member-hide.rules <<EOF
+SUBSYSTEM=="block", ENV{DM_NAME}=="${DATA_LUKS_NAME}*", ENV{UDISKS_IGNORE}="1"
 EOF
