@@ -73,6 +73,7 @@ pacman_list_orphans() { _pacman -Qdtq 2>/dev/null || true; }
 pacman_clean_cache() { _pacman -Sc --noconfirm; }
 
 aur_install() { yay -Syu --needed --noconfirm "${@}"; }
+system_update() { yay -Syu --needed --noconfirm; }
 
 manual_aur_install() {
     local git_url="${1}"

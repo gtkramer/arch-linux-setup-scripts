@@ -6,7 +6,7 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/common.sh"
 
-aur_install
+system_update
 mapfile -t orphaned_packages < <(pacman_list_orphans)
 if [[ "${#orphaned_packages[@]}" -ne 0 ]]; then
     pacman_remove_all "${orphaned_packages[@]}"
