@@ -11,22 +11,22 @@ bootctl install
 
 mkdir -p /boot/loader/entries
 
-cat > /boot/loader/entries/arch-lts.conf <<EOF
-title   Arch Linux (LTS)
-linux   /vmlinuz-linux-lts
-initrd  /initramfs-linux-lts.img
-options root=/dev/mapper/${VG_NAME}-${LV_ROOT} resume=/dev/mapper/${VG_NAME}-${LV_SWAP} intel_iommu=on iommu.strict=1 iommu.passthrough=0 mem_sleep_default=s2idle quiet
-EOF
+kernel_options="root=/dev/mapper/${VG_NAME}-${LV_ROOT} resume=/dev/mapper/${VG_NAME}-${LV_SWAP} intel_iommu=on iommu.strict=1 iommu.passthrough=0 mem_sleep_default=s2idle quiet"
 
-cat > /boot/loader/entries/arch-lts-fallback.conf <<EOF
-title   Arch Linux (LTS Fallback)
-linux   /vmlinuz-linux-lts
-initrd  /initramfs-linux-lts-fallback.img
-options root=/dev/mapper/${VG_NAME}-${LV_ROOT} resume=/dev/mapper/${VG_NAME}-${LV_SWAP} intel_iommu=on iommu.strict=1 iommu.passthrough=0 mem_sleep_default=s2idle quiet
+write_boot_entry() {
+    cat > "/boot/loader/entries/${1}" <<EOF
+title   ${2}
+linux   /vmlinuz-${3}
+initrd  /initramfs-${3}.img
+options ${kernel_options}
 EOF
+}
+
+write_boot_entry arch.conf     "Arch Linux"       linux
+write_boot_entry arch-lts.conf "Arch Linux (LTS)" linux-lts
 
 cat > /boot/loader/loader.conf <<'EOF'
-default arch-lts.conf
+default arch.conf
 timeout 3
 editor  no
 EOF

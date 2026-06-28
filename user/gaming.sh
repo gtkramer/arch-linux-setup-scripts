@@ -21,7 +21,6 @@ pacman_install steam
 aur_install heroic-games-launcher-bin
 
 # Xbox controller support
-pacman_install linux-lts-headers dkms
 aur_install xpadneo-dkms
 
 # Performance and overlay tooling

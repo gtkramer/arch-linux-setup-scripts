@@ -7,7 +7,7 @@ readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
 # Video capabilities
-pacman_install nvidia-open-lts nvidia-utils mesa mesa-utils intel-gpu-tools vulkan-intel vulkan-tools
+pacman_install nvidia-open-dkms nvidia-utils mesa mesa-utils intel-gpu-tools vulkan-intel vulkan-tools
 
 # Audio capabilities
 pacman_install pipewire pipewire-audio pipewire-alsa pipewire-pulse pipewire-jack wireplumber
