@@ -60,10 +60,15 @@ Within the ASUS UEFI menus, browse to the USB automation drive with the new firm
 
 A few one-time firmware settings and physical switch changes are needed on the ASUS Pro WS W880-ACE SE.
 
-Configure the following in the UEFI firmware menus:
+Change the following from their defaults in the UEFI firmware menus:
 
 * **Advanced > CPU Configuration > Total Memory Encryption → Enabled.**  Turns on Intel Total Memory Encryption.  GNOME's built-in Device Security assessment expects this for a hardened system.
 * **Advanced > APM Configuration > ErP Ready → Enabled (S4+S5).**  Cuts standby power in the hibernate (S4) and soft-off (S5) states.  Without it, the board's firmware wakes the machine moments after it powers down for hibernation, interrupting the cycle and preventing a clean resume.
+
+The following ship enabled by default, but the encrypted, hardware-backed setup depends on them, so confirm they remain enabled:
+
+* **Advanced > System Agent (SA) Configuration > VT-d → Enabled.**  Exposes the Intel IOMMU so the kernel can confine each device's direct memory access.  The `intel_iommu=on iommu.strict=1 iommu.passthrough=0` parameters on the systemd-boot entries depend on it; together they block DMA attacks that could otherwise read LUKS keys out of RAM while the machine is suspended.  After booting, confirm it is active with `cat /sys/kernel/iommu_groups/*/type` — every group should read `DMA`, not `identity`.
+* **Advanced > PCH-FW Configuration > PTT → Enabled.**  Turns on Intel Platform Trust Technology, the CPU's built-in firmware TPM 2.0.  This presents `/dev/tpmrm0`, which `systemd-cryptenroll` can use to seal a LUKS key to the Secure Boot state for password-less unlock.
 
 Set the following physical switches on the motherboard while the system is powered off.  This board is a server/desktop hybrid, and disabling the unused components shortens boot time:
 
