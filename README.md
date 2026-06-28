@@ -132,6 +132,14 @@ Browse to the [GNOME Shell Extensions](https://extensions.gnome.org) website, in
 * Night Theme Switcher
 * Power Off Options
 
+### Configure the Steam Client
+
+By default Steam disables GPU accelerated rendering in its web views on NVIDIA.  Since the entire client UI--including Big Picture mode--is rendered by the CEF (Chromium) web helper, this forces it to composite in software.  On a 4K display that makes the client and Big Picture mode painfully slow.  To fix it:
+
+1. Open **Steam > Settings > Interface**.
+1. Enable **Enable GPU accelerated rendering in web views**.
+1. Restart Steam.
+
 ### Enable UEFI Secure Boot
 
 The script installs `/usr/local/sbin/secure-boot-sign` and `/etc/pacman.d/hooks/99-secure-boot-sign.hook` so kernel and systemd updates automatically trigger signing.  Hook `99` is intentionally ordered after the existing `95-systemd-boot.hook`, so `systemd-boot` is copied first and then signed.
