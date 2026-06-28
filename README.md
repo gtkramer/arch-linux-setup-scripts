@@ -25,12 +25,13 @@ The file and folder structure of the repository is a template of sorts that othe
 1. Prepare USB installer drive
 1. Reboot
 1. Update UEFI firmware
+1. Configure BIOS and motherboard
 1. Installation
 1. Post installation
 
 Two separate USB drives are needed to support the installation process.
 
-### Prepare USB Automation Drive and UEFI firmware
+## Prepare USB Automation Drive and UEFI Firmware
 
 Run the following commands on one USB drive.
 
@@ -42,7 +43,7 @@ cp -rf arch-linux-setup-scripts <mounted /dev/sdXN>
 cp -f *.CAP <mounted /dev/sdXN>
 ```
 
-### Prepare USB Installer Drive
+## Prepare USB Installer Drive
 
 Download the Arch Linux installer ISO image and then use the following commands on the other USB drive.
 
@@ -51,9 +52,23 @@ sudo sgdisk -Z /dev/sdY
 sudo dd if=archlinux-x86_64.iso of=/dev/sdY bs=1M status=progress
 ```
 
-### Update UEFI Firmware
+## Update UEFI Firmware
 
 Within the ASUS UEFI menus, browse to the USB automation drive with the new firmware file to perform the update.  This may only be done from a FAT32 filesystem.
+
+## BIOS and Motherboard Configuration
+
+A few one-time firmware settings and physical switch changes are needed on the ASUS Pro WS W880-ACE SE.
+
+Configure the following in the UEFI firmware menus:
+
+* **Advanced > CPU Configuration > Total Memory Encryption → Enabled.**  Turns on Intel Total Memory Encryption.  GNOME's built-in Device Security assessment expects this for a hardened system.
+* **Advanced > APM Configuration > ErP Ready → Enabled (S4+S5).**  Cuts standby power in the hibernate (S4) and soft-off (S5) states.  Without it, the board's firmware wakes the machine moments after it powers down for hibernation, interrupting the cycle and preventing a clean resume.
+
+Set the following physical switches on the motherboard while the system is powered off.  This board is a server/desktop hybrid, and disabling the unused components shortens boot time:
+
+* **Switch 13 (BMC) → off.**  Disables the onboard baseboard management controller.
+* **Switch 29 (VGA) → off.**  Disables the onboard VGA output.
 
 ## Installation
 
