@@ -100,42 +100,39 @@ done
 
 mkinitcpio -P
 
-# Create the btrfs RAID1 mirror across the LUKS devices. btrfs is in the
-# mainline kernel, so there is no out-of-tree module to lag behind kernel
-# updates; raid1 mirrors both data and metadata with end-to-end checksums,
-# so bit rot is detected and self-healed from the good copy on read/scrub.
-# block-group-tree keeps mount times fast on a large (>4 TiB) array.
+# Install btrfs tools
 pacman_install btrfs-progs
 
-mkfs.btrfs -f -L "${DATA_LABEL}" -O block-group-tree -d raid1 -m raid1 "${luks_devs[@]}"
+# Create btrfs mirror
+mkfs.btrfs -f -L "${DATA_LABEL}" --csum xxhash -O block-group-tree -d raid1 -m raid1 "${luks_devs[@]}"
+
+# Register the mirror's member devices
 btrfs device scan
 udevadm settle
 
-# Hold the data in a dedicated subvolume rather than the top-level (id 5)
-# subvolume, so snapshots and future layout changes stay easy.
-mkdir -p "${DATA_MOUNT}"
-mount "${luks_devs[0]}" "${DATA_MOUNT}"
-btrfs subvolume create "${DATA_MOUNT}/${DATA_SUBVOL}"
-umount "${DATA_MOUNT}"
-
-# Persist the subvolume mount in fstab. nofail keeps a degraded or missing
-# mirror from blocking boot (mount it manually with -o degraded); the longer
-# mount timeout absorbs the slower assembly of a large RAID1 array.
+# Enable mounting at boot
 data_uuid="$(blkid -s UUID -o value "${luks_devs[0]}")"
 fstab_file=/etc/fstab
 sed -i "\#[[:space:]]${DATA_MOUNT}[[:space:]]#d" "${fstab_file}"
-echo "UUID=${data_uuid}    ${DATA_MOUNT}    btrfs    subvol=/${DATA_SUBVOL},compress=zstd,noatime,nofail,x-systemd.mount-timeout=5min    0 0" >> "${fstab_file}"
-systemctl daemon-reload
-mount "${DATA_MOUNT}"
+echo "UUID=${data_uuid}    ${DATA_MOUNT}    btrfs    compress=zstd,noatime,nofail,x-systemd.mount-timeout=5min    0 0" >> "${fstab_file}"
 
-chown root:root "${DATA_MOUNT}"
-chmod 1777 "${DATA_MOUNT}"
-
-# Scrub the mirror monthly with the unit shipped in btrfs-progs (the @ instance
-# is the escaped mount point; results are logged to the journal)
+# Scrub the mirror monthly
 systemctl enable "btrfs-scrub@$(systemd-escape -p "${DATA_MOUNT}").timer"
 
-# Hide the btrfs member devices from udisks2 since /data is a system mount
+# Set ownership and ACLs on the data root
+mkdir -p "${DATA_MOUNT}"
+mount "${DATA_MOUNT}"
+groupadd -rf "${DATA_GROUP}"
+if id "${USER_NAME}" &> /dev/null; then
+    gpasswd -a "${USER_NAME}" "${DATA_GROUP}"
+fi
+chown "root:${DATA_GROUP}" "${DATA_MOUNT}"
+chmod 2775 "${DATA_MOUNT}"
+setfacl    -m g:"${DATA_GROUP}":rwX "${DATA_MOUNT}"
+setfacl -d -m g:"${DATA_GROUP}":rwX "${DATA_MOUNT}"
+umount "${DATA_MOUNT}"
+
+# Hide btrfs member devices from udisks2 since they are not mountable drives
 cat > /etc/udev/rules.d/69-data-member-hide.rules <<EOF
 SUBSYSTEM=="block", ENV{DM_NAME}=="${DATA_LUKS_NAME}*", ENV{UDISKS_IGNORE}="1"
 EOF

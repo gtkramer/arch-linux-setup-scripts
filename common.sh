@@ -18,7 +18,7 @@ readonly LV_SWAP=swap
 readonly DATA_LUKS_NAME=cryptdata
 readonly DATA_LABEL=data
 readonly DATA_MOUNT=/data
-readonly DATA_SUBVOL=@data
+readonly DATA_GROUP=data
 readonly SBCTL_KEYS_DIR=/var/lib/sbctl/keys
 readonly -a SBCTL_KEY_FILES=(
     PK/PK.key

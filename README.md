@@ -118,7 +118,7 @@ This sections contains instructions to follow after a system has been fully rest
 
 ### Configure Storage
 
-Bulk data is stored on a btrfs RAID1 mirror layered on LUKS.  LUKS underpins both drives and systemd-boot unlocks them during startup; btrfs then mirrors the data with end-to-end checksums, so bit rot is detected and self-healed from the good copy.  Because btrfs is in the mainline kernel, it never holds back a kernel update the way an out-of-tree module like ZFS can.
+Bulk data is stored on a btrfs RAID1 mirror layered on LUKS.  LUKS underpins both drives and systemd-boot unlocks them during startup; btrfs then mirrors the data with end-to-end checksums, so bit rot is detected and self-healed from the good copy.
 
 Run the following to set up storage.  This destroys all data on both devices:
 
