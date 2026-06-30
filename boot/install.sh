@@ -1,10 +1,13 @@
 #!/bin/bash
+# Partition, LUKS-encrypt, build LVM, mkfs, mount, and pacstrap the base system (DESTRUCTIVE; run from the ISO).
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
+
+require_root
 
 usage() {
     echo "Usage: ${SCRIPT_NAME} [-p] <block device>"
@@ -56,20 +59,21 @@ if "${preserve_home}" && ! "${have_partitions}"; then
 fi
 
 if ! "${preserve_home}" && "${have_partitions}"; then
-    warn "All existing data in /home will be destroyed."
-    echo "To abort this operation, press Ctrl+C within the next 10 seconds..."
-    sleep 10s
+    confirm_data_destruction "${block_dev}"
 fi
 
 # Update system clock
 timedatectl set-ntp true
 
-# Create physical partitions
+# Create physical partitions, ending the encrypted partition on a 1 MiB
+# boundary. On drives reporting a 4096-byte physical sector, cryptsetup formats
+# the LUKS payload with 4 KiB sectors, so its size must be a whole multiple of
+# that or luksFormat rounds it down (and warns); 1 MiB suffices.
 if ! "${preserve_home}"; then
     sgdisk -Z "${block_dev}"
     sgdisk -n 1:1M:+512M -t 1:ef00 "${block_dev}"
-    last_usable_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
-    sgdisk -n 2:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 )) -t 2:8309 "${block_dev}"
+    last_usable_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"  # -E prints prose on some HDDs
+    sgdisk -n "2:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 ))" -t 2:8309 "${block_dev}"
     if ! sgdisk -v "${block_dev}"; then
         die "Physical partitions failed verification for ${block_dev}."
     fi
@@ -89,7 +93,7 @@ if ! "${preserve_home}"; then
 fi
 luks_dev=/dev/mapper/${LUKS_NAME}
 if [[ ! -e "${luks_dev}" ]]; then
-    if [[ "$(cat "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
+    if [[ "$(< "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
         luks_open_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
         luks_open_opts=()
@@ -149,6 +153,6 @@ echo "${LUKS_NAME}       UUID=${luks_uuid}    none    luks" > "${crypttab_file}"
 
 # Clean dot files and folders in /home partition for all users
 find /mnt/home -mindepth 2 -maxdepth 2 -name '.*' -exec rm -rf {} +
-find /mnt/home -mindepth 1 -maxdepth 1 -type d | while read -r home_dir; do
+find /mnt/home -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' home_dir; do
     rsync --chown="$(stat -c '%U:%G' "${home_dir}")" -a /mnt/etc/skel/ "${home_dir}/"
 done

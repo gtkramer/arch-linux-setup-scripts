@@ -1,4 +1,5 @@
 #!/bin/bash
+# Orchestrate the user-session setup scripts in order. Run as the user inside a graphical session.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

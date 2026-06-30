@@ -1,4 +1,5 @@
 #!/bin/bash
+# Build an encrypted btrfs RAID1 data pool, auto-unlocked post-boot from a root keyfile (DESTRUCTIVE).
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
@@ -49,11 +50,11 @@ if [[ "${block_dev_1}" == "${block_dev_2}" ]]; then
     die "Block devices must be different."
 fi
 
-if has_partition_table "${block_dev_1}" || has_partition_table "${block_dev_2}"; then
-    warn "All existing data in ${DATA_MOUNT} will be destroyed."
-    echo "To abort this operation, press Ctrl+C within the next 10 seconds..."
-    sleep 10s
-fi
+for block_dev in "${block_dev_1}" "${block_dev_2}"; do
+    if has_partition_table "${block_dev}"; then
+        confirm_data_destruction "${block_dev}"
+    fi
+done
 
 # Set up all LUKS devices
 declare -A dev_luks_map=(
@@ -66,10 +67,13 @@ for block_dev in "${!dev_luks_map[@]}"; do
     luks_name="${dev_luks_map[${block_dev}]}"
     luks_devs+=("/dev/mapper/${luks_name}")
 
-    # Create physical partitions
+    # Create physical partitions, ending the encrypted partition on a 1 MiB
+    # boundary. On drives reporting a 4096-byte physical sector, cryptsetup
+    # formats the LUKS payload with 4 KiB sectors, so its size must be a whole
+    # multiple of that or luksFormat rounds it down (and warns); 1 MiB suffices.
     sgdisk -Z "${block_dev}"
-    last_usable_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"
-    sgdisk -n 1:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 )) -t 1:8309 "${block_dev}"
+    last_usable_sector="$(sgdisk -E "${block_dev}" | grep -P '^\d+$')"  # -E prints prose on some HDDs
+    sgdisk -n "1:0:$(( last_usable_sector - (last_usable_sector + 1) % 2048 ))" -t 1:8309 "${block_dev}"
     if ! sgdisk -v "${block_dev}"; then
         die "Physical partitions failed verification for ${block_dev}."
     fi
@@ -84,27 +88,31 @@ for block_dev in "${!dev_luks_map[@]}"; do
     # Set up LUKS device
     cryptsetup -y -v luksFormat "${part}"
 
-    if [[ "$(cat "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
+    if [[ "$(< "/sys/block/$(basename "${block_dev}")/queue/rotational")" == 0 ]]; then
         luks_open_opts=(--allow-discards --perf-no_read_workqueue --perf-no_write_workqueue)
     else
         luks_open_opts=()
     fi
     cryptsetup "${luks_open_opts[@]}" --persistent open "${part}" "${luks_name}"
 
-    # Enable unlocking LUKS device at boot
-    crypttab_file=/etc/crypttab.initramfs
-    luks_uuid="$(cryptsetup luksUUID "${part}")"
-    sed -i "/^${luks_name}/d" "${crypttab_file}"
-    echo "${luks_name}    UUID=${luks_uuid}    none    luks" >> "${crypttab_file}"
-done
+    # Auto-unlock post-boot from a keyfile on the encrypted root
+    keyfile="/etc/cryptsetup-keys.d/${luks_name}.key"
+    if [[ ! -f "${keyfile}" ]]; then
+        ( umask 077; mkdir -p /etc/cryptsetup-keys.d; head -c 256 /dev/urandom > "${keyfile}" )
+    fi
+    cryptsetup luksAddKey "${part}" "${keyfile}"
 
-mkinitcpio -P
+    luks_uuid="$(cryptsetup luksUUID "${part}")"
+    crypttab_file=/etc/crypttab
+    sed -i "/^${luks_name}[[:space:]]/d" "${crypttab_file}"
+    echo "${luks_name}    UUID=${luks_uuid}    ${keyfile}    luks,nofail" >> "${crypttab_file}"
+done
 
 # Install btrfs tools
 pacman_install btrfs-progs
 
 # Create btrfs mirror
-mkfs.btrfs -f -L "${DATA_LABEL}" --csum xxhash -O block-group-tree -d raid1 -m raid1 "${luks_devs[@]}"
+mkfs.btrfs -f -L "${DATA_LABEL}" --csum xxhash -d raid1 -m raid1 "${luks_devs[@]}"
 
 # Register the mirror's member devices
 btrfs device scan

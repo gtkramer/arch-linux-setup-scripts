@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install the GNOME XDG desktop portal and export XDG base-directory variables.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install the yay AUR helper, schedule mirror ranking, and parallelize makepkg builds.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

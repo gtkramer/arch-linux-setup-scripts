@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install the Emby media server and open its port to the LAN via ufw.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
@@ -18,4 +19,4 @@ description=Emby media server LAN access
 ports=8096/tcp
 EOF
 sudo ufw app update Emby
-sudo ufw allow from 192.168.1.0/24 to any app Emby
+sudo ufw allow from "${TRUSTED_LAN_CIDR}" to any app Emby

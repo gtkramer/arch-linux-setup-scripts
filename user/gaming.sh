@@ -1,4 +1,5 @@
 #!/bin/bash
+# Enable multilib and install Steam, launchers, controller support, and gaming overlays.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

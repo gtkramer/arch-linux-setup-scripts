@@ -1,4 +1,5 @@
 #!/bin/bash
+# Orchestrate the device-setup scripts (YubiKey, optical) in order.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

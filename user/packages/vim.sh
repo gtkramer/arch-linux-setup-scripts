@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install vim and write a minimal ~/.vimrc.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

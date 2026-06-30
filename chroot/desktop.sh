@@ -1,10 +1,13 @@
 #!/bin/bash
+# Install the GPU/audio/GNOME desktop stack and display manager. Run as root after first boot.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
+
+require_root
 
 # Video capabilities
 pacman_install nvidia-open-dkms nvidia-utils mesa mesa-utils intel-gpu-tools vulkan-intel vulkan-tools

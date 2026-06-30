@@ -1,4 +1,5 @@
 #!/bin/bash
+# Update the system and prune orphaned packages and the package cache.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install git and set the global user identity and defaults.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

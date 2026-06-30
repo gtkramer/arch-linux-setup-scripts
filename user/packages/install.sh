@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install the primary repo/AUR application set, then run the per-package config scripts.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

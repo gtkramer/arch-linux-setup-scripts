@@ -1,4 +1,5 @@
 #!/bin/bash
+# Build and install the Noto/emoji/CJK font set and link the fontconfig rules.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

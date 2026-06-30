@@ -1,10 +1,13 @@
 #!/bin/bash
+# Install systemd-boot, set loader entries, initramfs hooks, sudo, accounts, network (run in arch-chroot).
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
 SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
+
+require_root
 
 # Configure bootloader
 bootctl install
@@ -59,7 +62,9 @@ chmod 440 /etc/sudoers.d/wheel
 echo "Set password for root"
 passwd root
 
-useradd -m -G wheel -c "${DISPLAY_NAME}" "${USER_NAME}"
+if ! id -u "${USER_NAME}" &> /dev/null; then
+    useradd -m -s "${USER_SHELL}" -G wheel -c "${DISPLAY_NAME}" "${USER_NAME}"
+fi
 echo "Set password for ${USER_NAME}"
 passwd "${USER_NAME}"
 

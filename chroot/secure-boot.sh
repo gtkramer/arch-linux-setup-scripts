@@ -1,4 +1,5 @@
 #!/bin/bash
+# Create or import sbctl keys and sign the bootloader and kernels for UEFI Secure Boot.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

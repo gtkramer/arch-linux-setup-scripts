@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install MakeMKV and DVD/Blu-ray playback support.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

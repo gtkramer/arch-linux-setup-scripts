@@ -1,4 +1,5 @@
 #!/bin/bash
+# Clone and build Unreal Engine 5 from source. Optional/standalone.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

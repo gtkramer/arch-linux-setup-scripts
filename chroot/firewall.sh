@@ -1,4 +1,5 @@
 #!/bin/bash
+# Enable a default-deny ufw firewall. Run as root.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
@@ -6,8 +7,9 @@ SCRIPT_NAME="$(basename "${0}")"
 readonly SCRIPT_DIR SCRIPT_NAME
 . "${SCRIPT_DIR}/../common.sh"
 
-pacman_remove iptables
-pacman_install gufw iptables-nft
+require_root
+
+pacman_install gufw
 systemctl enable ufw
 
 ufw default deny incoming

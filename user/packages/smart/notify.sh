@@ -1,8 +1,6 @@
 #!/bin/bash
-# Sends a GNOME desktop notification to all logged-in graphical users
-# when smartd detects a disk health issue.
-# Sourced by /usr/share/smartmontools/smartd_warning.sh with SMARTD_* env vars.
-# Uses gdbus (glib2) to call org.freedesktop.Notifications directly.
+# Send a GNOME desktop notification to all logged-in graphical users when smartd flags a disk issue.
+# Sourced by /usr/share/smartmontools/smartd_warning.sh with SMARTD_* env vars; uses gdbus to call Notifications.
 
 summary="Disk Health Warning: ${SMARTD_DEVICESTRING:-unknown}"
 body="${SMARTD_MESSAGE:-A S.M.A.R.T. error has been detected.}"

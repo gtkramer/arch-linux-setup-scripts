@@ -17,6 +17,10 @@ The file and folder structure of the repository is a template of sorts that othe
 ## Assumptions
 
 * A wired internet connection is available and used for the entire process
+* The firmware boots in UEFI mode
+* A single internal NVMe/SATA disk is the system disk and is wiped in full (pass `-p` to preserve `/home`)
+* The primary user is the first account created (UID 1000)
+* Host-specific values (user, hostname, timezone, mirror country, LAN subnet) are set in `common.sh`
 
 ## Process Overview
 
@@ -62,6 +66,7 @@ A few one-time firmware settings and physical switch changes are needed on the A
 
 Change the following from their defaults in the UEFI firmware menus:
 
+* **Security > Administrator Password → set.**  Prevents anyone with physical access from entering Setup to disable Secure Boot, change the boot order, boot external media, or clear the enrolled keys.  The PCR 7 seal already refuses to release the TPM-stored LUKS key if the Secure Boot state changes (unlock falls back to the passphrase), so this is defense-in-depth that *blocks* the tampering rather than merely forcing a passphrase prompt.
 * **Advanced > CPU Configuration > Total Memory Encryption → Enabled.**  Turns on Intel Total Memory Encryption.  GNOME's built-in Device Security assessment expects this for a hardened system.
 * **Advanced > APM Configuration > ErP Ready → Enabled (S4+S5).**  Cuts standby power in the hibernate (S4) and soft-off (S5) states.  Without it, the board's firmware wakes the machine moments after it powers down for hibernation, interrupting the cycle and preventing a clean resume.
 
@@ -112,18 +117,35 @@ cd /mnt/chroot
 reboot
 ```
 
+Reboot into the GNOME login screen and sign in as your user.  From a terminal in that graphical session, run the user-level setup, which installs applications, fonts, and desktop settings.  Run it inside the graphical session so the GNOME settings apply.
+
+```
+sudo mount /dev/sdX /mnt
+cd /mnt/user
+./install.sh
+```
+
+The following scripts are optional and run on their own as needed:
+
+* `chroot/storage.sh <device> <device>` — encrypted btrfs RAID1 data pool (see *Configure Storage*)
+* `chroot/secure-boot.sh` — UEFI Secure Boot signing and key enrollment (see *Enable UEFI Secure Boot*)
+* `chroot/tpm2-unlock.sh` — password-less LUKS unlock via the TPM (see *Enable TPM2 Unlock*)
+* `user/devices/printing.sh` — CUPS and HP printer setup
+* `user/packages/ue5.sh` — Unreal Engine source build
+* `maintenance.sh` — update the system and prune orphaned packages and cache
+
 ## Post Installation
 
 This sections contains instructions to follow after a system has been fully restored with most of its configurations and data and is mostly functional.
 
 ### Configure Storage
 
-Bulk data is stored on a btrfs RAID1 mirror layered on LUKS.  LUKS underpins both drives and systemd-boot unlocks them during startup; btrfs then mirrors the data with end-to-end checksums, so bit rot is detected and self-healed from the good copy.
+Bulk data is stored on a btrfs RAID1 mirror layered on LUKS.  LUKS underpins both drives; they are unlocked after boot from a keyfile held on the encrypted root (registered in `/etc/crypttab` with `nofail`), so a missing drive never stalls startup and no extra passphrase is prompted.  btrfs then mirrors the data with end-to-end checksums, so bit rot is detected and self-healed from the good copy.
 
-Run the following to set up storage.  This destroys all data on both devices:
+Run the following to set up storage.  This destroys all data on both devices and prompts you to type the device paths to confirm:
 
 ```
-sudo ./storage.sh /dev/sdA /dev/sdB
+sudo ./chroot/storage.sh /dev/sdA /dev/sdB
 ```
 
 This creates a generic mount point at `/data` (a dedicated btrfs subvolume) that can be used for anything, scrubbed monthly by `btrfs-scrub@data.timer` to verify and repair the mirror.
@@ -147,7 +169,7 @@ By default Steam disables GPU accelerated rendering in its web views on NVIDIA. 
 
 ### Enable UEFI Secure Boot
 
-The script installs `/usr/local/sbin/secure-boot-sign` and `/etc/pacman.d/hooks/99-secure-boot-sign.hook` so kernel and systemd updates automatically trigger signing.  Hook `99` is intentionally ordered after the existing `95-systemd-boot.hook`, so `systemd-boot` is copied first and then signed.
+`secure-boot.sh` uses [`sbctl`](https://github.com/Foxboron/sbctl) to create keys and sign the bootloader and kernels.  `sbctl` installs its own pacman hook that re-signs every tracked EFI binary after kernel and `systemd` upgrades, so signing stays current without a custom hook.  Note that with systemd-boot the initramfs is loaded as a separate, unsigned file; to also sign and measure it, move to Unified Kernel Images (see `Enable TPM2 Unlock`).
 
 #### First-Time Key Enrollment
 
@@ -198,3 +220,19 @@ sudo bootctl status
 sudo sbctl status
 sudo sbctl verify
 ```
+
+### Enable TPM2 Unlock
+
+With Secure Boot enabled, the root volume can unlock without a passphrase by sealing a key to the TPM, bound to the Secure Boot state (PCR 7).  The LUKS passphrase is kept as a recovery key, and the data drives follow automatically since their keyfile lives on the now-unlocked root.
+
+This depends on PTT being enabled (see *BIOS and Motherboard Configuration*) and Secure Boot being active.  Run:
+
+```
+sudo ./chroot/tpm2-unlock.sh
+```
+
+PCR 7 is chosen so the seal survives kernel and initramfs updates.  If the Secure Boot state later changes (keys cleared or Secure Boot disabled), unlock with the passphrase and re-run the script.  Measuring the initramfs as well (PCR 11) requires switching to Unified Kernel Images and re-enrolling on each kernel update.
+
+### Dual-Boot Clock
+
+The install keeps Linux's hardware clock in UTC (`system.sh` runs `timedatectl set-local-rtc 0`).  Windows defaults to treating the RTC as local time, so without matching it the two systems rewrite the clock in different conventions on each boot.  Configure Windows to use UTC as well by adding a `DWORD` named `RealTimeIsUniversal`, set to `1`, under `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\TimeZoneInformation`.  Both operating systems then agree and the clock stays correct across reboots.

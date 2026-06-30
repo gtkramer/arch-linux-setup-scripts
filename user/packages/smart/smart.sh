@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install smartmontools, enable smartd, and install the disk-health notifier.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Apply GDM login-screen settings: monitor layout, night light, and power behavior.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
@@ -12,15 +13,11 @@ sudo chown gdm:gdm ~gdm/{.config,.cache}/
 sudo cp -f "${HOME}/.config/monitors.xml" ~gdm/.config/
 sudo chown gdm:gdm ~gdm/.config/monitors.xml
 
-run_as_gdm_user() {
-    sudo -u gdm dbus-launch --exit-with-session "${@}"
-}
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.system.location enabled true
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.settings-daemon.plugins.color night-light-enabled true
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.settings-daemon.plugins.color night-light-temperature 2700
 
-run_as_gdm_user gsettings set org.gnome.system.location enabled true
-run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
-run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true
-run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 2700
-
-run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
-run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-run_as_gdm_user gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.settings-daemon.plugins.power power-button-action 'interactive'
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+run_as_user gdm "${GSETTINGS[@]}" set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'

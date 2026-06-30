@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install Visual Studio Code (AUR) and apply the workbench settings and Wayland flags.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

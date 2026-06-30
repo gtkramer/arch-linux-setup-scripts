@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install the Yubico authenticator and enable the smart-card daemon.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install the Tresorit sync client and its runtime dependencies.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"

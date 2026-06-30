@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install CUPS and HP printer drivers and run the printer setup wizard.
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "${0}")")"
